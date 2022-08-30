@@ -3,7 +3,7 @@ const router = express.Router()
 const mysql = require('mysql')
 
 // test de routage vers ce fichier
-router.get('/messages', (reqm, res)=>{
+router.get('/messages', (req, res)=>{
     console.log('show some messages or whatever');
     res.end()
 })
@@ -18,7 +18,7 @@ router.post('/compteReg', (req, res)=>{
     const values = [[null, nom, prenom, email, MotPasse1] ];
     getConn().query(sql, [values], (err, results, fields)=>{
         if(err){
-            console.log('failed to Reg new student : ', err)
+            console.log('failed to Reg new account : ', err)
             res.sendStatus(500)  
             return 
         }
@@ -28,6 +28,32 @@ router.post('/compteReg', (req, res)=>{
     res.redirect('index.html')
     res.end();
 })
+router.post('/compteCon', (req, res)=>{
+    console.log('CONNECTION OF AN ACCOUNT');
+    const email = req.body.email;
+    const MotPasse = req.body.MotPasse;
+    // console.log(email + ' '+ MotPasse)
+    const sql = 'select * from compte where (compte.email = \"'+email+'\" and \"'+MotPasse+'\"=compte.MotPasse1)'
+    getConn().query(sql,(err, results)=>{
+        if(err){
+            console.log('failed Connect to account : ', err)
+            res.sendStatus(500)  
+            return
+        }
+        if(results[0] == null){
+            console.log("Your Email or Password is wrong");
+            res.redirect('index.html')
+            res.end();
+        }else{
+            // console.log(results[0]);
+            res.redirect('next.html')
+            res.end();
+        }
+    })
+    // res.redirect('next.html')
+    // res.end();
+})
+
 function getConn(){
     return mysql.createConnection({
         host: 'localhost',
