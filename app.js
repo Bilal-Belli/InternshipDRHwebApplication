@@ -4,15 +4,22 @@ const morgan = require('morgan')
 const mysql = require('mysql')
 const bodyParser = require('body-parser');
 
+const cookieParser = require("cookie-parser");
+const { requireAuth } = require('./user/auth');
+
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static('./public'))
 app.use(morgan('combined'))
 // first page shown at connection to application (by default is index.html = connect.html)
 app.get('/', (req,res)=>{
     console.log('responding to root route');
-
     // res.send('Your node is successfully setup');
 })
+app.get('/accueil', requireAuth, (req, res) => {
+    console.log('you are now on accueil');
+    // res.send(accueil.html);
+});
 // test de connectivité
 app.listen(3000, ()=>{
     console.log('server running port is 3000');
@@ -74,6 +81,7 @@ const conn = getConn();
 
 const router = require('./routes/comptes')
 app.use(router)
+
 //Fetch all students
 // app.get('/student', (req, res)=>{
 //     console.log('Fetching user with id: ', req.params.id)

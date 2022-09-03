@@ -7,6 +7,12 @@ router.get('/messages', (req, res)=>{
     console.log('show some messages or whatever');
     res.end()
 })
+// test de routage vers ce url
+// router.get('/connexion',function(req,res) {
+//     res.redirect('next.html')
+//     console.log('connexion page');
+//     res.end();
+// });
 router.post('/compteReg', (req, res)=>{
     console.log('REGISTRATION OF A NEW ACCOUNT');
     const nom = req.body.nom;
