@@ -3,34 +3,35 @@ const app = express()
 const morgan = require('morgan')
 const mysql = require('mysql')
 const bodyParser = require('body-parser');
-
 const cookieParser = require("cookie-parser");
 const { requireAuth } = require('./user/auth');
 
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(express.static('./public'))
-app.use(morgan('combined'))
-// first page shown at connection to application (by default is index.html = connect.html)
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(morgan('combined'));
+// app.use(express.static('./public')); //used for static html files
+app.set('view engine','ejs');
 app.get('/', (req,res)=>{
-    console.log('responding to root route');
-    // res.send('Your node is successfully setup');
+    res.render('index');
+    res.end();
 })
+app.get('/Inscription',(req,res)=>{
+    res.render('Inscription');
+    res.end();
+});
 app.get('/accueil', requireAuth, (req, res) => {
     console.log('you are now on accueil');
-    // res.send(accueil.html);
+    res.render(accueil);
+    res.end();
 });
-// test de connectivité
-app.listen(3000, ()=>{
-    console.log('server running port is 3000');
-})
 // function that get connection to database mysql
 function getConn(){
     return mysql.createConnection({
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'StageBDD'
+        database: 'stagebddtest'
+        // database: 'StageBDD'
     });
 }
 const conn = getConn();
@@ -114,3 +115,7 @@ app.use(router)
 //         res.json(rows);
 //     })
 // })
+// test de connectivité
+app.listen(3000, ()=>{
+    console.log('server running port is 3000');
+})

@@ -8,14 +8,14 @@ const requireAuth = (req, res, next) => {
         jwt.verify(token, 'net', (err, decodedToken) => {
         if (err) {
             console.log(err.message);
-            res.redirect('index.html');
+            res.render('index');
         } else {
             console.log(decodedToken);
             next();
         }
         });
     } else {
-        res.redirect('index.html');
+        res.render('index');
     }
 };
 

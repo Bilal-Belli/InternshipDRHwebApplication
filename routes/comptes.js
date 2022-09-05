@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router()
 const mysql = require('mysql')
-
 // test de routage vers ce fichier
 router.get('/messages', (req, res)=>{
     console.log('show some messages or whatever');
@@ -18,21 +17,21 @@ router.post('/compteReg', (req, res)=>{
     const nom = req.body.nom;
     const prenom = req.body.prenom;
     const email = req.body.email;
-    const MotPasse1 = req.body.MotPasse1;
-    // console.log(nom + ' ' + prenom + ' '+ email + ' '+ MotPasse1)
+    const MotPasse = req.body.MotPasse1;
+    const postDeTravail = req.body.postDeTravail;
     const sql = 'INSERT INTO compte VALUES ?'
-    const values = [[null, nom, prenom, email, MotPasse1] ];
+    const values = [[email, nom, prenom, MotPasse, postDeTravail]];
     getConn().query(sql, [values], (err, results, fields)=>{
         if(err){
-            console.log('failed to Reg new account : ', err)
-            res.sendStatus(500)  
-            return 
+            console.log('failed to Reg new account : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+        } else{
+            console.log('Inserted new account ', results.insertId);
+            res.render('index');
+            res.end();
         }
-        console.log('Inserted new account ', results.insertId)
-        res.end();
     })
-    res.redirect('index.html')
-    res.end();
 })
 router.post('/compteCon', (req, res)=>{
     console.log('CONNECTION OF AN ACCOUNT');
@@ -48,11 +47,11 @@ router.post('/compteCon', (req, res)=>{
         }
         if(results[0] == null){
             console.log("Your Email or Password is wrong");
-            res.redirect('index.html')
+            res.render('index')
             res.end();
         }else{
             // console.log(results[0]);
-            res.redirect('next.html')
+            res.render('accueil')
             res.end();
         }
     })
@@ -65,7 +64,8 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'StageBDD'
+        database: 'stagebddtest'
+        // database: 'StageBDD'
     });
 }
 module.exports = router

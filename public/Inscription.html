@@ -45,6 +45,13 @@
                         </div>
                         <!-- champ erreur prenom -->
                         <div class="form-group d-flex" id = "ErreurMsg_prenom" style="color:red; font-size: 11.5px;"></div>
+                        <select class="custom-select my-1 mr-sm-2" id="postDeTravail">
+                            <option value="Directeur" selected>Directeur</option>
+                            <option value="Sous Directeur">Sous Directeur</option>
+                            <option value="Chef de Département">Chef de Département</option>
+                            <option value="Chef d'equipe">Chef d'equipe</option>
+                        </select>
+                        <div class="p-3"></div>
                         <!-- champ Email -->                         
                         <div class="form-group">
                         <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="email" name="email">
