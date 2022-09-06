@@ -17,35 +17,34 @@
     </nav>
     <section class="ftco-section">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6 text-center mb-5" style="font-family: 'Space Grotesk', sans-serif;">
-                    <h5>Direction des resources Humaine - DRH</h5>
-                    <h5>GRH AWMT</h5>
-                </div>
-            </div>
+            <div class="p-2"></div>
             <div class="row justify-content-center">
                 <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
                     <div class="p-4 p-md-5">
-                        <div class="icon d-flex align-items-center justify-content-center">
-                            <div class="rounded-circle bg-success" style="height: 100px; width: 100px;">
-                                <div class="text-center py-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="#fefdff" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                    </svg>
-                                </div>
+                        <form class="login-form" action="fetchCompte" method="POST">
+                            <div class="form-group">
+                                <input type="email" class="form-control rounded-left" placeholder="E-mail" required name="emailenter">
                             </div>
-                        </div>
-                        <h3 class="text-center mb-4">Inscription</h3>
+                            <div class="form-group"></div>
+                            <button type="submit" class="form-control btn btn-success rounded submit px-3">Recherche</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3"></div>
+            <div class="row justify-content-center">
+                <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
+                    <div class="p-4 p-md-5">
                         <form class="login-form"  id="myFormulaire" action="/compteReg" method="POST">
                             <!--  champ du nom -->
                             <div class="form-group">
-                                <input type="text" class="form-control rounded-left" placeholder="Nom" id="nom" name="nom" required>
+                            <input type="text" class="form-control rounded-left" placeholder="Nom" id="nom" name="nom" required>
                             </div>
                             <!-- champ erreur nom -->
                             <div class="form-group d-flex" id = "ErreurMsg_nom" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ du prenom -->
                             <div class="form-group">
-                                <input type="text" class="form-control rounded-left" placeholder="Prénom" id="prenom" name="prenom" required>
+                            <input type="text" class="form-control rounded-left" placeholder="Prénom" id="prenom" name="prenom" required>
                             </div>
                             <!-- champ erreur prenom -->
                             <div class="form-group d-flex" id = "ErreurMsg_prenom" style="color:red; font-size: 11.5px;"></div>
@@ -59,13 +58,13 @@
                             <div class="p-3"></div>
                             <!-- champ Email -->                         
                             <div class="form-group">
-                                <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="email" name="email">
+                            <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="email" name="email">
                             </div>
                             <!-- champ erreur Email -->
                             <div class="form-group d-flex" id = "ErreurMsg_email" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ Mot de Passe -->   
                             <div class="form-group d-flex">
-                                <input type="password" class="form-control rounded-left" placeholder="Mot de passe" id="MotPasse1" required name="MotPasse1">
+                            <input type="password" class="form-control rounded-left" placeholder="Mot de passe" id="MotPasse1" required name="MotPasse1">
                             <!-- the eye that hide or show password -->
                             <a  id="icon-click1">
                             <i class="fa fa-eye-slash"  id="icon1" style="padding: 15px"></i></a> 
@@ -74,7 +73,7 @@
                             <div class="form-group d-flex" id = "ErreurMsg_password_1" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ confirmation Mot de Passe -->  
                             <div class="form-group d-flex">
-                                <input type="password" class="form-control rounded-left" placeholder="Confirmer Mot de passe" required id="MotPasse2">
+                            <input type="password" class="form-control rounded-left" placeholder="Confirmer Mot de passe" required id="MotPasse2">
                             <!-- the eye that hide or show password -->
                             <a  id="icon-click2">
                             <i class="fa fa-eye-slash" id="icon2" style="padding: 15px"></i></a>
@@ -83,7 +82,7 @@
                             <div class="form-group d-flex" id = "ErreurMsg_password_2" style="color:red; font-size: 11.5px;"></div>
                             <!-- le button -->  
                             <div class="form-group"></div>
-                            <button type="submit" id="submitBtn" class="form-control btn btn-success rounded submit px-3">Inscrivez</button>
+                            <button type="submit" id="submitBtn" class="form-control btn btn-success rounded submit px-3">Modifier</button>
                         </form>
                     </div>
                 </div>

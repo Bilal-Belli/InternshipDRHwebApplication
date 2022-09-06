@@ -10,6 +10,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('combined'));
 // app.use(express.static('./public')); //used for static html files
+app.use(express.static('./views'));//used for background image and icon files
 app.set('view engine','ejs');
 app.get('/', (req,res)=>{
     res.render('index');
@@ -17,6 +18,10 @@ app.get('/', (req,res)=>{
 })
 app.get('/Inscription',(req,res)=>{
     res.render('Inscription');
+    res.end();
+});
+app.get('/modifierCompte',(req,res)=>{
+    res.render('modifierCompte');
     res.end();
 });
 app.get('/gestionComptesOptions', (req, res)=>{
@@ -29,10 +34,10 @@ app.get('/gestionComptesOptions', (req, res)=>{
             return;
         }
         console.log('fetch succesfully');
-        console.log(req.originalUrl);
         res.render('gestionComptesOptions',{data: rows});
-    })
-})
+        return;
+    });
+});
 app.get('/gestionEntreprise',async (req,res)=>{
     const queryDirections = "SELECT * FROM direction";
     const querySousDirections = "SELECT * FROM sousdirection";
@@ -68,13 +73,51 @@ app.get('/VusialisationCondidats', (req, res)=>{
     getConn().query(sql, (err, rows)=>{
         if(err){
             console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
             return;
         }
         console.log('fetch succesfully');
         res.render('VusialisationCondidats',{data: rows});
+        return;
     })
-    res.end();
 })
+app.get('/supprimerCompte', (req, res)=>{
+    res.render('supprimerCompte');
+    res.end();
+});
+app.get('/ajouterDir', (req, res)=>{
+    res.render('ajouterDir');
+    res.end();
+});
+app.get('/ajouterSousDir', (req, res)=>{
+    res.render('ajouterSousDir');
+    res.end();
+});
+app.get('/ajouterDep', (req, res)=>{
+    res.render('ajouterDep');
+    res.end();
+});
+app.get('/ajouterEquipe', (req, res)=>{
+    res.render('ajouterEquipe');
+    res.end();
+});
+app.get('/supprimerDir', (req, res)=>{
+    res.render('supprimerDir');
+    res.end();
+});
+app.get('/supprimerSousDir', (req, res)=>{
+    res.render('supprimerSousDir');
+    res.end();
+});
+app.get('/supprimerDep', (req, res)=>{
+    res.render('supprimerDep');
+    res.end();
+});
+app.get('/supprimerEquipe', (req, res)=>{
+    res.render('supprimerEquipe');
+    res.end();
+});
 // app.get('/accueil', requireAuth, (req, res) => { //for middleware
 app.get('/accueil', (req, res) => {
     console.log('you are now on home page');

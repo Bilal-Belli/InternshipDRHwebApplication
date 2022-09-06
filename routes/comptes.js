@@ -26,13 +26,55 @@ router.post('/compteReg', (req, res)=>{
             console.log('failed to Reg new account : ', err);
             res.redirect(req.get('referer'));
             res.end();
+            return;
         } else{
             console.log('Inserted new account ', results.insertId);
-            res.render('adminaccueil');
-            res.end();
+            res.redirect('/gestionComptesOptions');
+            return;
         }
     })
-})
+});
+router.post('/supprimerCompte', (req, res)=>{
+    console.log('DELETE AN ACCOUNT BY EMAIL');
+    const email = req.body.email;
+    const sql = 'DELETE FROM compte WHERE compte.email = \"'+email+'\"';
+    getConn().query(sql,(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionComptesOptions');
+            return;
+        }
+    })
+});
+router.post('/ajouterDir', (req, res)=>{
+    
+});
+router.post('/ajouterSousDir', (req, res)=>{
+    
+});
+router.post('/ajouterDep', (req, res)=>{
+    
+});
+router.post('/ajouterEquipe', (req, res)=>{
+    
+});
+
+router.post('/supprimerDir', (req, res)=>{
+    
+});
+router.post('/supprimerSousDir', (req, res)=>{
+    
+});
+router.post('/supprimerDep', (req, res)=>{
+    
+});
+router.post('/supprimerEquipe', (req, res)=>{
+    
+});
 router.post('/compteCon', (req, res)=>{
     console.log('CONNECTION OF AN ACCOUNT');
     const email = req.body.email;
