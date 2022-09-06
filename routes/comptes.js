@@ -28,7 +28,7 @@ router.post('/compteReg', (req, res)=>{
             res.end();
         } else{
             console.log('Inserted new account ', results.insertId);
-            res.render('index');
+            res.render('adminaccueil');
             res.end();
         }
     })
@@ -38,7 +38,7 @@ router.post('/compteCon', (req, res)=>{
     const email = req.body.email;
     const MotPasse = req.body.MotPasse;
     // console.log(email + ' '+ MotPasse)
-    const sql = 'select * from compte where (compte.email = \"'+email+'\" and \"'+MotPasse+'\"=compte.MotPasse1)'
+    const sql = 'select * from compte where (compte.email = \"'+email+'\" and \"'+MotPasse+'\"=compte.motPasse)'
     getConn().query(sql,(err, results)=>{
         if(err){
             console.log('failed Connect to account : ', err)
@@ -50,9 +50,14 @@ router.post('/compteCon', (req, res)=>{
             res.render('index')
             res.end();
         }else{
-            // console.log(results[0]);
-            res.render('accueil')
-            res.end();
+            // console.log(results[0].typePost);
+            if (results[0].typePost === "Admin"){
+                res.render('adminaccueil')
+                res.end();
+            }else{
+                res.render('accueil')
+                res.end();
+            }
         }
     })
     // res.redirect('next.html')

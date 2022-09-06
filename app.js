@@ -19,9 +19,71 @@ app.get('/Inscription',(req,res)=>{
     res.render('Inscription');
     res.end();
 });
-app.get('/accueil', requireAuth, (req, res) => {
-    console.log('you are now on accueil');
-    res.render(accueil);
+app.get('/gestionComptesOptions', (req, res)=>{
+    const sql = 'SELECT * FROM compte';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query for users ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        console.log(req.originalUrl);
+        res.render('gestionComptesOptions',{data: rows});
+    })
+})
+app.get('/gestionEntreprise',async (req,res)=>{
+    const queryDirections = "SELECT * FROM direction";
+    const querySousDirections = "SELECT * FROM sousdirection";
+    const queryDepartments = "SELECT * FROM departement";
+    const queryEquipes = "SELECT * FROM equipe";
+    try {
+        // Get connection once
+        const conn = getConn();
+        // Techniques: Array destructuring and Promise resolving in batch
+        let directions, sousDirections, departments, equipes;
+        await Promise.all(
+        [
+            conn.query(queryDirections,(err, rows)=>{directions=rows;} ),
+            conn.query(querySousDirections,(err, rows)=>{sousDirections=rows;}),
+            conn.query(queryDepartments,(err, rows)=>{departments=rows;}),
+            conn.query(queryEquipes,(err, rows)=>{equipes=rows;}),
+        ]
+        );
+        setTimeout(() => {
+        res.render("gestionEntreprise", {
+        data1: directions,
+        data2: sousDirections,
+        data3: departments,
+        data4: equipes,
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
+});
+app.get('/VusialisationCondidats', (req, res)=>{
+    const sql = 'SELECT * FROM condidat';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('VusialisationCondidats',{data: rows});
+    })
+    res.end();
+})
+// app.get('/accueil', requireAuth, (req, res) => { //for middleware
+app.get('/accueil', (req, res) => {
+    console.log('you are now on home page');
+    res.render('accueil');
+    res.end();
+});
+app.get('/adminaccueil', (req, res) => {
+    console.log('you are now on admin home page');
+    res.render('adminaccueil');
     res.end();
 });
 // function that get connection to database mysql
