@@ -22,7 +22,7 @@
             <div class="row justify-content-center">
                 <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
                     <div class="p-4 p-md-5">
-                        <form class="login-form" action="fetchCompte" method="POST">
+                        <form action="fetchCompte" method="POST">
                             <div class="form-group">
                                 <input type="email" class="form-control rounded-left" placeholder="E-mail" required name="emailenter">
                             </div>
@@ -36,21 +36,23 @@
             <div class="row justify-content-center">
                 <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
                     <div class="p-4 p-md-5">
-                        <form class="login-form"  id="myFormulaire" action="/compteReg" method="POST">
+                        <form action="editCompte" method="POST">
                             <!--  champ du nom -->
                             <div class="form-group">
-                            <input type="text" class="form-control rounded-left" placeholder="Nom" id="nom" name="nom" required>
+                                <input type="text" class="form-control rounded-left" placeholder="Nom" id="nom" value="<%= data.nom %>" name="nom" required>
                             </div>
                             <!-- champ erreur nom -->
                             <div class="form-group d-flex" id = "ErreurMsg_nom" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ du prenom -->
                             <div class="form-group">
-                            <input type="text" class="form-control rounded-left" placeholder="Prénom" id="prenom" name="prenom" required>
+                                <!-- <textarea class="form-control rounded-left" name="prenom" id="prenom" required></textarea> -->
+                                <input type="text" class="form-control rounded-left" placeholder="Prénom" id="prenom" name="prenom" value="<%= data.prenom %>" required>
                             </div>
                             <!-- champ erreur prenom -->
                             <div class="form-group d-flex" id = "ErreurMsg_prenom" style="color:red; font-size: 11.5px;"></div>
                             <select class="custom-select my-1 mr-sm-2" id="postDeTravail" name="postDeTravail">
                                 <option value="Directeur" selected>Directeur</option>
+                                <option value="<%= data.typePost %>" selected><%= data.typePost %></option>
                                 <option value="Sous Directeur">Sous Directeur</option>
                                 <option value="Chef de Département">Chef de Département</option>
                                 <option value="Chef d'equipe">Chef d'equipe</option>
@@ -59,13 +61,13 @@
                             <div class="p-3"></div>
                             <!-- champ Email -->                         
                             <div class="form-group">
-                            <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="email" name="email">
+                                <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" value="<%= data.email %>" required id="email" name="email">
                             </div>
                             <!-- champ erreur Email -->
                             <div class="form-group d-flex" id = "ErreurMsg_email" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ Mot de Passe -->   
                             <div class="form-group d-flex">
-                            <input type="password" class="form-control rounded-left" placeholder="Mot de passe" id="MotPasse1" required name="MotPasse1">
+                                <input type="password" class="form-control rounded-left" placeholder="Mot de passe" id="MotPasse1" required value="<%= data.motPasse %>" name="MotPasse1">
                             <!-- the eye that hide or show password -->
                             <a  id="icon-click1">
                             <i class="fa fa-eye-slash"  id="icon1" style="padding: 15px"></i></a> 
@@ -74,7 +76,7 @@
                             <div class="form-group d-flex" id = "ErreurMsg_password_1" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ confirmation Mot de Passe -->  
                             <div class="form-group d-flex">
-                            <input type="password" class="form-control rounded-left" placeholder="Confirmer Mot de passe" required id="MotPasse2">
+                                <input type="password" class="form-control rounded-left" placeholder="Confirmer Mot de passe" required value="<%= data.motPasse %>" id="MotPasse2">
                             <!-- the eye that hide or show password -->
                             <a  id="icon-click2">
                             <i class="fa fa-eye-slash" id="icon2" style="padding: 15px"></i></a>
@@ -101,8 +103,7 @@
     </div>
 </footer>
 <script>
-// let validSubmit=false;
-const validSubmit = new Array(5).fill(false);
+const validSubmit = new Array(5).fill(true);
 $(document).ready(function() {
 $("#icon-click1").click(function() {
     var className = $("#icon1").attr('class');

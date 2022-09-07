@@ -1,19 +1,48 @@
 const express = require('express');
 const router = express.Router()
 const mysql = require('mysql')
-// test de routage vers ce fichier
-router.get('/messages', (req, res)=>{
-    console.log('show some messages or whatever');
-    res.end()
+
+function getConn(){
+    return mysql.createConnection({
+        host: 'localhost',
+        user : 'root',
+        password: '1234',
+        database: 'stagebddtest'
+        // database: 'StageBDD'
+    });
+}
+router.post('/compteCon', (req, res)=>{
+    console.log('CONNECTION OF AN ACCOUNT');
+    const email = req.body.email;
+    const MotPasse = req.body.MotPasse;
+    const sql = 'select * from compte where (compte.email = \"'+email+'\" and \"'+MotPasse+'\"=compte.motPasse)';
+    getConn().query(sql,(err, results)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.sendStatus(500);
+            res.end();
+            return;
+        }
+        if(results[0] == null){
+            console.log("Your Email or Password is wrong");
+            res.redirect('index');
+            res.end();
+            return;
+        }else{
+            if (results[0].typePost === "Admin"){
+                res.redirect('adminaccueil');
+                res.end();
+                return;
+            }else{
+                res.redirect('accueil');
+                res.end();
+                return;
+            }
+        }
+    });
 })
-// test de routage vers ce url
-// router.get('/connexion',function(req,res) {
-//     res.redirect('next.html')
-//     console.log('connexion page');
-//     res.end();
-// });
 router.post('/compteReg', (req, res)=>{
-    console.log('REGISTRATION OF A NEW ACCOUNT');
+    console.log('CREATION OF A NEW ACCOUNT');
     const nom = req.body.nom;
     const prenom = req.body.prenom;
     const email = req.body.email;
@@ -23,19 +52,57 @@ router.post('/compteReg', (req, res)=>{
     const values = [[email, nom, prenom, MotPasse, postDeTravail]];
     getConn().query(sql, [values], (err, results, fields)=>{
         if(err){
-            console.log('failed to Reg new account : ', err);
+            console.log('Failed Registration new account : ', err);
             res.redirect(req.get('referer'));
             res.end();
             return;
         } else{
-            console.log('Inserted new account ', results.insertId);
+            console.log('Registration Successfully');
+            res.redirect('/gestionComptesOptions');
+            return;
+        }
+    })
+});
+router.post('/fetchCompte', (req, res)=>{
+    console.log('EDIT AN ACCOUNT');
+    const emailenter = req.body.emailenter;
+    const sql = 'SELECT * FROM compte WHERE compte.email = \"'+emailenter+'\"';
+    getConn().query(sql,(err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        } else{
+            console.log('succesfully fetch opération');
+            res.render('modifierCompte',{data: rows[0]});
+            return;
+        }
+    })
+});
+router.post('/editCompte', (req, res)=>{
+    console.log('EDIT AN ACCOUNT');
+    const nom = req.body.nom;
+    const prenom = req.body.prenom;
+    const email = req.body.email;
+    const MotPasse = req.body.MotPasse1;
+    const postDeTravail = req.body.postDeTravail;
+    const sql = 'UPDATE compte SET compte.email = \''+email+'\',compte.nom = \''+nom+'\', compte.prenom = \''+prenom+'\',compte.typePost = \''+postDeTravail+'\',compte.motPasse = \''+MotPasse+'\' WHERE compte.email = \"'+email+'\"';
+    getConn().query(sql,(err, rows)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            console.log('Edit Account Successfully');
             res.redirect('/gestionComptesOptions');
             return;
         }
     })
 });
 router.post('/supprimerCompte', (req, res)=>{
-    console.log('DELETE AN ACCOUNT BY EMAIL');
+    console.log('DELETE AN ACCOUNT');
     const email = req.body.email;
     const sql = 'DELETE FROM compte WHERE compte.email = \"'+email+'\"';
     getConn().query(sql,(err)=>{
@@ -120,7 +187,6 @@ router.post('/ajouterEquipe', (req, res)=>{
     });
 });
 router.post('/supprimerDir', (req, res)=>{
-    console.log('DELETE A DIRECTION');
     const DIR = req.body.DIR;
     const sql = 'DELETE FROM direction WHERE direction.IDdirection = \"'+DIR+'\"';
     getConn().query(sql,(err)=>{
@@ -136,7 +202,6 @@ router.post('/supprimerDir', (req, res)=>{
     });
 });
 router.post('/supprimerSousDir', (req, res)=>{
-    console.log('DELETE A DIRECTION');
     const SDIR = req.body.SDIR;
     const sql = 'DELETE FROM sousdirection WHERE sousdirection.IDsousDirection = \"'+SDIR+'\"';
     getConn().query(sql,(err)=>{
@@ -152,7 +217,6 @@ router.post('/supprimerSousDir', (req, res)=>{
     });
 });
 router.post('/supprimerDep', (req, res)=>{
-    console.log('DELETE A DEPARTEMENT');
     const DEP = req.body.DEP;
     const sql = 'DELETE FROM departement WHERE departement.IDdeparetement = \"'+DEP+'\"';
     getConn().query(sql,(err)=>{
@@ -168,7 +232,6 @@ router.post('/supprimerDep', (req, res)=>{
     });
 });
 router.post('/supprimerEquipe', (req, res)=>{
-    console.log('DELETE A TEAM');
     const EQUIPE = req.body.EQUIPE;
     const sql = 'DELETE FROM equipe WHERE equipe.IDequipe = \"'+EQUIPE+'\"';
     getConn().query(sql,(err)=>{
@@ -183,44 +246,10 @@ router.post('/supprimerEquipe', (req, res)=>{
         }
     });
 });
-router.post('/compteCon', (req, res)=>{
-    console.log('CONNECTION OF AN ACCOUNT');
-    const email = req.body.email;
-    const MotPasse = req.body.MotPasse;
-    // console.log(email + ' '+ MotPasse)
-    const sql = 'select * from compte where (compte.email = \"'+email+'\" and \"'+MotPasse+'\"=compte.motPasse)'
-    getConn().query(sql,(err, results)=>{
-        if(err){
-            console.log('failed Connect to account : ', err)
-            res.sendStatus(500)  
-            return
-        }
-        if(results[0] == null){
-            console.log("Your Email or Password is wrong");
-            res.render('index')
-            res.end();
-        }else{
-            // console.log(results[0].typePost);
-            if (results[0].typePost === "Admin"){
-                res.render('adminaccueil')
-                res.end();
-            }else{
-                res.render('accueil')
-                res.end();
-            }
-        }
-    })
-    // res.redirect('next.html')
-    // res.end();
-})
-
-function getConn(){
-    return mysql.createConnection({
-        host: 'localhost',
-        user : 'root',
-        password: '1234',
-        database: 'stagebddtest'
-        // database: 'StageBDD'
-    });
-}
 module.exports = router
+// test de routage vers ce url
+// router.get('/connexion',function(req,res) {
+//     res.redirect('next.html');
+//     console.log('connexion page');
+//     res.end();
+// });
