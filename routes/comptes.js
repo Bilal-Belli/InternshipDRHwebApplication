@@ -51,29 +51,137 @@ router.post('/supprimerCompte', (req, res)=>{
     })
 });
 router.post('/ajouterDir', (req, res)=>{
-    
+    const idDir = req.body.idDir;
+    const emailDIR = req.body.emailDIR;
+    const sql = 'INSERT INTO direction VALUES ?';
+    const values = [[idDir, emailDIR]];
+    getConn().query(sql,[values],(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/ajouterSousDir', (req, res)=>{
-    
+    const idSDir = req.body.idSDir;
+    const confDIR = req.body.confDIR;
+    const sql = 'INSERT INTO sousdirection VALUES ?';
+    const values = [[idSDir, confDIR]];
+    getConn().query(sql,[values],(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/ajouterDep', (req, res)=>{
-    
+    const idDep = req.body.idDep;
+    const confEMAIL = req.body.confEMAIL;
+    const confSDIR = req.body.confSDIR;
+    const sql = 'INSERT INTO departement VALUES ?';
+    const values = [[idDep, confEMAIL, confSDIR]];
+    getConn().query(sql,[values],(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/ajouterEquipe', (req, res)=>{
-    
+    const confCHEF = req.body.confCHEF;
+    const confDEP = req.body.confDEP;
+    const sql = 'INSERT INTO equipe VALUES ?';
+    const values = [[null, confCHEF, confDEP]];
+    getConn().query(sql,[values],(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
-
 router.post('/supprimerDir', (req, res)=>{
-    
+    console.log('DELETE A DIRECTION');
+    const DIR = req.body.DIR;
+    const sql = 'DELETE FROM direction WHERE direction.IDdirection = \"'+DIR+'\"';
+    getConn().query(sql,(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/supprimerSousDir', (req, res)=>{
-    
+    console.log('DELETE A DIRECTION');
+    const SDIR = req.body.SDIR;
+    const sql = 'DELETE FROM sousdirection WHERE sousdirection.IDsousDirection = \"'+SDIR+'\"';
+    getConn().query(sql,(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/supprimerDep', (req, res)=>{
-    
+    console.log('DELETE A DEPARTEMENT');
+    const DEP = req.body.DEP;
+    const sql = 'DELETE FROM departement WHERE departement.IDdeparetement = \"'+DEP+'\"';
+    getConn().query(sql,(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/supprimerEquipe', (req, res)=>{
-    
+    console.log('DELETE A TEAM');
+    const EQUIPE = req.body.EQUIPE;
+    const sql = 'DELETE FROM equipe WHERE equipe.IDequipe = \"'+EQUIPE+'\"';
+    getConn().query(sql,(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/gestionEntreprise');
+            return;
+        }
+    });
 });
 router.post('/compteCon', (req, res)=>{
     console.log('CONNECTION OF AN ACCOUNT');

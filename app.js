@@ -16,12 +16,12 @@ app.get('/', (req,res)=>{
     res.render('index');
     res.end();
 })
-app.get('/Inscription',(req,res)=>{
-    res.render('Inscription');
+app.get('/CreerCompte',(req,res)=>{
+    res.render('CreerCompte');
     res.end();
 });
 app.get('/modifierCompte',(req,res)=>{
-    res.render('modifierCompte');
+    res.render('modifierCompte');//just need to work on it later
     res.end();
 });
 app.get('/gestionComptesOptions', (req, res)=>{
@@ -87,36 +87,132 @@ app.get('/supprimerCompte', (req, res)=>{
     res.end();
 });
 app.get('/ajouterDir', (req, res)=>{
-    res.render('ajouterDir');
-    res.end();
+    const sql = 'SELECT email FROM compte where compte.typePost=\"Directeur\"';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('ajouterDir',{data: rows});
+        return;
+    });
 });
 app.get('/ajouterSousDir', (req, res)=>{
-    res.render('ajouterSousDir');
-    res.end();
+    const sql = 'SELECT IDdirection FROM direction';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('ajouterSousDir',{data: rows});
+        return;
+    });
 });
-app.get('/ajouterDep', (req, res)=>{
-    res.render('ajouterDep');
+app.get('/ajouterDep',async (req, res)=>{
+    const query1 = 'SELECT email FROM compte where compte.typePost=\"Chef de Département\"';
+    const query2 = "SELECT IDsousDirection FROM sousdirection";
+    try {
+        const conn = getConn();
+        let comptes, sousdirections;
+        await Promise.all(
+        [
+            conn.query(query1,(err, rows)=>{comptes=rows;} ),
+            conn.query(query2,(err, rows)=>{sousdirections=rows;})
+        ]
+        );
+        setTimeout(() => {
+        res.render("ajouterDep", {
+        data1: comptes,
+        data2: sousdirections
+        });},100);
+    } catch (error) {
+    console.log(error);
     res.end();
+    }
 });
-app.get('/ajouterEquipe', (req, res)=>{
-    res.render('ajouterEquipe');
+app.get('/ajouterEquipe',async (req, res)=>{
+    const query1 = "SELECT IDdeparetement FROM departement";
+    const query2 = 'SELECT email FROM compte where compte.typePost=\"Chef d\'equipe\"';
+    try {
+        const conn = getConn();
+        let comptes, departements;
+        await Promise.all(
+        [
+            conn.query(query1,(err, rows)=>{departements=rows;} ),
+            conn.query(query2,(err, rows)=>{comptes=rows;})
+        ]
+        );
+        setTimeout(() => {
+        res.render("ajouterEquipe", {
+        data1: departements,
+        data2: comptes
+        });},100);
+    } catch (error) {
+    console.log(error);
     res.end();
+    }
 });
 app.get('/supprimerDir', (req, res)=>{
-    res.render('supprimerDir');
-    res.end();
+    const sql = 'SELECT IDdirection FROM direction';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('supprimerDir',{data: rows});
+        return;
+    });
 });
 app.get('/supprimerSousDir', (req, res)=>{
-    res.render('supprimerSousDir');
-    res.end();
+    const sql = 'SELECT IDsousDirection FROM sousdirection';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('supprimerSousDir',{data: rows});
+        return;
+    });
 });
 app.get('/supprimerDep', (req, res)=>{
-    res.render('supprimerDep');
-    res.end();
+    const sql = 'SELECT IDdeparetement FROM departement';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('succesfully fetch opération');
+        res.render('supprimerDep',{data: rows});
+        return;
+    });
 });
 app.get('/supprimerEquipe', (req, res)=>{
-    res.render('supprimerEquipe');
-    res.end();
+    const sql = 'SELECT IDequipe FROM equipe';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('succesfully fetch opération');
+        res.render('supprimerEquipe',{data: rows});
+        return;
+    });
 });
 // app.get('/accueil', requireAuth, (req, res) => { //for middleware
 app.get('/accueil', (req, res) => {

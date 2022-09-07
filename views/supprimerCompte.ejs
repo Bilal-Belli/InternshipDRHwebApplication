@@ -11,20 +11,25 @@
 <body style="background-image: url('background.png'); background-repeat: no-repeat;background-attachment: fixed;  background-size: cover;">
     <nav class="navbar navbar-light bg-success">
         <a class="navbar-brand text-light" href="adminaccueil">Accueil</a>
+        <a class="navbar-brand text-light" href="gestionComptesOptions">Retour</a>
         <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index.html">Déconnecter</a></button>
     </nav>
     <div class="py-3"></div>
     <div class="py-3"></div>
     <div class="container">
-        <div class="d-flex justify-content-center">
-            <form action="supprimerCompte" method="post">
-                <div class="form-group">
-                    <label>Veuillez entrer l'adress email du compte à supprimer:</label>
-                    <input type="email" class="form-control" name="email" placeholder="Email" required>
+            <div class="row justify-content-center">
+                <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
+                    <div class="p-4 p-md-5">
+                        <form action="supprimerCompte" method="post">
+                            <div class="form-group">
+                                <label>Veuillez entrer l'adress email du compte à supprimer:</label>
+                                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                            </div>
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-danger">Supprimer</button>
-            </form>
-        </div>
+            </div>
     </div>
 </body>
 <footer class="fixed-bottom">
