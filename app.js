@@ -24,22 +24,9 @@ app.get('/modifierCompte',(req,res)=>{
     res.render('modifierCompte',{data: []});//just need to work on it later
     res.end();
 });
-app.post('/fetchCompte', (req, res)=>{
-    console.log('EDIT AN ACCOUNT');
-    const emailenter = req.body.emailenter;
-    const sql = 'SELECT * FROM compte WHERE compte.email = \"'+emailenter+'\"';
-    getConn().query(sql,(err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        } else{
-            console.log('succesfully fetch opération');
-            res.render('modifierCompte',{data: rows[0]});
-            return;
-        }
-    })
+app.get('/InsererCondidat',(req,res)=>{
+    res.render('InsererCondidat');
+    res.end();
 });
 app.get('/gestionComptesOptions', (req, res)=>{
     const sql = 'SELECT * FROM compte';
@@ -97,8 +84,22 @@ app.get('/VusialisationCondidats', (req, res)=>{
         console.log('fetch succesfully');
         res.render('VusialisationCondidats',{data: rows});
         return;
-    })
-})
+    });
+});
+app.get('/VusialisationCondidatsUser', (req, res)=>{
+    const sql = 'SELECT * FROM condidat';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed to query ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('VusialisationCondidatsUser',{data: rows});
+        return;
+    });
+});
 app.get('/supprimerCompte', (req, res)=>{
     res.render('supprimerCompte');
     res.end();

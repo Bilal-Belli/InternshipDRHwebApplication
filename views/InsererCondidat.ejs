@@ -13,8 +13,8 @@
 </style>
 <body>
     <nav class="navbar navbar-light bg-secondary">
-        <a class="navbar-brand text-light" href="Accueil.html">Accueil</a>
-        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index.html">Déconnecter</a></button>
+        <a class="navbar-brand text-light" href="accueil">Accueil</a>
+        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index">Déconnecter</a></button>
     </nav>
     <div class="container">
         <div class="py-1"></div>
@@ -42,71 +42,137 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Nom</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Nom">
+                            <input type="text" class="form-control" id="Nom" name="Nom">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Prénom</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Prenom">
+                            <input type="text" class="form-control" id="Prenom" name="Prenom">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Numéro du Téléphone</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="numeroTel">
+                            <input type="text" class="form-control" id="numeroTel" name="numeroTel">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">E-mail</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="email">
+                            <input type="email" class="form-control" id="email" name="email">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Spécialité</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Specialite">
+                            <input type="text" class="form-control" id="Specialite" name="Specialite">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Diplome</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Diplome">
+                            <input type="text" class="form-control" id="Diplome" name="Diplome">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Etablissement</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Etablissement">
+                            <input type="text" class="form-control" id="Etablissement" name="Etablissement">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Adress Complet</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Adress">
+                            <input type="text" class="form-control" id="Adress" name="Adress">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Wilaya</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Wilaya">
+                            <select class="custom-select my-1 mr-sm-2" id="Wilaya" name="Wilaya">
+                                <option value="Adrar">Adrar</option>
+                                <option value="Chlef">Chlef</option>
+                                <option value="Laghouat">Laghouat</option>
+                                <option value="OumElBouaghi">OumElBouaghi</option>
+                                <option value="Batna">Batna</option>
+                                <option value="Bejaia">Bejaia</option>
+                                <option value="Blida">Blida</option>
+                                <option value="Bouira">Bouira</option>
+                                <option value="Tebessa">Tebessa</option>
+                                <option value="Tlemcen">Tlemcen</option>
+                                <option value="Tiaret">Tiaret</option>
+                                <option value="Biskra">Biskra</option>
+                                <option value="Bechar">Bechar</option>
+                                <option value="Tamanrasset">Tamanrasset</option>
+                                <option value="TiziOuzou">TiziOuzou</option>
+                                <option value="AlgerCentre">Alger</option>
+                                <option value="Djelfa">Djelfa</option>
+                                <option value="Jijel">Jijel</option>
+                                <option value="Setif">Setif</option>
+                                <option value="Saida">Saida</option>
+                                <option value="Skikda">Skikda</option>
+                                <option value="SidiBelAbbes">SidiBelAbbes</option>
+                                <option value="Annaba">Annaba</option>
+                                <option value="Guelma">Guelma</option>
+                                <option value="Constantine">Constantine</option>
+                                <option value="Medea">Medea</option>
+                                <option value="Mostaganem">Mostaganem</option>
+                                <option value="Msila">Msila</option>
+                                <option value="Mascara">Mascara</option>
+                                <option value="Ouargla">Ouargla</option>
+                                <option value="Oran">Oran</option>
+                                <option value="ElBayadh">ElBayadh</option>
+                                <option value="Illizi">Illizi</option>
+                                <option value="BordjBouArreridj">BordjBouArreridj</option>
+                                <option value="Boumerdes">Boumerdes</option>
+                                <option value="ElTarf">ElTarf</option>
+                                <option value="Tindouf">Tindouf</option>
+                                <option value="Tissemsilt">Tissemsilt</option>
+                                <option value="ElOued">ElOued</option>
+                                <option value="Khenchela">Khenchela</option>
+                                <option value="SoukAhras">SoukAhras</option>
+                                <option value="Tipaza">Tipaza</option>
+                                <option value="Mila">Mila</option>
+                                <option value="AinDefla">AinDefla</option>
+                                <option value="Naama">Naama</option>
+                                <option value="AinTemouchent">AinTemouchent</option>
+                                <option value="Ghardaia">Ghardaia</option>
+                                <option value="Relizane">Relizane</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Remarques</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="Remarques">
+                            <textarea class="form-control" name="Remarques" id="Remarques" rows="3"></textarea>
                         </div>
                     </div>
                 </form>
                 <div class="row d-flex justify-content-between">
-                    <button type="button" class="btn btn-success">Modifier</button>
-                    <button type="button" class="btn btn-success">Valider</button>
-                    <button type="button" class="btn btn-success" disabled>Supprimer</button>
+                    <button type="submit" class="btn btn-danger" disabled>Supprimer</button>
+                    <button type="submit" class="btn btn-success">Valider</button>
                 </div>
             </div>
-            <div class="col d-flex justify-content-center">
+            <div class="col">
+                <form action="" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Diplomes</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="custom-file-input" id="diplomes" name="diplomes" onchange="afficherDiplomes()" multiple>
+                            <label class="custom-file-label" for="customFile"></label>
+                        </div>
+                        <div id="DiplomesFilesName"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">CV</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="custom-file-input" id="cv" name="cv" onchange="afficherCV()">
+                            <label class="custom-file-label" for="customFile"></label>
+                        </div>
+                        <div id="cvFileName"></div>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="py-3"></div>
@@ -157,6 +223,36 @@
     </div>
 </footer>
 <script>
+    afficherDiplomes = function() {
+    var input = document.getElementById('diplomes');
+    var output = document.getElementById('DiplomesFilesName');
+    output.innerHTML = '<ul>';
+    for (var i = 0; i < input.files.length; ++i) {
+        output.innerHTML += '<li>' + input.files.item(i).name + '</li>';
+    }
+    output.innerHTML += '</ul>';
+    }
+    afficherCV = function() {
+    var input = document.getElementById('cv');
+    var output = document.getElementById('cvFileName');
+    output.innerHTML = '<ul>';
+    for (var i = 0; i < input.files.length; ++i) {
+        output.innerHTML += '<li>' + input.files.item(i).name + '</li>';
+    }
+    output.innerHTML += '</ul>';
+    }
+</script>
+<script>
+    var d = new Date();
+    document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+    // $("#diplomes").on("change", function() {
+    // var fileName = $(this).val().split("\\").pop();
+    // $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    // });
+    // $("#cv").on("change", function() {
+    // var fileName = $(this).val().split("\\").pop();
+    // $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    // });
     function addRowHandlers() {
     var table = document.getElementById("tableID");
     var rows = table.getElementsByTagName("tr");
