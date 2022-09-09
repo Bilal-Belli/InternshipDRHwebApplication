@@ -17,10 +17,11 @@
         <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index">Déconnecter</a></button>
     </nav>
     <div class="container">
-        <div class="py-1"></div>
+        <div class="py-3"></div>
+        <form method="post" action="/InsererCondidat" encType="multipart/form-data">
         <div class="row">
             <div class="col">
-                <form method="post" action="">
+                <!-- <form method="post" action="/InsererCondidat"> -->
                     <div class="form-group row">
                         <label class="col-sm-5 col-form-label">Responsable</label>
                         <div class="col-sm-7">
@@ -148,33 +149,51 @@
                             <textarea class="form-control" name="Remarques" id="Remarques" rows="3"></textarea>
                         </div>
                     </div>
-                </form>
+                <!-- </form> -->
                 <div class="row d-flex justify-content-between">
                     <button type="submit" class="btn btn-danger" disabled>Supprimer</button>
                     <button type="submit" class="btn btn-success">Valider</button>
                 </div>
             </div>
             <div class="col">
-                <form action="" method="post">
+                <!-- <form action="/InsererCondidat" method="post"> -->
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Diplomes</label>
                         <div class="col-sm-10">
                             <input type="file" class="custom-file-input" id="diplomes" name="diplomes" onchange="afficherDiplomes()" multiple>
                             <label class="custom-file-label" for="customFile"></label>
                         </div>
-                        <div id="DiplomesFilesName"></div>
                     </div>
+                    <div class="row">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10" id="DiplomesFilesName"></div>
+                    </div>
+                    <div class="py-2"></div>
+                    <div class="py-2"></div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">CV</label>
                         <div class="col-sm-10">
-                            <input type="file" class="custom-file-input" id="cv" name="cv" onchange="afficherCV()">
+                            <!-- SavePhoto(this);UsePhoto(); -->
+                            <input type="file" class="custom-file-input" accept="application/pdf" id="cv" name="pathcv" onchange="afficherCV()">
                             <label class="custom-file-label" for="customFile"></label>
                         </div>
-                        <div id="cvFileName"></div>
                     </div>
-                </form>
+                    <div class="row">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10" id="cvFileName"></div>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10" id="cvFileName">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe id="pdfframe" name="pdfframe" class="embed-responsive-item" src="" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                <!-- </form> -->
             </div>
         </div>
+        </form>
         <div class="py-3"></div>
         <div class="py-3"></div>
         <div class="row">
@@ -196,18 +215,20 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>fin</td>
+                        <% data.forEach(entry => { %>
+                            <th scope="row"><%= entry.IDcondidat %></th>
+                            <td><%= entry.nomCondidat %></td>
+                            <td><%= entry.prenomCondidat %></td>
+                            <td><%= entry.numeroTel %></td>
+                            <td><%= entry.emailCondidat %></td>
+                            <td><%= entry.specialite %></td>
+                            <td><%= entry.etablissement %></td>
+                            <td><%= entry.wilaya %></td>
+                            <td><%= entry.adressComplet %></td>
+                            <td><%= entry.degree %></td>
+                            <td><%= entry.remarques %></td>
                     </tr>
+                        <% }) %>
                 </tbody>
             </table>
         </div>
@@ -224,35 +245,73 @@
 </footer>
 <script>
     afficherDiplomes = function() {
-    var input = document.getElementById('diplomes');
-    var output = document.getElementById('DiplomesFilesName');
-    output.innerHTML = '<ul>';
-    for (var i = 0; i < input.files.length; ++i) {
-        output.innerHTML += '<li>' + input.files.item(i).name + '</li>';
-    }
-    output.innerHTML += '</ul>';
-    }
+        var input = document.getElementById('diplomes');
+        var output = document.getElementById('DiplomesFilesName');
+        for (var i = 0; i < input.files.length; ++i) {
+            output.innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + input.files.item(i).name + '</h6>';
+        };
+    };
     afficherCV = function() {
-    var input = document.getElementById('cv');
-    var output = document.getElementById('cvFileName');
-    output.innerHTML = '<ul>';
-    for (var i = 0; i < input.files.length; ++i) {
-        output.innerHTML += '<li>' + input.files.item(i).name + '</li>';
-    }
-    output.innerHTML += '</ul>';
-    }
+        var input = document.getElementById('cv');
+        var output = document.getElementById('cvFileName');
+        output.innerHTML = '';
+        output.innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + input.files.item(0).name + '</h6>';
+    };
+    // function renderPDF(input){
+    //     console.log(input);
+    //     // document.getElementById("#pdfframe").src = 'background.png'; //not work
+    //     document.getElementsByName('pdfframe')[0].src = input;
+    // };
+    // function SavePhoto(input) 
+    // {
+    //     let name = input.files[0].name;
+    //     let reader = new FileReader();
+    //     reader.addEventListener('load',function (){
+    //         window.localStorage.setItem(name, this.result);
+    //     });
+    //     reader.readAsDataURL(document.getElementById("#cv").files[0]);
+    //     console.log(window.localStorage.getItem(window.localStorage.key(0)));
+    // };
+    // function UsePhoto() 
+    // {
+    //     let res = window.localStorage.getItem(window.localStorage.key(0));
+    //     // console.log(res);
+    //     document.getElementsByName('pdfframe')[0].src = res;
+    //     // let image = new Image();
+    //     // image.src = res;
+    // };
+</script>
+<script id="Condidatsdata" type="application/json">
+[
+        <% data.forEach(entry => { %>
+        {"IDcondidat":      "<%= entry.IDcondidat %>",
+        "nomCondidat":      "<%= entry.nomCondidat %>",
+        "prenomCondidat":   "<%= entry.prenomCondidat %>",
+        "numeroTel":        "<%= entry.numeroTel %>",
+        "emailCondidat":    "<%= entry.emailCondidat %>",
+        "specialite":       "<%= entry.specialite %>",
+        "etablissement":    "<%= entry.etablissement %>",
+        "wilaya":           "<%= entry.wilaya %>",
+        "adressComplet":    "<%= entry.adressComplet %>",
+        "degree":           "<%= entry.degree %>",
+        "remarques":        "<%= entry.remarques %>"},
+    <% }) %>
+{}]
 </script>
 <script>
     var d = new Date();
     document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
-    // $("#diplomes").on("change", function() {
-    // var fileName = $(this).val().split("\\").pop();
-    // $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-    // });
+
     // $("#cv").on("change", function() {
     // var fileName = $(this).val().split("\\").pop();
     // $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     // });
+    // document.getElementById("#cv").addEventListener('change', function() {
+    // var fileName = document.getElementById("#cv").value.split("\\").pop();
+    // // console.log(document.getElementById("#cv").value);
+    // document.getElementById("#cv").siblings(".custom-file-label").classList.add("selected").html(fileName);
+    // });
+    
     function addRowHandlers() {
     var table = document.getElementById("tableID");
     var rows = table.getElementsByTagName("tr");
@@ -260,10 +319,33 @@
         var currentRow = table.rows[i];
         var createClickHandler = function(row) {
                 return function() { 
-                    var collogne1 = row.getElementsByTagName("td")[0];
-                    var id = collogne1.innerHTML;
+                    
+                    let Condidatsdata = JSON.parse(document.getElementById('Condidatsdata').innerHTML);
+                    document.getElementById("Nom").value = Condidatsdata[0].nomCondidat ;
+                    document.getElementById("Prenom").value =Condidatsdata[0].prenomCondidat ;
+                    document.getElementById("numeroTel").value =Condidatsdata[0].numeroTel ;
+                    document.getElementById("email").value =Condidatsdata[0].emailCondidat ;
+                    document.getElementById("Specialite").value =Condidatsdata[0].specialite ;
+                    document.getElementById("Diplome").value =Condidatsdata[0].degree ;
+                    document.getElementById("Etablissement").value =Condidatsdata[0].etablissement ;
+                    document.getElementById("Adress").value =Condidatsdata[0].adressComplet ;
+                    document.getElementById("Remarques").value =Condidatsdata[0].remarques ;
+                    // document.getElementById("#Wilaya").value =Condidatsdata[0].wilaya ;
+
+                    // const IDcondidat = row.getElementsByTagName("td")[0].innerHTML;
+                    // const nomCondidat = row.getElementsByTagName("td")[1].innerHTML;
+                    // const prenomCondidat = row.getElementsByTagName("td")[2].innerHTML;
+                    // const numeroTel = row.getElementsByTagName("td")[3].innerHTML;
+                    // const emailCondidat = row.getElementsByTagName("td")[4].innerHTML;
+                    // const specialite = row.getElementsByTagName("td")[5].innerHTML;
+                    // const etablissement = row.getElementsByTagName("td")[6].innerHTML;
+                    // const wilaya = row.getElementsByTagName("td")[7].innerHTML;
+                    // const adressComplet = row.getElementsByTagName("td")[8].innerHTML;
+                    // const degree = row.getElementsByTagName("td")[9].innerHTML;
+                    // const remarques = row.getElementsByTagName("td")[10].innerHTML;
                     // alert("id:" + id);
                     // write your logic here
+                    
                 };
             };
         currentRow.onclick = createClickHandler(currentRow);

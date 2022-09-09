@@ -4,13 +4,16 @@ const morgan = require('morgan')
 const mysql = require('mysql')
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
+const fileUpload = require('express-fileupload');
 const { requireAuth } = require('./user/auth');
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('combined'));
+app.use(fileUpload());
 // app.use(express.static('./public')); //used for static html files
 app.use(express.static('./views'));//used for background image and icon files
+app.use(express.static('./FileslocalStorage'));//used for background image and icon files
 app.set('view engine','ejs');
 app.get('/', (req,res)=>{
     res.render('index');
@@ -25,8 +28,59 @@ app.get('/modifierCompte',(req,res)=>{
     res.end();
 });
 app.get('/InsererCondidat',(req,res)=>{
-    res.render('InsererCondidat');
-    res.end();
+    const sql = 'SELECT * FROM condidat';
+    getConn().query(sql, (err, rows)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.status(500);
+            res.end();
+            return;
+        }
+        console.log('fetch succesfully');
+        res.render('InsererCondidat',{data: rows});
+        return;
+    });
+});
+app.post('/InsererCondidat',(req, res)=>{
+    const Nom = req.body.Nom;
+    const Prenom = req.body.Prenom;
+    const email = req.body.email;
+    const Specialite = req.body.Specialite;
+    const Diplome = req.body.Diplome;
+    const Etablissement = req.body.Etablissement;
+    const Adress = req.body.Adress;
+    const Wilaya = req.body.Wilaya;
+    const numeroTel = req.body.numeroTel;
+    const Remarques = req.body.Remarques;
+    // console.log(req.files.pathcv); //show the object
+    let documentCV = req.files.pathcv;
+    const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name
+    // here is where to save the file after upload
+    let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
+    // Use mv() to place file on the server
+    documentCV.mv(uploadPath, function (err) {
+        if (err) {
+            console.log("error on moving file :",err);
+            res.status(500);
+            return res.send(err);
+        } 
+        return;
+    });
+    // const pathcv = documentCV.name;
+    const sql = 'INSERT INTO condidat VALUES ?'
+    const values = [[null, Nom, Prenom, email, Specialite, Diplome, Etablissement, Adress, Wilaya, numeroTel, newNameForCV, Remarques, null]];
+    getConn().query(sql, [values], (err, results, fields)=>{
+        if(err){
+            console.log('Failed : ',err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            console.log('Operation Successfully');
+            res.redirect('/InsererCondidat');
+            return;
+        }
+    });
 });
 app.get('/gestionComptesOptions', (req, res)=>{
     const sql = 'SELECT * FROM compte';
