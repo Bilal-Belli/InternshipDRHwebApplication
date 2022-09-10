@@ -19,202 +19,122 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-item nav-link text-light active" href="adminaccueil">Accueil<span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link text-light" href="#section1">Gestion des Directions</a>
-                <a class="nav-item nav-link text-light" href="#section2">Gestion des Sous Directions</a>
-                <a class="nav-item nav-link text-light" href="#section3">Gestion des Départements</a>
-                <a class="nav-item nav-link text-light" href="#section4">Gestion des Equipes</a>
+                <a class="nav-item nav-link text-light" href="#section1">Gestion des Directions et Sous Directions</a>
+                <a class="nav-item nav-link text-light" href="#section2">Gestion des Départements et Equipes</a>
             </div>
         </div>
-        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index.html">Déconnecter</a></button>
+        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index">Déconnecter</a></button>
     </nav>
-        <div class="container">
-            <div class="py-3"></div>
-            <!--  -->
-            <div class="row" id="section1">
-                <div class="breadcrumb breadcrumb-item active">
-                    Gestion des Directions
-                </div>
-            </div>
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <a href="ajouterDir" style="text-decoration:none;">
-                        <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Ajouter une Direction</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col d-flex justify-content-center">
-                    <a href="supprimerDir" style="text-decoration:none;">
-                        <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Supprimer une Direction</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID Direction</th>
-                            <th scope="col">Email Compte Directeur</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <% data1.forEach(entry => { %>
-                            <th scope="row"><%= entry.IDdirection %></th>
-                            <td><%= entry.emailCompteDirecteur %></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-            <div class="py-3"></div>
-            <!--  -->
-            <div class="row" id="section2">
-                <div class="breadcrumb breadcrumb-item active">
-                    Gestion des Sous Directions
-                </div>
-            </div>
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <a href="ajouterSousDir" style="text-decoration:none;">
-                        <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Ajouter une Sous-Direction</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col d-flex justify-content-center">
-                    <a href="supprimerSousDir" style="text-decoration:none;">
-                        <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Supprimer une Sous-Direction</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID Sous direction</th>
-                            <th scope="col">Direction</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <% data2.forEach(entry => { %>
-                            <th scope="row"><%= entry.IDsousDirection %></th>
-                            <td><%= entry.IDdirection %></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-            <div class="py-3"></div>
-            <!--  -->
-            <div class="row" id="section3">
-                <div class="breadcrumb breadcrumb-item active">
-                    Gestion des Départements
-                </div>
-            </div>
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <a href="ajouterDep" style="text-decoration:none;">
-                        <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Ajouter un Département</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col d-flex justify-content-center">
-                    <a href="supprimerDep" style="text-decoration:none;">
-                        <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Supprimer un Département</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID Département</th>
-                            <th scope="col">Email Chef Département</th>
-                            <th scope="col">Sous direction</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <% data3.forEach(entry => { %>
-                            <th scope="row"><%= entry.IDdeparetement %></th>
-                            <td><%= entry.emailCompteChefDep %></td>
-                            <td><%= entry.IDsousDirection %></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-            <div class="py-3"></div>
-            <!--  -->
-            <div class="row" id="section4">
-                <div class="breadcrumb breadcrumb-item active">
-                    Gestion des Equipes
-                </div>
-            </div>
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <a href="ajouterEquipe" style="text-decoration:none;">
-                        <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Ajouter une Equipe</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col d-flex justify-content-center">
-                    <a href="supprimerEquipe" style="text-decoration:none;">
-                        <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Supprimer une Equipe</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="row">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID Equipe</th>
-                            <th scope="col">Email Chef Equipe</th>
-                            <th scope="col">Département</th>
-                        </tr>
-                        </thead>
-                    <tbody>
-                        <tr>
-                            <% data4.forEach(entry => { %>
-                            <th scope="row"><%= entry.IDequipe %></th>
-                            <td><%= entry.emailCompteChefEquipe %></td>
-                            <td><%= entry.IDdeparetement %></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+    <div class="container">
+        <div class="py-3"></div>
+        <!--  -->
+        <div class="row" id="section1">
+            <div class="breadcrumb breadcrumb-item active">
+                Gestion des Directions et Sous Directions
             </div>
         </div>
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <a href="ajouterDir" style="text-decoration:none;">
+                    <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
+                        <div class="card-body d-flex justify-content-center">
+                            <p class="card-text">Ajouter une Direction</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col d-flex justify-content-center">
+                <a href="supprimerDir" style="text-decoration:none;">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
+                        <div class="card-body d-flex justify-content-center">
+                            <p class="card-text">Supprimer une Direction</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID Direction</th>
+                        <th scope="col">Nom Direction</th>
+                        <th scope="col">Email Compte Directeur</th>
+                        <th scope="col">Nom Sous Direction</th>
+                        <th scope="col">Email Compte Sous Directeur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <% data1.forEach(entry => { %>
+                        <th scope="row"><%= entry.IDdirection %></th>
+                        <td><%= entry.nomDirection %></td>
+                        <td><%= entry.emailCompteDirecteur %></td>
+                        <td><%= entry.nomSousDirection %></td>
+                        <td><%= entry.emailCompteSousDirecteur %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
         <div class="py-3"></div>
-        <div class="py-3"></div>
+        <!--  -->
+        <div class="row" id="section3">
+            <div class="breadcrumb breadcrumb-item active">
+                Gestion des Départements et Equipes
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <a href="ajouterDep" style="text-decoration:none;">
+                    <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
+                        <div class="card-body d-flex justify-content-center">
+                            <p class="card-text">Ajouter un Département</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col d-flex justify-content-center">
+                <a href="supprimerDep" style="text-decoration:none;">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
+                        <div class="card-body d-flex justify-content-center">
+                            <p class="card-text">Supprimer un Département</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID Département</th>
+                        <th scope="col">Nom Département</th>
+                        <th scope="col">Email Chef Département</th>
+                        <th scope="col">Direction</th>
+                        <th scope="col">ID Equipe</th>
+                        <th scope="col">Email Chef Equipe</th>
+                        <th scope="col">Capacité de l'Equipe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <% data2.forEach(entry => { %>
+                        <th scope="row"><%= entry.IDdepartement %></th>
+                        <td><%= entry.nomDepartement %></td>
+                        <td><%= entry.emailCompteChefDep %></td>
+                        <th scope="row"><%= entry.nomDirection %></th>
+                        <td><%= entry.IDequipe %></td>
+                        <td><%= entry.emailCompteChefEquipe %></td>
+                        <td><%= entry.capaciteEquipe %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="py-3"></div>
+    <div class="py-3"></div>
 </body>
 <footer class="fixed-bottom">
     <div class="bg-success">

@@ -82,6 +82,48 @@ app.post('/InsererCondidat',(req, res)=>{
         }
     });
 });
+app.post('/modifierInfosCondidat',(req, res)=>{
+    const Nom = req.body.Nom;
+    const Prenom = req.body.Prenom;
+    const email = req.body.email;
+    const Specialite = req.body.Specialite;
+    let Diplome = req.body.Diplome;
+    const Etablissement = req.body.Etablissement;
+    const Adress = req.body.Adress;
+    const Wilaya = req.body.Wilaya;
+    const numeroTel = req.body.numeroTel;
+    const Remarques = req.body.Remarques;
+    const condidatIDhidden = req.body.condidatIDhidden;
+    // console.log(req.files.pathcv); //show the object
+    Diplome=Diplome.replace(/'/g, "\\'");
+    let documentCV = req.files.pathcv;
+    const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name;
+    // here is where to save the file after upload
+    let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
+    // Use mv() to place file on the server
+    documentCV.mv(uploadPath, function (err) {
+        if (err) {
+            console.log("error on moving file :",err);
+            res.status(500);
+            return res.send(err);
+        } 
+        return;
+    });
+    // const pathcv = documentCV.name;
+    const sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.degree = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.pathCV = \''+newNameForCV+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
+    getConn().query(sql,(err, results, fields)=>{
+        if(err){
+            console.log('Failed : ',err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            console.log('Operation Successfully');
+            res.redirect('/InsererCondidat');
+            return;
+        }
+    });
+});
 app.get('/gestionComptesOptions', (req, res)=>{
     const sql = 'SELECT * FROM compte';
     getConn().query(sql, (err, rows)=>{
@@ -158,19 +200,27 @@ app.get('/supprimerCompte', (req, res)=>{
     res.render('supprimerCompte');
     res.end();
 });
-app.get('/ajouterDir', (req, res)=>{
-    const sql = 'SELECT email FROM compte where compte.typePost=\"Directeur\"';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('ajouterDir',{data: rows});
-        return;
-    });
+app.get('/ajouterDir',async (req, res)=>{
+    const query1 = 'SELECT email FROM compte where compte.typePost=\"Directeur\"';
+    const query2 = 'SELECT email FROM compte where compte.typePost=\"Sous Directeur\"';
+    try {
+        const conn = getConn();
+        let comptes1, comptes2;
+        await Promise.all(
+        [
+            conn.query(query1,(err, rows)=>{comptes1=rows;} ),
+            conn.query(query2,(err, rows)=>{comptes2=rows;})
+        ]
+        );
+        setTimeout(() => {
+        res.render("ajouterDir", {
+        data1: comptes1,
+        data2: comptes2
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
 app.get('/ajouterSousDir', (req, res)=>{
     const sql = 'SELECT IDdirection FROM direction';

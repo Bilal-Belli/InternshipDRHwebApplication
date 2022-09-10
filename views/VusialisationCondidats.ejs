@@ -16,51 +16,51 @@
         <a class="navbar-brand text-light" href="adminaccueil">Accueil</a>
         <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index.html">Déconnecter</a></button>
     </nav>
-        <div class="container">
-            <div class="py-3"></div>
-            <div class="row">
-                <table class="table table-hover" id="tableID">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Nom</th>
-                            <th scope="col">Prénom</th>
-                            <th scope="col">E-mail</th>
-                            <th scope="col">Spécialité</th>
-                            <th scope="col">Diplomes</th>
-                            <th scope="col">Etablissement</th>
-                            <th scope="col">Adress</th>
-                            <th scope="col">Wilaya</th>
-                            <th scope="col">N° Tél</th>
-                            <th scope="col">CV</th>
-                            <th scope="col">Remarques</th>
-                            <th scope="col">Equipe</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <% data.forEach(entry => { %>
-                            <th scope="row"><%= entry.IDcondidat %></th>
-                            <td><%= entry.nomCondidat %></td>
-                            <td><%= entry.prenomCondidat %></td>
-                            <td><%= entry.emailCondidat %></td>
-                            <td><%= entry.specialite %></td>
-                            <td><%= entry.degree %></td>
-                            <td><%= entry.etablissement %></td>
-                            <td><%= entry.adressComplet %></td>
-                            <td><%= entry.wilaya %></td>
-                            <td><%= entry.numeroTel %></td>
-                            <td><%= entry.pathCV %></td>
-                            <td><%= entry.remarques %></td>
-                            <td><%= entry.IDequipe %></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-            <div class="py-3"></div>
-            <div class="py-3"></div>
-        </div>
+    <div class="py-3"></div>
+    <!-- <div class="container"> -->
+        <!-- <div class="row"> -->
+            <table class="table table-hover" id="tableID">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">E-mail</th>
+                        <th scope="col">Spécialité</th>
+                        <th scope="col">Diplomes</th>
+                        <th scope="col">Etablissement</th>
+                        <th scope="col">Adress</th>
+                        <th scope="col">Wilaya</th>
+                        <th scope="col">N° Tél</th>
+                        <th scope="col">CV</th>
+                        <th scope="col">Remarques</th>
+                        <th scope="col">Equipe</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <% data.forEach(entry => { %>
+                        <th scope="row"><%= entry.IDcondidat %></th>
+                        <td><%= entry.nomCondidat %></td>
+                        <td><%= entry.prenomCondidat %></td>
+                        <td><%= entry.emailCondidat %></td>
+                        <td><%= entry.specialite %></td>
+                        <td><%= entry.degree %></td>
+                        <td><%= entry.etablissement %></td>
+                        <td><%= entry.adressComplet %></td>
+                        <td><%= entry.wilaya %></td>
+                        <td><%= entry.numeroTel %></td>
+                        <td><a href="<%= entry.pathCV %>">CV</a></td>
+                        <td><%= entry.remarques %></td>
+                        <td><%= entry.IDequipe %></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <!-- </div> -->
+    <!-- </div> -->
+    <div class="py-3"></div>
+    <div class="py-3"></div>
 </body>
 <footer class="fixed-bottom">
     <div class="bg-success">
