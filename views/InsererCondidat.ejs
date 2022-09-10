@@ -18,7 +18,7 @@
     </nav>
     <div class="container">
         <div class="py-3"></div>
-        <form method="post" action="/InsererCondidat" encType="multipart/form-data">
+        <form method="post" action="/InsererCondidat" encType="multipart/form-data" id="formulaire">
         <div class="row">
             <div class="col">
                 <!-- <form method="post" action="/InsererCondidat"> -->
@@ -216,7 +216,7 @@
                     <tbody>
                     <tr>
                         <% data.forEach(entry => { %>
-                            <th scope="row"><%= entry.IDcondidat %></th>
+                            <td scope="row"><%= entry.IDcondidat %></th>
                             <td><%= entry.nomCondidat %></td>
                             <td><%= entry.prenomCondidat %></td>
                             <td><%= entry.numeroTel %></td>
@@ -243,45 +243,7 @@
         </div>
     </div>
 </footer>
-<script>
-    afficherDiplomes = function() {
-        var input = document.getElementById('diplomes');
-        var output = document.getElementById('DiplomesFilesName');
-        for (var i = 0; i < input.files.length; ++i) {
-            output.innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + input.files.item(i).name + '</h6>';
-        };
-    };
-    afficherCV = function() {
-        var input = document.getElementById('cv');
-        var output = document.getElementById('cvFileName');
-        output.innerHTML = '';
-        output.innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + input.files.item(0).name + '</h6>';
-    };
-    // function renderPDF(input){
-    //     console.log(input);
-    //     // document.getElementById("#pdfframe").src = 'background.png'; //not work
-    //     document.getElementsByName('pdfframe')[0].src = input;
-    // };
-    // function SavePhoto(input) 
-    // {
-    //     let name = input.files[0].name;
-    //     let reader = new FileReader();
-    //     reader.addEventListener('load',function (){
-    //         window.localStorage.setItem(name, this.result);
-    //     });
-    //     reader.readAsDataURL(document.getElementById("#cv").files[0]);
-    //     console.log(window.localStorage.getItem(window.localStorage.key(0)));
-    // };
-    // function UsePhoto() 
-    // {
-    //     let res = window.localStorage.getItem(window.localStorage.key(0));
-    //     // console.log(res);
-    //     document.getElementsByName('pdfframe')[0].src = res;
-    //     // let image = new Image();
-    //     // image.src = res;
-    // };
-</script>
-<script id="Condidatsdata" type="application/json">
+<script id="Condidatsdata" type="application/json" >
 [
         <% data.forEach(entry => { %>
         {"IDcondidat":      "<%= entry.IDcondidat %>",
@@ -294,64 +256,104 @@
         "wilaya":           "<%= entry.wilaya %>",
         "adressComplet":    "<%= entry.adressComplet %>",
         "degree":           "<%= entry.degree %>",
+        "pathCV":           "<%= entry.pathCV %>",
         "remarques":        "<%= entry.remarques %>"},
     <% }) %>
 {}]
 </script>
 <script>
-    var d = new Date();
-    document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+// display time of edit condidat
+var d = new Date();
+document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
 
-    // $("#cv").on("change", function() {
-    // var fileName = $(this).val().split("\\").pop();
-    // $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-    // });
-    // document.getElementById("#cv").addEventListener('change', function() {
-    // var fileName = document.getElementById("#cv").value.split("\\").pop();
-    // // console.log(document.getElementById("#cv").value);
-    // document.getElementById("#cv").siblings(".custom-file-label").classList.add("selected").html(fileName);
-    // });
-    
-    function addRowHandlers() {
+// function used to unicode some special caracters when fetch from database
+function decodeHTMLEntities(text) {
+    var entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
+    for (var i = 0, max = entities.length; i < max; ++i) {
+        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+    }
+    return text;
+}
+
+// function that fetch data from local JSON to input tags dynamicly and change form action
+function addRowHandlers() {
     var table = document.getElementById("tableID");
     var rows = table.getElementsByTagName("tr");
     for (i = 0; i < rows.length; i++) {
         var currentRow = table.rows[i];
         var createClickHandler = function(row) {
                 return function() { 
-                    
+                    const IDcondidat_ = row.getElementsByTagName("td")[0].innerHTML;
+                    let indexJSONx;
                     let Condidatsdata = JSON.parse(document.getElementById('Condidatsdata').innerHTML);
-                    document.getElementById("Nom").value = Condidatsdata[0].nomCondidat ;
-                    document.getElementById("Prenom").value =Condidatsdata[0].prenomCondidat ;
-                    document.getElementById("numeroTel").value =Condidatsdata[0].numeroTel ;
-                    document.getElementById("email").value =Condidatsdata[0].emailCondidat ;
-                    document.getElementById("Specialite").value =Condidatsdata[0].specialite ;
-                    document.getElementById("Diplome").value =Condidatsdata[0].degree ;
-                    document.getElementById("Etablissement").value =Condidatsdata[0].etablissement ;
-                    document.getElementById("Adress").value =Condidatsdata[0].adressComplet ;
-                    document.getElementById("Remarques").value =Condidatsdata[0].remarques ;
-                    // document.getElementById("#Wilaya").value =Condidatsdata[0].wilaya ;
-
-                    // const IDcondidat = row.getElementsByTagName("td")[0].innerHTML;
-                    // const nomCondidat = row.getElementsByTagName("td")[1].innerHTML;
-                    // const prenomCondidat = row.getElementsByTagName("td")[2].innerHTML;
-                    // const numeroTel = row.getElementsByTagName("td")[3].innerHTML;
-                    // const emailCondidat = row.getElementsByTagName("td")[4].innerHTML;
-                    // const specialite = row.getElementsByTagName("td")[5].innerHTML;
-                    // const etablissement = row.getElementsByTagName("td")[6].innerHTML;
-                    // const wilaya = row.getElementsByTagName("td")[7].innerHTML;
-                    // const adressComplet = row.getElementsByTagName("td")[8].innerHTML;
-                    // const degree = row.getElementsByTagName("td")[9].innerHTML;
-                    // const remarques = row.getElementsByTagName("td")[10].innerHTML;
-                    // alert("id:" + id);
-                    // write your logic here
-                    
+                    for (k=0; k< Condidatsdata.length; k++){
+                        if (parseInt(IDcondidat_) == Condidatsdata[k].IDcondidat){
+                            indexJSONx = k;
+                            break;
+                        }
+                    }
+                    document.getElementById("Nom").value = decodeHTMLEntities(Condidatsdata[indexJSONx].nomCondidat);
+                    document.getElementById("Prenom").value =decodeHTMLEntities(Condidatsdata[indexJSONx].prenomCondidat);
+                    document.getElementById("numeroTel").value =decodeHTMLEntities(Condidatsdata[indexJSONx].numeroTel);
+                    document.getElementById("email").value =decodeHTMLEntities(Condidatsdata[indexJSONx].emailCondidat);
+                    document.getElementById("Specialite").value =decodeHTMLEntities(Condidatsdata[indexJSONx].specialite);
+                    document.getElementById("Diplome").value =decodeHTMLEntities(Condidatsdata[indexJSONx].degree);
+                    document.getElementById("Etablissement").value =decodeHTMLEntities(Condidatsdata[indexJSONx].etablissement);
+                    document.getElementById("Adress").value =decodeHTMLEntities(Condidatsdata[indexJSONx].adressComplet);
+                    document.getElementById("Remarques").value =decodeHTMLEntities(Condidatsdata[indexJSONx].remarques);
+                    document.getElementById("Wilaya").value =decodeHTMLEntities(Condidatsdata[indexJSONx].wilaya);
+                    document.getElementById('cvFileName').innerHTML = '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + decodeHTMLEntities(Condidatsdata[indexJSONx].pathCV) + '</h6>'
+                    document.getElementById('formulaire').action= "/modifierInfosCondidat";
                 };
             };
         currentRow.onclick = createClickHandler(currentRow);
-        }
     }
-    window.onload = addRowHandlers();
+}
+window.onload = addRowHandlers();
+
+// function to display name of uploaded diploma files of condidat
+function afficherDiplomes(){
+    var input = document.getElementById('diplomes');
+    var output = document.getElementById('DiplomesFilesName');
+    for (var i = 0; i < input.files.length; ++i) {
+        output.innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + input.files.item(i).name + '</h6>';
+    }
+}
+
+// function to display name of uploaded cv file of condidat
+function afficherCV(){
+    var input = document.getElementById('cv');
+    var output = document.getElementById('cvFileName');
+    output.innerHTML = '';
+    // tant que il ya auccun insertion du condidat, alors on ne peut pas afficher et rendrer le pdf (cv)
+    output.innerHTML += '<h6 class="text-primary" id="cvFileName">' + input.files.item(0).name + '</h6>';
+}
+
+// function to render the selected pdf on the iframe
+function renderPDF(input){
+    // console.log(input); //name of the uploaded file
+    document.getElementsByName('pdfframe')[0].src = input;
+}
+
+// function that save the selected documents (cv+diplomes) on localStorage
+// function SavePhoto(input) {
+//     let name = input.files[0].name;
+//     let reader = new FileReader();
+//     reader.addEventListener('load',function (){
+//         window.localStorage.setItem(name, this.result);
+//     });
+//     reader.readAsDataURL(document.getElementById("#cv").files[0]);
+//     console.log(window.localStorage.getItem(window.localStorage.key(0)));
+// }
+
+// // 
+// function UsePhoto() {
+//     let res = window.localStorage.getItem(window.localStorage.key(0));
+//     // console.log(res);
+//     document.getElementsByName('pdfframe')[0].src = res;
+//     // let image = new Image();
+//     // image.src = res;
+// }
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

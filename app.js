@@ -54,7 +54,7 @@ app.post('/InsererCondidat',(req, res)=>{
     const Remarques = req.body.Remarques;
     // console.log(req.files.pathcv); //show the object
     let documentCV = req.files.pathcv;
-    const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name
+    const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name;
     // here is where to save the file after upload
     let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
     // Use mv() to place file on the server
