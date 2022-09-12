@@ -283,6 +283,31 @@ app.get('/supprimerEquipe', (req, res)=>{
         return;
     });
 });
+app.get('/affectationCondidat',async (req, res) => {
+    const query1 = 'SELECT * FROM departement';
+    const query2 = 'SELECT * FROM condidat';
+    const query3 = 'SELECT * FROM direction';
+    try {
+        const conn = getConn();
+        let departements, condidats, directions;
+        await Promise.all(
+        [
+            conn.query(query1,(err, rows)=>{departements=rows;} ),
+            conn.query(query2,(err, rows)=>{condidats=rows;}),
+            conn.query(query3,(err, rows)=>{directions=rows;})
+        ]
+        );
+        setTimeout(() => {
+        res.render("affectationCondidat", {
+        data1: departements,
+        data2: condidats,
+        data3: directions
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
+});
 // app.get('/accueil', requireAuth, (req, res) => { //for middleware
 app.get('/accueil', (req, res) => {
     console.log('you are now on home page');

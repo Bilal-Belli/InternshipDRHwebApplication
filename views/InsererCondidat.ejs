@@ -44,25 +44,25 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Nom</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Nom" name="Nom">
+                            <input type="text" class="form-control" id="Nom" name="Nom" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Prénom</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="Prenom" name="Prenom">
+                            <input type="text" class="form-control" id="Prenom" name="Prenom" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Numéro du Téléphone</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="numeroTel" name="numeroTel">
+                            <input type="text" class="form-control" id="numeroTel" name="numeroTel" required>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">E-mail</label>
                         <div class="col-sm-8">
-                            <input type="email" class="form-control" id="email" name="email">
+                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -72,7 +72,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Diplome</label>
+                        <!-- en BDD c'est le degree exemple master1 -->
+                        <label class="col-sm-4 col-form-label">Degree</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="Diplome" name="Diplome">
                         </div>
@@ -174,7 +175,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">CV</label>
                         <div class="col-sm-10">
-                            <input type="file" class="custom-file-input" accept="application/pdf" id="cv" name="pathcv" onchange="afficherCV()">
+                            <input type="file" class="custom-file-input" accept="application/pdf" id="cv" name="pathcv" onchange="afficherCV()" required>
                             <label class="custom-file-label" for="customFile"></label>
                         </div>
                     </div>
@@ -265,6 +266,45 @@
 // display time of edit condidat
 var d = new Date();
 document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+
+// function to controle name string
+document.getElementById("Nom").addEventListener("input",()=>{
+    var Nomver = document.getElementById("Nom").value;
+    var pattern = /^[a-zA-Z -]+$/;
+    if(pattern.test(Nomver) && !(Nomver.length < 3)){
+        document.getElementById("Nom").classList.remove("border");
+        document.getElementById("Nom").classList.remove("border-danger");
+    } else {
+        document.getElementById("Nom").classList.add("border");
+        document.getElementById("Nom").classList.add("border-danger");
+    }
+});
+
+// function to controle family name string
+document.getElementById("Prenom").addEventListener("input",()=>{
+    var Prenomver = document.getElementById("Prenom").value;
+    var pattern = /^[a-zA-Z -]+$/;
+    if(pattern.test(Prenomver) && !(Prenomver.length < 3)){
+        document.getElementById("Prenom").classList.remove("border");
+        document.getElementById("Prenom").classList.remove("border-danger");
+    } else {
+        document.getElementById("Prenom").classList.add("border");
+        document.getElementById("Prenom").classList.add("border-danger");
+    }
+});
+
+// function to controle phone number
+document.getElementById("numeroTel").addEventListener("input",()=>{
+    var numeroTelver = document.getElementById("numeroTel").value;
+    var pattern = /^\d+\.?\d*$/;
+    if(pattern.test(numeroTelver) && !(numeroTelver.length > 15) && !(numeroTelver.length < 8)){
+        document.getElementById("numeroTel").classList.remove("border");
+        document.getElementById("numeroTel").classList.remove("border-danger");
+    } else {
+        document.getElementById("numeroTel").classList.add("border");
+        document.getElementById("numeroTel").classList.add("border-danger");
+    }
+});
 
 // function used to unicode some special caracters when fetch from database
 function decodeHTMLEntities(text) {
