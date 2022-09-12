@@ -18,13 +18,13 @@ app.set('view engine','ejs');
 app.get('/', (req,res)=>{
     res.render('index');
     res.end();
-})
+});
 app.get('/CreerCompte',(req,res)=>{
     res.render('CreerCompte');
     res.end();
 });
 app.get('/modifierCompte',(req,res)=>{
-    res.render('modifierCompte',{data: []});//just need to work on it later
+    res.render('modifierCompte',{data: []});
     res.end();
 });
 app.get('/InsererCondidat',(req,res)=>{
@@ -140,28 +140,22 @@ app.get('/gestionComptesOptions', (req, res)=>{
 });
 app.get('/gestionEntreprise',async (req,res)=>{
     const queryDirections = "SELECT * FROM direction";
-    const querySousDirections = "SELECT * FROM sousdirection";
     const queryDepartments = "SELECT * FROM departement";
-    const queryEquipes = "SELECT * FROM equipe";
     try {
         // Get connection once
         const conn = getConn();
         // Techniques: Array destructuring and Promise resolving in batch
-        let directions, sousDirections, departments, equipes;
+        let directions, departments;
         await Promise.all(
         [
             conn.query(queryDirections,(err, rows)=>{directions=rows;} ),
-            conn.query(querySousDirections,(err, rows)=>{sousDirections=rows;}),
             conn.query(queryDepartments,(err, rows)=>{departments=rows;}),
-            conn.query(queryEquipes,(err, rows)=>{equipes=rows;}),
         ]
         );
         setTimeout(() => {
         res.render("gestionEntreprise", {
         data1: directions,
-        data2: sousDirections,
-        data3: departments,
-        data4: equipes,
+        data2: departments,
         });},100);
     } catch (error) {
     console.log(error);
@@ -201,14 +195,14 @@ app.get('/supprimerCompte', (req, res)=>{
     res.end();
 });
 app.get('/ajouterDir',async (req, res)=>{
-    const query1 = 'SELECT email FROM compte where compte.typePost=\"Directeur\"';
-    const query2 = 'SELECT email FROM compte where compte.typePost=\"Sous Directeur\"';
+    const query1 = 'SELECT email FROM compte where compte.typePost=\"Directeur\" and compte.compteActif=false';
+    const query2 = 'SELECT email FROM compte where compte.typePost=\"Sous Directeur\" and compte.compteActif=false';
     try {
         const conn = getConn();
         let comptes1, comptes2;
         await Promise.all(
         [
-            conn.query(query1,(err, rows)=>{comptes1=rows;} ),
+            conn.query(query1,(err, rows)=>{comptes1=rows;}),
             conn.query(query2,(err, rows)=>{comptes2=rows;})
         ]
         );
@@ -222,58 +216,25 @@ app.get('/ajouterDir',async (req, res)=>{
     res.end();
     }
 });
-app.get('/ajouterSousDir', (req, res)=>{
-    const sql = 'SELECT IDdirection FROM direction';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('ajouterSousDir',{data: rows});
-        return;
-    });
-});
 app.get('/ajouterDep',async (req, res)=>{
     const query1 = 'SELECT email FROM compte where compte.typePost=\"Chef de Département\"';
-    const query2 = "SELECT IDsousDirection FROM sousdirection";
+    const query2 = "SELECT IDdirection FROM direction";
+    const query3 = 'SELECT email FROM compte where compte.typePost=\"Chef d\'equipe\"';
     try {
         const conn = getConn();
-        let comptes, sousdirections;
+        let comptes1, directions, comptes2;
         await Promise.all(
         [
-            conn.query(query1,(err, rows)=>{comptes=rows;} ),
-            conn.query(query2,(err, rows)=>{sousdirections=rows;})
+            conn.query(query1,(err, rows)=>{comptes1=rows;} ),
+            conn.query(query2,(err, rows)=>{directions=rows;}),
+            conn.query(query3,(err, rows)=>{comptes2=rows;})
         ]
         );
         setTimeout(() => {
         res.render("ajouterDep", {
-        data1: comptes,
-        data2: sousdirections
-        });},100);
-    } catch (error) {
-    console.log(error);
-    res.end();
-    }
-});
-app.get('/ajouterEquipe',async (req, res)=>{
-    const query1 = "SELECT IDdeparetement FROM departement";
-    const query2 = 'SELECT email FROM compte where compte.typePost=\"Chef d\'equipe\"';
-    try {
-        const conn = getConn();
-        let comptes, departements;
-        await Promise.all(
-        [
-            conn.query(query1,(err, rows)=>{departements=rows;} ),
-            conn.query(query2,(err, rows)=>{comptes=rows;})
-        ]
-        );
-        setTimeout(() => {
-        res.render("ajouterEquipe", {
-        data1: departements,
-        data2: comptes
+        data1: comptes1,
+        data2: directions,
+        data3: comptes2
         });},100);
     } catch (error) {
     console.log(error);
@@ -294,22 +255,8 @@ app.get('/supprimerDir', (req, res)=>{
         return;
     });
 });
-app.get('/supprimerSousDir', (req, res)=>{
-    const sql = 'SELECT IDsousDirection FROM sousdirection';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('supprimerSousDir',{data: rows});
-        return;
-    });
-});
 app.get('/supprimerDep', (req, res)=>{
-    const sql = 'SELECT IDdeparetement FROM departement';
+    const sql = 'SELECT IDdepartement FROM departement';
     getConn().query(sql, (err, rows)=>{
         if(err){
             console.log('Failed to query ', err);
@@ -353,7 +300,7 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'stagebddtest'
+        database: 'stagebddtest2'
         // database: 'StageBDD'
     });
 }

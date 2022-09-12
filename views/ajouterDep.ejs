@@ -14,33 +14,62 @@
     <nav class="navbar navbar-light bg-success">
         <a class="navbar-brand text-light" href="adminaccueil">Accueil</a>
         <a class="navbar-brand text-light" href="gestionEntreprise">Retour</a>
-        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index">Déconnecter</a></button>
+        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="/">Déconnecter</a></button>
     </nav>
     <section class="ftco-section">
         <div class="container">
             <div class="p-2"></div>
             <div class="row justify-content-center">
-                <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
+                <div class="shadow-lg col-md-7 col-lg-8 bg-light rounded">
                     <div class="p-4 p-md-5">
                         <form action="/ajouterDep" method="POST">
-                            <div class="form-group">
-                                <input type="text" class="form-control rounded-left" placeholder="ID Département / Nom" name="idDep" required>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-4 col-form-label">ID Département</label>
+                                <input type="text" class="form-control rounded-left" placeholder="ID Département" name="idDep" id="idDep" required>
                             </div>
-                            <select class="custom-select my-1 mr-sm-2" id="selectedEmail">
-                                <% data1.forEach(entry => { %>
-                                <option value="ECDepartement"><%= entry.email %></option>
-                                <% }) %>
-                            </select>
                             <div class="form-group">
-                                <input type="text" class="form-control rounded-left" placeholder="Ici confirmer le compte Chef Departement" name="confEMAIL" id="confirmedEMAIL" required>
+                                <input type="text" class="form-control rounded-left" placeholder="Nom Département" name="nomDep" required>
                             </div>
-                            <select class="custom-select my-1 mr-sm-2" id="selectedSDirection">
-                                <% data2.forEach(entry => { %>
-                                <option value="SDirection"><%= entry.IDsousDirection %></option>
-                                <% }) %>
-                            </select>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Email Chef Département</label>
+                                <select class="custom-select my-1 mr-sm-2" id="selectedEmailCD">
+                                    <% data1.forEach(entry => { %>
+                                    <option value="<%= entry.email %>"><%= entry.email %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
                             <div class="form-group">
-                                <input type="text" class="form-control rounded-left" placeholder="Ici confirmer la sous direction" name="confSDIR" id="confirmedSDIR" required>
+                                <input type="text" class="form-control rounded-left" placeholder="Confirmer le Chef du Département" name="confEMAILCD" id="confirmedEMAILCD" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Direction</label>
+                                <select class="custom-select my-1 mr-sm-2" id="selectedD">
+                                    <% data2.forEach(entry => { %>
+                                    <option value="<%= entry.IDdirection %>"><%= entry.IDdirection %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control rounded-left" placeholder="Confirmer la Direction" name="confD" id="confirmedD" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-4 col-form-label">ID Equipe</label>
+                                <input type="text" class="form-control rounded-left" placeholder="ID Département" name="idE" id="idE" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Email Chef Equipe</label>
+                                <select class="custom-select my-1 mr-sm-2" id="selectedCE">
+                                    <% data3.forEach(entry => { %>
+                                        <option value="<%= entry.email %>"><%= entry.email %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control rounded-left" placeholder="Confirmer le Chef de l'Equipe" name="confCE" id="confirmedCE" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Capacité de l'Equipe</label>
+                                <input type="text" class="form-control rounded-left" placeholder="Capacité" name="capE" required>
                             </div>
                             <div class="form-group"></div>
                             <button type="submit" id="submitBtn" class="form-control btn btn-success rounded submit px-3">Ajouter</button>
@@ -61,40 +90,58 @@
     </div>
 </footer>
 <script>
-    let validSubmit = new Array(2).fill(false);
+    document.getElementById("idDep").value = (Math.random() + 1).toString(36).substring(2);
+    document.getElementById("idE").value = (Math.random() + 1).toString(36).substring(2);
+</script>
+<script>
+    const validSubmit = new Array(3).fill(false);
     $(document).ready(function() {
-        $('#confirmedEMAIL').on('input', function() {
+        $('#confirmedEMAILCD').on('input', function() {
             var input = $(this);
-            var confirmedEMAIL = input.val();
-            text = document.getElementById("selectedEmail").options[document.getElementById("selectedEmail").selectedIndex].text;
-            console.log(text);
-            if (confirmedEMAIL == text) {
+            var confirmedEMAILCD = input.val();
+            text = document.getElementById("selectedEmailCD").options[document.getElementById("selectedEmailCD").selectedIndex].text;
+            if (confirmedEMAILCD == text) {
                 validSubmit[0]=true;
             } else {
                 validSubmit[0]=false;
             }
-            if (validSubmit[0]==false || validSubmit[1]==false){
+            if (validSubmit[0]==false || validSubmit[1]==false || validSubmit[2]==false){
                 document.getElementById("submitBtn").disabled = true;
             }else{
                 document.getElementById("submitBtn").disabled = false;
             }
         });
-        $('#confirmedSDIR').on('input', function() {
+        $('#confirmedD').on('input', function() {
             var input = $(this);
-            var confirmedSDIR = input.val();
-            text = document.getElementById("selectedSDirection").options[document.getElementById("selectedSDirection").selectedIndex].text;
-            console.log(text);
-            if (confirmedSDIR == text) {
-                validSubmit[1]=true;
+            var confirmedD = input.val();
+            text = document.getElementById("selectedD").options[document.getElementById("selectedD").selectedIndex].text;
+            if (confirmedD == text) {
+                validSubmit[2]=true;
             } else {
-                validSubmit[1]=false;
+                validSubmit[2]=false;
             }
-            if (validSubmit[0]==false || validSubmit[1]==false){
+            if (validSubmit[0]==false || validSubmit[1]==false || validSubmit[2]==false){
                 document.getElementById("submitBtn").disabled = true;
             }else{
                 document.getElementById("submitBtn").disabled = false;
             }
-        });});
+        });
+        $('#confirmedCE').on('input', function() {
+            var input = $(this);
+            var confirmedCE = input.val();
+            text = document.getElementById("selectedCE").options[document.getElementById("selectedCE").selectedIndex].text;
+            if (confirmedCE == text) {
+                validSubmit[1]=true;
+            } else {
+                validSubmit[1]=false;
+            }
+            if (validSubmit[0]==false || validSubmit[1]==false || validSubmit[2]==false){
+                document.getElementById("submitBtn").disabled = true;
+            }else{
+                document.getElementById("submitBtn").disabled = false;
+            }
+        });
+        });
 </script> 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

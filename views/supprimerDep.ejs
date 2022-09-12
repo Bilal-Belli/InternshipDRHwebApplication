@@ -14,7 +14,7 @@
     <nav class="navbar navbar-light bg-success">
         <a class="navbar-brand text-light" href="adminaccueil">Accueil</a>
         <a class="navbar-brand text-light" href="gestionEntreprise">Retour</a>
-        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="index">Déconnecter</a></button>
+        <button class="btn btn-outline-light my-2 my-sm-0"><a class="text-light" href="/">Déconnecter</a></button>
     </nav>
     <section class="ftco-section">
         <div class="container">
@@ -25,7 +25,7 @@
                         <form action="/supprimerDep" method="POST">
                             <select class="custom-select my-1 mr-sm-2" id="selectedDEP">
                                 <% data.forEach(entry => { %>
-                                <option value="Direction"><%= entry.IDdeparetement%></option>
+                                <option value="Direction"><%= entry.IDdepartement%></option>
                                 <% }) %>
                             </select>
                             <div class="form-group">

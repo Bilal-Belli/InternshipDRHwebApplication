@@ -7,7 +7,7 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'stagebddtest'
+        database: 'stagebddtest2'
         // database: 'StageBDD'
     });
 }
@@ -48,8 +48,9 @@ router.post('/compteReg', (req, res)=>{
     const email = req.body.email;
     const MotPasse = req.body.MotPasse1;
     const postDeTravail = req.body.postDeTravail;
+    const compteActif = false; //default value when create a new account
     const sql = 'INSERT INTO compte VALUES ?'
-    const values = [[email, nom, prenom, MotPasse, postDeTravail]];
+    const values = [[email, nom, prenom, MotPasse, postDeTravail, compteActif]];
     getConn().query(sql, [values], (err, results, fields)=>{
         if(err){
             console.log('Failed Registration new account : ', err);
@@ -74,9 +75,15 @@ router.post('/fetchCompte', (req, res)=>{
             res.end();
             return;
         } else{
-            console.log('succesfully fetch opération');
-            res.render('modifierCompte',{data: rows[0]});
-            return;
+            if(rows[0] == null){
+                console.log('no results on DB about your query');
+                res.render('modifierCompte',{data: []});
+                return;
+            } else {
+                console.log('succesfully fetch opération');
+                res.render('modifierCompte',{data: rows[0]});
+                return;
+            }
         }
     })
 });
@@ -99,7 +106,7 @@ router.post('/editCompte', (req, res)=>{
             res.redirect('/gestionComptesOptions');
             return;
         }
-    })
+    });
 });
 router.post('/supprimerCompte', (req, res)=>{
     console.log('DELETE AN ACCOUNT');
@@ -117,74 +124,60 @@ router.post('/supprimerCompte', (req, res)=>{
         }
     })
 });
-router.post('/ajouterDir', (req, res)=>{
+router.post('/ajouterDir',async (req, res)=>{
     const idDir = req.body.idDir;
+    const nomDir = req.body.nomDir;
     const emailDIR = req.body.emailDIR;
-    const sql = 'INSERT INTO direction VALUES ?';
-    const values = [[idDir, emailDIR]];
-    getConn().query(sql,[values],(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
+    const nomSDir = req.body.nomSDir;
+    const emailSDIR = req.body.emailSDIR;
+    const sql1 = 'INSERT INTO direction VALUES ?';
+    const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailDIR+'\"';
+    const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailSDIR+'\"';
+    const values = [[idDir, nomDir, emailDIR, nomSDir, emailSDIR]];
+    try {
+        const conn = getConn();
+        await Promise.all(
+        [
+            conn.query(sql1,[values],(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};} ),
+            conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+            conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+        ]
+        );
+        res.redirect('/gestionEntreprise');
+        return;
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
-router.post('/ajouterSousDir', (req, res)=>{
-    const idSDir = req.body.idSDir;
-    const confDIR = req.body.confDIR;
-    const sql = 'INSERT INTO sousdirection VALUES ?';
-    const values = [[idSDir, confDIR]];
-    getConn().query(sql,[values],(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
-});
-router.post('/ajouterDep', (req, res)=>{
+router.post('/ajouterDep',async (req, res)=>{
     const idDep = req.body.idDep;
-    const confEMAIL = req.body.confEMAIL;
-    const confSDIR = req.body.confSDIR;
-    const sql = 'INSERT INTO departement VALUES ?';
-    const values = [[idDep, confEMAIL, confSDIR]];
-    getConn().query(sql,[values],(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
-});
-router.post('/ajouterEquipe', (req, res)=>{
-    const confCHEF = req.body.confCHEF;
-    const confDEP = req.body.confDEP;
-    const sql = 'INSERT INTO equipe VALUES ?';
-    const values = [[null, confCHEF, confDEP]];
-    getConn().query(sql,[values],(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
+    const nomDep = req.body.nomDep;
+    const confEMAILCD = req.body.confEMAILCD;
+    const confD = req.body.confD;
+    const idE = req.body.idE;
+    const confCE = req.body.confCE;
+    const capE = req.body.capE;
+
+    const sql1 = 'INSERT INTO departement VALUES ?';
+    const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confEMAILCD+'\"';
+    const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confCE+'\"';
+    const values = [[idDep, nomDep, confEMAILCD, confD, idE, confCE, capE]];
+    try {
+        const conn = getConn();
+        await Promise.all(
+        [
+            conn.query(sql1,[values],(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};} ),
+            conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+            conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+        ]
+        );
+        res.redirect('/gestionEntreprise');
+        return;
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
 router.post('/supprimerDir', (req, res)=>{
     const DIR = req.body.DIR;
@@ -201,39 +194,9 @@ router.post('/supprimerDir', (req, res)=>{
         }
     });
 });
-router.post('/supprimerSousDir', (req, res)=>{
-    const SDIR = req.body.SDIR;
-    const sql = 'DELETE FROM sousdirection WHERE sousdirection.IDsousDirection = \"'+SDIR+'\"';
-    getConn().query(sql,(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
-});
 router.post('/supprimerDep', (req, res)=>{
     const DEP = req.body.DEP;
-    const sql = 'DELETE FROM departement WHERE departement.IDdeparetement = \"'+DEP+'\"';
-    getConn().query(sql,(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
-});
-router.post('/supprimerEquipe', (req, res)=>{
-    const EQUIPE = req.body.EQUIPE;
-    const sql = 'DELETE FROM equipe WHERE equipe.IDequipe = \"'+EQUIPE+'\"';
+    const sql = 'DELETE FROM departement WHERE departement.IDdepartement = \"'+DEP+'\"';
     getConn().query(sql,(err)=>{
         if(err){
             console.log('Failed : ', err);
@@ -247,9 +210,3 @@ router.post('/supprimerEquipe', (req, res)=>{
     });
 });
 module.exports = router
-// test de routage vers ce url
-// router.get('/connexion',function(req,res) {
-//     res.redirect('next.html');
-//     console.log('connexion page');
-//     res.end();
-// });
