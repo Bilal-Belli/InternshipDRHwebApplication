@@ -27,19 +27,28 @@ app.get('/modifierCompte',(req,res)=>{
     res.render('modifierCompte',{data: []});
     res.end();
 });
-app.get('/InsererCondidat',(req,res)=>{
+app.get('/InsererCondidat',async (req,res)=>{
     const sql = 'SELECT * FROM condidat';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('InsererCondidat',{data: rows});
-        return;
-    });
+    const sql2 = "SELECT * FROM diplome";
+    try {
+        const conn = getConn();
+        let condidats, diplomes;
+        await Promise.all(
+        [
+            conn.query(sql,(err, rows)=>{condidats=rows;}),
+            conn.query(sql2,(err, rows)=>{diplomes=rows;}),
+        ]
+        );
+        setTimeout(() => {
+            console.log('fetch succesfully');
+            res.render("InsererCondidat", {
+            data: condidats,
+            data2: diplomes,
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
 app.post('/InsererCondidat',async (req, res)=>{
     const Nom = req.body.Nom;
@@ -88,44 +97,19 @@ app.post('/InsererCondidat',async (req, res)=>{
     let newInsertedID;
     const sql = 'INSERT INTO condidat VALUES ?'
     const values = [[null, Nom, Prenom, email, Specialite, Diplome, Etablissement, Adress, Wilaya, numeroTel, newNameForCV, Remarques, null]];
-    // getConn().query(sql, [values], (err, results)=>{
-    //     if(err){
-    //         console.log('Failed : ',err);
-    //         res.redirect(req.get('referer'));
-    //         res.end();
-    //         return;
-    //     } else {
-    //         newInsertedID = results.insertId;
-    //         // res.redirect('/InsererCondidat');
-    //         return;
-    //     }
-    // });
     const queryDiplomes = 'INSERT INTO diplome VALUES ?';
     let queryvalues=[];
-    // for(i=0;i<nb_diplomes;i++){
-    //     queryvalues[i] = [null,nomDiplomes[i],newInsertedID];
-    // }
-    // await Promise.all([ conn.query(queryDirections,[queryvalues],(err)=>{console.log("Error query diplomes :",err);})]);
     await Promise.all(
         [   
             conn.query(sql,[values],(err, results)=>{if(err){console.log('Failed : ',err);res.redirect(req.get('referer'));res.end();return;}else{newInsertedID = results.insertId;console.log(newInsertedID);return;}}),
             setTimeout(() => {affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID)},500),
             setTimeout(() => {conn.query(queryDiplomes,[queryvalues],(err)=>{if(err){console.log("Error query diplomes :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}})},1000),
-            // affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID), // not work because of asynchrone node
-            // conn.query(queryDiplomes,[queryvalues],(err)=>{if(err){console.log("Error query diplomes :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}}), // not work because of asynchrone node
         ]
     );
-    // setTimeout(() => {},1000)
-    // setTimeout(() => {
-    //     getConn().query(queryDiplomes,[queryvalues],(err)=>{console.log("Error query diplomes :",err);});
-    //     console.log('Operation Successfully');
-    //     res.redirect('/InsererCondidat');
-    // },1000);
 });
 function affectDiplomestoSpecificCondidat(nb_diplomes_,queryvalues_,nomDiplomes_,newInsertedID_){
     for(i=0;i<nb_diplomes_;i++){
         queryvalues_[i] = [null,nomDiplomes_[i],newInsertedID_];
-        // console.log(queryvalues_[i]);
     };
 };
 app.post('/modifierInfosCondidat',(req, res)=>{
@@ -208,33 +192,49 @@ app.get('/gestionEntreprise',async (req,res)=>{
     res.end();
     }
 });
-app.get('/VusialisationCondidats', (req, res)=>{
-    const sql = 'SELECT * FROM condidat';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('VusialisationCondidats',{data: rows});
-        return;
-    });
+app.get('/VusialisationCondidats',async (req, res)=>{
+    const query1 = 'SELECT * FROM condidat';
+    const query2 = 'SELECT * FROM diplome';
+    try {
+        const conn = getConn();
+        let condidats, diplomes_;
+        await Promise.all(
+        [
+            conn.query(query1,(err, rows)=>{condidats=rows;}),
+            conn.query(query2,(err, rows)=>{diplomes_=rows;})
+        ]
+        );
+        setTimeout(() => {
+        res.render("VusialisationCondidats", {
+        data: condidats,
+        data2: diplomes_
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
-app.get('/VusialisationCondidatsUser', (req, res)=>{
-    const sql = 'SELECT * FROM condidat';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('VusialisationCondidatsUser',{data: rows});
-        return;
-    });
+app.get('/VusialisationCondidatsUser',async (req, res)=>{
+    const query1 = 'SELECT * FROM condidat';
+    const query2 = 'SELECT * FROM diplome';
+    try {
+        const conn = getConn();
+        let condidats, diplomes_;
+        await Promise.all(
+        [
+            conn.query(query1,(err, rows)=>{condidats=rows;}),
+            conn.query(query2,(err, rows)=>{diplomes_=rows;})
+        ]
+        );
+        setTimeout(() => {
+        res.render("VusialisationCondidatsUser", {
+        data: condidats,
+        data2: diplomes_
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
 app.get('/supprimerCompte', (req, res)=>{
     res.render('supprimerCompte');
