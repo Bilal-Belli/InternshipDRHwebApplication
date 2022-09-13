@@ -41,7 +41,7 @@ app.get('/InsererCondidat',(req,res)=>{
         return;
     });
 });
-app.post('/InsererCondidat',(req, res)=>{
+app.post('/InsererCondidat',async (req, res)=>{
     const Nom = req.body.Nom;
     const Prenom = req.body.Prenom;
     const email = req.body.email;
@@ -54,8 +54,26 @@ app.post('/InsererCondidat',(req, res)=>{
     const Remarques = req.body.Remarques;
     // console.log(req.files.pathcv); //show the object
     let documentCV = req.files.pathcv;
+    let documentsDiplomes = req.files.diplomes;
+    let nb_diplomes = req.files.diplomes.length;
+    let nomDiplomes = [];
+    let uploadPathDiplome = [];
+    for(i=0;i<nb_diplomes;i++){
+        nomDiplomes[i] = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentsDiplomes[i].name;
+    };
     const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name;
     // here is where to save the file after upload
+    for(i=0;i<nb_diplomes;i++){
+        uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
+        documentsDiplomes[i].mv(uploadPathDiplome[i], function (err) {
+            if (err) {
+                console.log("error on moving file :",err);
+                res.status(500);
+                return res.send(err);
+            } ;
+            return;
+        });
+    };
     let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
     // Use mv() to place file on the server
     documentCV.mv(uploadPath, function (err) {
@@ -67,21 +85,49 @@ app.post('/InsererCondidat',(req, res)=>{
         return;
     });
     // const pathcv = documentCV.name;
+    let newInsertedID;
     const sql = 'INSERT INTO condidat VALUES ?'
     const values = [[null, Nom, Prenom, email, Specialite, Diplome, Etablissement, Adress, Wilaya, numeroTel, newNameForCV, Remarques, null]];
-    getConn().query(sql, [values], (err, results, fields)=>{
-        if(err){
-            console.log('Failed : ',err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            console.log('Operation Successfully');
-            res.redirect('/InsererCondidat');
-            return;
-        }
-    });
+    // getConn().query(sql, [values], (err, results)=>{
+    //     if(err){
+    //         console.log('Failed : ',err);
+    //         res.redirect(req.get('referer'));
+    //         res.end();
+    //         return;
+    //     } else {
+    //         newInsertedID = results.insertId;
+    //         // res.redirect('/InsererCondidat');
+    //         return;
+    //     }
+    // });
+    const queryDiplomes = 'INSERT INTO diplome VALUES ?';
+    let queryvalues=[];
+    // for(i=0;i<nb_diplomes;i++){
+    //     queryvalues[i] = [null,nomDiplomes[i],newInsertedID];
+    // }
+    // await Promise.all([ conn.query(queryDirections,[queryvalues],(err)=>{console.log("Error query diplomes :",err);})]);
+    await Promise.all(
+        [   
+            conn.query(sql,[values],(err, results)=>{if(err){console.log('Failed : ',err);res.redirect(req.get('referer'));res.end();return;}else{newInsertedID = results.insertId;console.log(newInsertedID);return;}}),
+            setTimeout(() => {affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID)},500),
+            setTimeout(() => {conn.query(queryDiplomes,[queryvalues],(err)=>{if(err){console.log("Error query diplomes :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}})},1000),
+            // affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID), // not work because of asynchrone node
+            // conn.query(queryDiplomes,[queryvalues],(err)=>{if(err){console.log("Error query diplomes :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}}), // not work because of asynchrone node
+        ]
+    );
+    // setTimeout(() => {},1000)
+    // setTimeout(() => {
+    //     getConn().query(queryDiplomes,[queryvalues],(err)=>{console.log("Error query diplomes :",err);});
+    //     console.log('Operation Successfully');
+    //     res.redirect('/InsererCondidat');
+    // },1000);
 });
+function affectDiplomestoSpecificCondidat(nb_diplomes_,queryvalues_,nomDiplomes_,newInsertedID_){
+    for(i=0;i<nb_diplomes_;i++){
+        queryvalues_[i] = [null,nomDiplomes_[i],newInsertedID_];
+        // console.log(queryvalues_[i]);
+    };
+};
 app.post('/modifierInfosCondidat',(req, res)=>{
     const Nom = req.body.Nom;
     const Prenom = req.body.Prenom;
@@ -287,21 +333,24 @@ app.get('/affectationCondidat',async (req, res) => {
     const query1 = 'SELECT * FROM departement';
     const query2 = 'SELECT * FROM condidat';
     const query3 = 'SELECT * FROM direction';
+    const query4 = 'SELECT IDequipe,COUNT(IDcondidat) NB_Personnes FROM condidat';
     try {
         const conn = getConn();
-        let departements, condidats, directions;
+        let departements, condidats, directions, comptagePersonnes;
         await Promise.all(
         [
             conn.query(query1,(err, rows)=>{departements=rows;} ),
             conn.query(query2,(err, rows)=>{condidats=rows;}),
-            conn.query(query3,(err, rows)=>{directions=rows;})
+            conn.query(query3,(err, rows)=>{directions=rows;}),
+            conn.query(query4,(err, rows)=>{comptagePersonnes=rows;})
         ]
         );
         setTimeout(() => {
         res.render("affectationCondidat", {
         data1: departements,
         data2: condidats,
-        data3: directions
+        data3: directions,
+        data4: comptagePersonnes
         });},100);
     } catch (error) {
     console.log(error);

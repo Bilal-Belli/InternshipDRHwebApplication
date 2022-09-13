@@ -162,7 +162,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Diplomes</label>
                         <div class="col-sm-10">
-                            <input type="file" class="custom-file-input" id="diplomes" name="diplomes" onchange="afficherDiplomes()" multiple>
+                            <input type="file" class="custom-file-input" id="diplomes" name="diplomes" onchange="afficherDiplomes()" accept="application/pdf" multiple>
                             <label class="custom-file-label" for="customFile"></label>
                         </div>
                     </div>
@@ -357,9 +357,9 @@ function afficherDiplomes(){
     var input = document.getElementById('diplomes');
     var output = document.getElementById('DiplomesFilesName');
     for (var i = 0; i < input.files.length; ++i) {
-        output.innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + input.files.item(i).name + '</h6>';
-    }
-}
+        output.innerHTML += '<h6 class="text-primary" id="diplomeFileName'+i+'">' + input.files.item(i).name + '</h6>';
+    };
+};
 
 // function to display name of uploaded cv file of condidat
 function afficherCV(){
@@ -368,13 +368,13 @@ function afficherCV(){
     output.innerHTML = '';
     // tant que il ya auccun insertion du condidat, alors on ne peut pas afficher et rendrer le pdf (cv)
     output.innerHTML += '<h6 class="text-primary" id="cvFileName">' + input.files.item(0).name + '</h6>';
-}
+};
 
 // function to render the selected pdf on the iframe
 function renderPDF(input){
     // console.log(input); //name of the uploaded file
     document.getElementsByName('pdfframe')[0].src = input;
-}
+};
 
 // function that save the selected documents (cv+diplomes) on localStorage
 // function SavePhoto(input) {

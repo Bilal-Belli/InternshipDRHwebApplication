@@ -209,4 +209,20 @@ router.post('/supprimerDep', (req, res)=>{
         }
     });
 });
+router.post('/affectationCondidat', (req, res)=>{
+    const idCondidat = req.body.idCondidat;
+    const idE = req.body.idE;
+    const sql = 'UPDATE condidat SET condidat.IDequipe = \"'+idE+'\" WHERE condidat.IDcondidat = \"'+idCondidat+'\"';
+    getConn().query(sql,(err)=>{
+        if(err){
+            console.log('Failed : ', err);
+            res.redirect(req.get('referer'));
+            res.end();
+            return;
+        } else{
+            res.redirect('/accueil');
+            return;
+        }
+    })
+});
 module.exports = router
