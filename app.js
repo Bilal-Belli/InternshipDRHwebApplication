@@ -263,9 +263,9 @@ app.get('/ajouterDir',async (req, res)=>{
     }
 });
 app.get('/ajouterDep',async (req, res)=>{
-    const query1 = 'SELECT email FROM compte where compte.typePost=\"Chef de Département\"';
+    const query1 = 'SELECT email FROM compte where compte.typePost=\"Chef de Département\" and compte.compteActif=false';
     const query2 = "SELECT IDdirection FROM direction";
-    const query3 = 'SELECT email FROM compte where compte.typePost=\"Chef d\'equipe\"';
+    const query3 = 'SELECT email FROM compte where compte.typePost=\"Chef d\'equipe\" and compte.compteActif=false';
     try {
         const conn = getConn();
         let comptes1, directions, comptes2;

@@ -158,7 +158,6 @@ router.post('/ajouterDep',async (req, res)=>{
     const idE = req.body.idE;
     const confCE = req.body.confCE;
     const capE = req.body.capE;
-
     const sql1 = 'INSERT INTO departement VALUES ?';
     const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confEMAILCD+'\"';
     const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confCE+'\"';
@@ -179,35 +178,51 @@ router.post('/ajouterDep',async (req, res)=>{
     res.end();
     }
 });
-router.post('/supprimerDir', (req, res)=>{
+router.post('/supprimerDir',async (req, res)=>{
     const DIR = req.body.DIR;
-    const sql = 'DELETE FROM direction WHERE direction.IDdirection = \"'+DIR+'\"';
-    getConn().query(sql,(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
+    const query1 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteDirecteur from direction where IDdirection=\"'+DIR+'\")';
+    const query2 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteSousDirecteur from direction where IDdirection=\"'+DIR+'\")';
+    const query3 = 'DELETE FROM direction WHERE direction.IDdirection = \"'+DIR+'\"';
+    try {
+        const conn = getConn();
+        await Promise.all(
+        [
+            conn.query(query1,(err)=>{console.log('Failed1 : ', err);}),
+            conn.query(query2,(err)=>{console.log('Failed2 : ', err);}),
+            setTimeout(() => {conn.query(query3,(err)=>{console.log('Failed3 : ', err);})},1000)
+        ]
+        );
+        setTimeout(() => {res.redirect('/gestionEntreprise');},1500);
+    } catch (error) {
+        console.log('Failed : ', err);
+        res.redirect(req.get('referer'));
+        res.end();
+        return;
+    }
 });
-router.post('/supprimerDep', (req, res)=>{
+router.post('/supprimerDep',async (req, res)=>{
     const DEP = req.body.DEP;
-    const sql = 'DELETE FROM departement WHERE departement.IDdepartement = \"'+DEP+'\"';
-    getConn().query(sql,(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionEntreprise');
-            return;
-        }
-    });
+    const query1 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteChefDep from departement where IDdepartement=\"'+DEP+'\")';
+    const query2 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteChefEquipe from departement where IDdepartement=\"'+DEP+'\")';
+    const query3 = 'UPDATE condidat SET condidat.IDequipe=\"\" where condidat.IDequipe = (select IDequipe from departement where IDdepartement=\"'+DEP+'\")';
+    const query4 = 'DELETE FROM departement WHERE departement.IDdepartement = \"'+DEP+'\"';
+    try {
+        const conn = getConn();
+        await Promise.all(
+        [
+            conn.query(query1,(err)=>{console.log('Failed1 : ', err);}),
+            conn.query(query2,(err)=>{console.log('Failed2 : ', err);}),
+            conn.query(query3,(err)=>{console.log('Failed3 : ', err);}),
+            setTimeout(() => {conn.query(query4,(err)=>{console.log('Failed4 : ', err);})},1000)
+        ]
+        );
+        setTimeout(() => {res.redirect('/gestionEntreprise');},1500);
+    } catch (error) {
+        console.log('Failed : ', err);
+        res.redirect(req.get('referer'));
+        res.end();
+        return;
+    }
 });
 router.post('/affectationCondidat', (req, res)=>{
     const idCondidat = req.body.idCondidat;
