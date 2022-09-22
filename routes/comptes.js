@@ -7,7 +7,7 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'stagebddtest2'
+        database: 'stagebddtest3'
         // database: 'StageBDD'
     });
 }
@@ -125,22 +125,22 @@ router.post('/supprimerCompte', (req, res)=>{
     })
 });
 router.post('/ajouterDir',async (req, res)=>{
-    const idDir = req.body.idDir;
+    // const idDir = req.body.idDir;
     const nomDir = req.body.nomDir;
-    const emailDIR = req.body.emailDIR;
+    // const emailDIR = req.body.emailDIR;
     const nomSDir = req.body.nomSDir;
-    const emailSDIR = req.body.emailSDIR;
+    // const emailSDIR = req.body.emailSDIR;
     const sql1 = 'INSERT INTO direction VALUES ?';
-    const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailDIR+'\"';
-    const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailSDIR+'\"';
-    const values = [[idDir, nomDir, emailDIR, nomSDir, emailSDIR]];
+    // const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailDIR+'\"';
+    // const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailSDIR+'\"';
+    const values = [[null, nomDir, nomSDir, null, null]];
     try {
         const conn = getConn();
         await Promise.all(
         [
             conn.query(sql1,[values],(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};} ),
-            conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
-            conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+            // conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+            // conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
         ]
         );
         res.redirect('/gestionEntreprise');
@@ -151,24 +151,24 @@ router.post('/ajouterDir',async (req, res)=>{
     }
 });
 router.post('/ajouterDep',async (req, res)=>{
-    const idDep = req.body.idDep;
+    // const idDep = req.body.idDep;
     const nomDep = req.body.nomDep;
-    const confEMAILCD = req.body.confEMAILCD;
-    const confD = req.body.confD;
+    // const confEMAILCD = req.body.confEMAILCD;
+    const selectedD = req.body.selectedD;
     const idE = req.body.idE;
-    const confCE = req.body.confCE;
+    // const confCE = req.body.confCE;
     const capE = req.body.capE;
     const sql1 = 'INSERT INTO departement VALUES ?';
-    const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confEMAILCD+'\"';
-    const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confCE+'\"';
-    const values = [[idDep, nomDep, confEMAILCD, confD, idE, confCE, capE]];
+    // const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confEMAILCD+'\"';
+    // const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confCE+'\"';
+    const values = [[null, nomDep, selectedD, idE, null, null, capE]];
     try {
         const conn = getConn();
         await Promise.all(
         [
             conn.query(sql1,[values],(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};} ),
-            conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
-            conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+            // conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
+            // conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
         ]
         );
         res.redirect('/gestionEntreprise');

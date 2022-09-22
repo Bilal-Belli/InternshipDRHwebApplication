@@ -374,7 +374,7 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'stagebddtest2'
+        database: 'stagebddtest3'
         // database: 'StageBDD'
     });
 }

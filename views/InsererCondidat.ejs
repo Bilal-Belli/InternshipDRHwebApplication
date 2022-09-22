@@ -161,7 +161,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-2 col-form-label"></label>
+                            <label class="col-sm-2 col-form-label" id="DiplomesFilesNameLabel"></label>
                             <div class="col-sm-10" id="DiplomesFilesName"></div>
                         </div>
                         <div class="py-2"></div>
@@ -359,7 +359,10 @@ function addRowHandlers() {
                         }
                     }
                     document.getElementById('DiplomesFilesName').innerHTML = '';
+                    document.getElementById('DiplomesFilesNameLabel').innerHTML='';
                     for(h=0;h<nb_diplomes;h++){
+                        let oo=h+1;
+                        document.getElementById('DiplomesFilesNameLabel').innerHTML+='<h6 class="text-primary" style="font-size: 0.8em;">Diplome N°'+oo+'</h6>';
                         document.getElementById('DiplomesFilesName').innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + namesDip[h] + '</h6>'
                     }
                 };
@@ -373,7 +376,15 @@ window.onload = addRowHandlers();
 function afficherDiplomes(){
     var input = document.getElementById('diplomes');
     var output = document.getElementById('DiplomesFilesName');
+    var output_0 = document.getElementById('DiplomesFilesNameLabel');
+    // const fileListArr = Array.from(input.files);
+    // console.log(fileListArr);
+    output.innerHTML ='';
+    output_0.innerHTML='';
     for (var i = 0; i < input.files.length; ++i) {
+        // console.log(i);
+        let oo=i+1;
+        output_0.innerHTML+='<h6 class="text-primary" style="font-size: 0.8em;">Diplome N°'+oo+'</h6>';
         output.innerHTML += '<h6 class="text-primary">' + input.files.item(i).name + '</h6>';
     };
 };

@@ -24,7 +24,6 @@
     </nav>
     <div class="container">
         <div class="py-3"></div>
-        <!--  -->
         <div class="row" id="section1">
             <div class="breadcrumb breadcrumb-item active">
                 Gestion des Directions et Sous Directions
@@ -32,33 +31,84 @@
         </div>
         <div class="row">
             <div class="col d-flex justify-content-center">
-                <a href="ajouterDir" style="text-decoration:none;">
-                    <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                        <div class="card-body d-flex justify-content-center">
-                            <p class="card-text">Ajouter une Direction</p>
-                        </div>
-                    </div>
-                </a>
+                <button type="button" class="btn btn-success mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter">
+                    Ajouter une Direction
+                </button>
             </div>
             <div class="col d-flex justify-content-center">
-                <a href="supprimerDir" style="text-decoration:none;">
-                    <div class="card text-white bg-danger mb-3" style="max-width: 25rem; width: 25rem;">
-                        <div class="card-body d-flex justify-content-center">
-                            <p class="card-text">Supprimer une Direction</p>
-                        </div>
-                    </div>
-                </a>
+                <button type="button" class="btn btn-danger mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter2">
+                    Supprimer une Direction
+                </button>
             </div>
         </div>
+        <!-- Form 1: creer dir -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter une Direction</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- here i put the form code -->
+                        <form action="/ajouterDir" method="POST">
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Nom Direction</label>
+                                <input type="text" class="form-control rounded-left" name="nomDir" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Nom Sous Direction</label>
+                                <input type="text" class="form-control rounded-left" name="nomSDir" required>
+                            </div>
+                            <div class="form-group"></div>
+                            <button type="submit" id="submitBtn" class="form-control btn btn-success rounded submit px-3">Ajouter</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Form 2: supprimer dir -->
+        <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Supprimer une Direction</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- here i put the form code -->
+                        <form action="/ajouterDir" method="POST">
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Direction</label>
+                                <input type="text" class="form-control rounded-left" name="nomDir" required>
+                            </div>
+                            <div class="form-group"></div>
+                            <button type="submit" id="submitBtn" class="form-control btn btn-danger rounded submit px-3">Supprimer</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="py-3"></div>
         <div class="row">
             <table class="table table-hover table-responsive">
                 <thead>
                     <tr>
-                        <th scope="col">ID Direction</th>
-                        <th scope="col">Nom Direction</th>
-                        <th scope="col">Email Compte Directeur</th>
-                        <th scope="col">Nom Sous Direction</th>
-                        <th scope="col">Email Compte Sous Directeur</th>
+                        <th scope="col">#</th>
+                        <th scope="col">Direction</th>
+                        <th scope="col">Sous Direction</th>
+                        <th scope="col">Directeur</th>
+                        <th scope="col">Sous Directeur</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,9 +116,9 @@
                         <% data1.forEach(entry => { %>
                         <th scope="row"><%= entry.IDdirection %></th>
                         <td><%= entry.nomDirection %></td>
-                        <td><%= entry.emailCompteDirecteur %></td>
                         <td><%= entry.nomSousDirection %></td>
-                        <td><%= entry.emailCompteSousDirecteur %></td>
+                        <td><%= entry.MatriculeDirecteur %></td>
+                        <td><%= entry.MatriculeSousDirecteur %></td>
                     </tr>
                     <% }) %>
                 </tbody>
@@ -82,7 +132,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col d-flex justify-content-center">
+            <!-- <div class="col d-flex justify-content-center">
                 <a href="ajouterDep" style="text-decoration:none;">
                     <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
                         <div class="card-body d-flex justify-content-center">
@@ -99,31 +149,110 @@
                         </div>
                     </div>
                 </a>
+            </div> -->
+            <div class="col d-flex justify-content-center">
+                <button type="button" class="btn btn-success mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter3">
+                    Ajouter un Département
+                </button>
+            </div>
+            <div class="col d-flex justify-content-center">
+                <button type="button" class="btn btn-danger mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter4">
+                    Supprimer un Département
+                </button>
+            </div>
+        </div>
+        <!-- Form 3: creer dep -->
+        <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un Département</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- here i put the form code -->
+                        <form action="/ajouterDep" method="POST">
+                            <div class="form-group d-flex">
+                                <label class="col-sm-4 col-form-label">Direction</label>
+                                <select class="custom-select my-1 mr-sm-2" id="selectedD" name="selectedD">
+                                    <% data1.forEach(entry => { %>
+                                    <option value="<%= entry.IDdirection %>"><%= entry.IDdirection %></option>
+                                    <% }) %>
+                                </select>
+                                <!-- <input type="hidden" id="condidatIDhidden" name="condidatIDhidden" value=""> -->
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control rounded-left" placeholder="Nom Département" name="nomDep" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-4 col-form-label">ID Equipe</label>
+                                <input type="text" class="form-control rounded-left" placeholder="ID Equipe" name="idE" id="idE" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <label class="col-sm-6 col-form-label">Capacité de l'Equipe</label>
+                                <input type="text" class="form-control rounded-left" placeholder="Capacité" name="capE" required>
+                            </div>
+                            <div class="form-group"></div>
+                            <button type="submit" id="submitBtn" class="form-control btn btn-success rounded submit px-3">Ajouter</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Form 4: supprimer dep -->
+        <div class="modal fade" id="exampleModalCenter4" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Supprimer un Département</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- here i put the form code -->
+                        <form action="/ajouterDir" method="POST">
+                            <div class="form-group d-flex">
+                                <label class="col-sm-5 col-form-label">Département</label>
+                                <input type="text" class="form-control rounded-left" name="nomDir" required>
+                            </div>
+                            <div class="form-group"></div>
+                            <button type="submit" id="submitBtn" class="form-control btn btn-danger rounded submit px-3">Supprimer</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
             <table class="table table-hover table-responsive">
                 <thead>
                     <tr>
-                        <th scope="col">ID Département</th>
-                        <th scope="col">Nom Département</th>
-                        <th scope="col">Email Chef Département</th>
+                        <!-- <th scope="col">ID Département</th> -->
                         <th scope="col">Direction</th>
+                        <th scope="col">Département</th>
                         <th scope="col">ID Equipe</th>
-                        <th scope="col">Email Chef Equipe</th>
                         <th scope="col">Capacité de l'Equipe</th>
+                        <th scope="col">Email Chef Département</th>
+                        <th scope="col">Email Chef Equipe</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <% data2.forEach(entry => { %>
-                        <th scope="row"><%= entry.IDdepartement %></th>
-                        <td><%= entry.nomDepartement %></td>
-                        <td><%= entry.emailCompteChefDep %></td>
                         <th scope="row"><%= entry.IDdirection %></th>
+                        <td><%= entry.nomDepartement %></td>
                         <td><%= entry.IDequipe %></td>
-                        <td><%= entry.emailCompteChefEquipe %></td>
                         <td><%= entry.capaciteEquipe %></td>
+                        <td><%= entry.emailCompteChefDep %></td>
+                        <td><%= entry.emailCompteChefEquipe %></td>
                     </tr>
                     <% }) %>
                 </tbody>
@@ -140,6 +269,9 @@
         </div>
     </div>
 </footer>
+<script>
+    document.getElementById("idE").value = (Math.random() + 1).toString(36).substring(2);
+</script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>    
