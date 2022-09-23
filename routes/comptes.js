@@ -41,29 +41,58 @@ router.post('/compteCon', (req, res)=>{
         }
     });
 })
-router.post('/compteReg', (req, res)=>{
+router.post('/compteReg',async (req, res)=>{
     console.log('CREATION OF A NEW ACCOUNT');
     const nom = req.body.nom;
     const prenom = req.body.prenom;
     const email = req.body.email;
     const MotPasse = req.body.MotPasse1;
     const postDeTravail = req.body.postDeTravail;
+    const numTel = req.body.numTel;
+    const selPost = req.body.selPost;
+    const dateCreationhidden = req.body.dateCreationhidden;
     const compteActif = false; //default value when create a new account
-    const sql = 'INSERT INTO compte VALUES ?'
-    const values = [[email, nom, prenom, MotPasse, postDeTravail, compteActif]];
-    getConn().query(sql, [values], (err, results, fields)=>{
-        if(err){
-            console.log('Failed Registration new account : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
+    const sql = 'INSERT INTO compte VALUES ?';
+    const values = [[null, postDeTravail, email, nom, prenom, numTel, MotPasse, compteActif, dateCreationhidden]];
+    let sql2;
+    try {
+        const conn = getConn();
+        let compt;
+        await Promise.all(
+        [
+            conn.query(sql,[values],(err, rows)=>{compt=rows;}),
+            setTimeout(() => {sql2 = editQuery(postDeTravail,compt.insertId,selPost); console.log(sql2);},200),
+            setTimeout(() => {conn.query(sql2,(err, rows)=>{directions=rows;})},500),
+        ]
+        );
+        setTimeout(() => {
             console.log('Registration Successfully');
             res.redirect('/gestionComptesOptions');
-            return;
-        }
-    })
+            return; },100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
+function editQuery(PT,MTR,SPT){
+    var query;
+    if(PT == "Directeur"){
+        query = 'UPDATE direction SET direction.MatriculeDirecteur = '+MTR+' where direction.nomDirection = \"'+SPT+'\"';
+    } else{
+        if(PT == "Sous Directeur"){
+            query = 'UPDATE direction SET direction.MatriculeSousDirecteur = '+MTR+' where direction.nomSousDirection = \"'+SPT+'\"';
+        } else{
+            if(PT == "Chef de Département"){
+                query = 'UPDATE departement SET departement.MatriculeDirecteur = '+MTR+' where departement.nomDepartement = \"'+SPT+'\"';
+            } else{
+                if(PT == "Chef d'equipe"){
+                    query = 'UPDATE departement SET departement.MatriculeDirecteur = '+MTR+' where departement.IDequipe = \"'+SPT+'\"';
+                };
+            };
+        };
+    };
+    return query;
+};
 router.post('/fetchCompte', (req, res)=>{
     console.log('EDIT AN ACCOUNT');
     const emailenter = req.body.emailenter;

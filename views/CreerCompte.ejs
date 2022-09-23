@@ -20,13 +20,7 @@
         <div class="p-4"></div>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 text-center mb-5" style="font-family: 'Space Grotesk', sans-serif;">
-                    <h5>Direction des resources Humaine - DRH</h5>
-                    <h5>GRH AWMT</h5>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
+                <div class="shadow-lg col-md-7 col-lg-7 bg-light rounded">
                     <div class="p-4 p-md-5">
                         <div class="icon d-flex align-items-center justify-content-center">
                             <div class="rounded-circle bg-success" style="height: 100px; width: 100px;">
@@ -39,6 +33,15 @@
                         </div>
                         <h3 class="text-center mb-4">Nouveau Compte</h3>
                         <form class="login-form"  id="myFormulaire" action="/compteReg" method="POST">
+                            <!--  champ post du travail -->
+                            <select class="custom-select my-1 mr-sm-2" id="postDeTravail" name="postDeTravail">
+                                <option value="Directeur" selected>Directeur</option>
+                                <option value="Sous Directeur">Sous Directeur</option>
+                                <option value="Chef de Département">Chef de Département</option>
+                                <option value="Chef d'equipe">Chef d'equipe</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <div class="p-3"></div>
                             <!--  champ du nom -->
                             <div class="form-group">
                                 <input type="text" class="form-control rounded-left" placeholder="Nom" id="nom" name="nom" required>
@@ -51,14 +54,11 @@
                             </div>
                             <!-- champ erreur prenom -->
                             <div class="form-group d-flex" id = "ErreurMsg_prenom" style="color:red; font-size: 11.5px;"></div>
-                            <select class="custom-select my-1 mr-sm-2" id="postDeTravail" name="postDeTravail">
-                                <option value="Directeur" selected>Directeur</option>
-                                <option value="Sous Directeur">Sous Directeur</option>
-                                <option value="Chef de Département">Chef de Département</option>
-                                <option value="Chef d'equipe">Chef d'equipe</option>
-                                <option value="Admin">Admin</option>
-                            </select>
-                            <div class="p-3"></div>
+                            <!-- champ numero du telephone -->
+                            <div class="form-group">
+                                <input type="text" class="form-control rounded-left" placeholder="N° Téléphone" id="numTel" name="numTel" required>
+                            </div>
+                            <div class="form-group d-flex" id = "ErreurMsg_numTel" style="color:red; font-size: 11.5px;"></div>
                             <!-- champ Email -->                         
                             <div class="form-group">
                                 <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="email" name="email">

@@ -1,7 +1,8 @@
 const express = require('express');
-const app = express()
-const morgan = require('morgan')
-const mysql = require('mysql')
+const app = express();
+const morgan = require('morgan');
+var nodemailer = require('nodemailer');
+const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const fileUpload = require('express-fileupload');
@@ -154,23 +155,36 @@ app.post('/modifierInfosCondidat',(req, res)=>{
         }
     });
 });
-app.get('/gestionComptesOptions', (req, res)=>{
-    const sql = 'SELECT * FROM compte';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query for users ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('gestionComptesOptions',{data: rows});
-        return;
-    });
-});
-app.get('/gestionEntreprise',async (req,res)=>{
+app.get('/gestionComptesOptions',async (req, res)=>{
+    const querycomptes = 'SELECT * FROM compte';
     const queryDirections = "SELECT * FROM direction";
     const queryDepartments = "SELECT * FROM departement";
+    try {
+        // Get connection once
+        const conn = getConn();
+        // Techniques: Array destructuring and Promise resolving in batch
+        let comptes, departments, directions;
+        await Promise.all(
+        [
+            conn.query(querycomptes,(err, rows)=>{comptes=rows;} ),
+            conn.query(queryDirections,(err, rows)=>{directions=rows;}),
+            conn.query(queryDepartments,(err, rows)=>{departments=rows;}),
+        ]
+        );
+        setTimeout(() => {
+        res.render("gestionComptesOptions", {
+        data: comptes,
+        data1: directions,
+        data2: departments,
+        });},100);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
+});
+app.get('/gestionEntreprise',async (req,res)=>{
+    const queryDirections = "SELECT IDdirection,nomDirection,nomSousDirection,nomDirecteur,prenomDirecteur,nom nomSousDirecteur,prenom prenomSousDirecteur FROM (SELECT IDdirection,nomDirection,nomSousDirection,MatriculeSousDirecteur,nom nomDirecteur,prenom prenomDirecteur FROM direction AS T LEFT JOIN compte ON T.MatriculeDirecteur = compte.Matricule) AS T LEFT JOIN compte ON T.MatriculeSousDirecteur = compte.Matricule;";
+    const queryDepartments = "SELECT nomDirection,nomDepartement,IDequipe,capaciteEquipe,nomChefDep,prenomChefDep,nom nomChefEqu,prenom prenomChefEqu from (select nomDirection,nomDepartement,IDequipe,MatriculeChefEquipe,capaciteEquipe,nom nomChefDep,prenom prenomChefDep from (select nomDepartement,IDequipe,MatriculeChefEquipe,capaciteEquipe,MatriculeChefDep,nomDirection from departement AS T left join direction on T.IDdirection = direction.IDdirection) AS T left join compte ON T.MatriculeChefDep = compte.Matricule) AS T left join compte ON T.MatriculeChefEquipe = compte.Matricule;";
     try {
         // Get connection once
         const conn = getConn();
@@ -192,6 +206,49 @@ app.get('/gestionEntreprise',async (req,res)=>{
     res.end();
     }
 });
+app.post('/motPasseOubliee',async (req, res)=>{
+    const emailOubliee = req.body.emailOubliee;
+    const query1 = 'select motPasse from compte where compte.email = \"'+emailOubliee+'\";';
+    try {
+        const conn = getConn();
+        let password;
+        await Promise.all(
+        [
+            conn.query(query1,(err, row)=>{password=row[0].motPasse;}),
+            setTimeout(() => {sendMailMotPasseOubl(emailOubliee,password);},500)
+        ]
+        );
+        setTimeout(() => {res.redirect('/');},1000);
+    } catch (error) {
+        console.log('Failed : ', err);
+        res.end();
+        return;
+    }
+});
+function sendMailMotPasseOubl(emailReciever,passwordDB){
+    let emailServer = 'tresor2bilal@gmail.com';
+    let message = 'Votre Mot de Passe est: ' + passwordDB;
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: emailServer,
+            pass: 'qzxroczfstvbdfhx'
+        }
+    });
+    var mailOptions = {
+        from: emailServer,
+        to: emailReciever,
+        subject: 'Récupération MotPasse GRH AMWT',
+        text: message
+    };
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Successfully operation: ' + info.response);
+        }
+    });
+}
 app.get('/VusialisationCondidats',async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';

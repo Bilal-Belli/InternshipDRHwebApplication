@@ -20,13 +20,9 @@
             <div class="py-3"></div>
             <div class="row">
                 <div class="col d-flex justify-content-center">
-                    <a href="CreerCompte" style="text-decoration:none;">
-                        <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Creer un compte</p>
-                            </div>
-                        </div>
-                    </a>
+                    <button type="button" class="btn btn-success mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter">
+                        Creer un compte
+                    </button>
                 </div>
                 <div class="col d-flex justify-content-center">
                     <a href="supprimerCompte" style="text-decoration:none;">
@@ -48,38 +44,119 @@
                         </div>
                     </a>
                 </div>
-                <div class="col d-flex justify-content-center">
-                    <a href="" style="text-decoration:none;">
-                        <div class="card text-white bg-success mb-3" style="max-width: 25rem; width: 25rem;">
-                            <div class="card-body d-flex justify-content-center">
-                                <p class="card-text">Droits d'un compte</p>
-                            </div>
+            </div>
+            <div class="py-3"></div>
+            <!-- Form 1: creer comp -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Nouveau Compte</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </a>
+                        <div class="modal-body">
+                            <form class="login-form"  id="myFormulaire" action="/compteReg" method="POST">
+                                <!--  champ post du travail -->
+                                <div class="form-group">
+                                    <select class="custom-select my-1 mr-sm-2" id="postDeTravail" name="postDeTravail" onchange="fetchAUTO();" required>
+                                        <option disabled selected value> Type du Post </option>
+                                        <option value="Directeur">Directeur</option>
+                                        <option value="Sous Directeur">Sous Directeur</option>
+                                        <option value="Chef de Département">Chef de Département</option>
+                                        <option value="Chef d'equipe">Chef d'equipe</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+                                </div>
+                                <!-- a remplir dynamiquement -->
+                                <div id="divPost">
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-5 col-form-label" id="labelPost"></label>
+                                        <select class="custom-select my-1 mr-sm-2" id="selPost" name="selPost" required>
+                                            <option disabled selected value></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="dateCreationhidden" name="dateCreationhidden" value="">
+                                <!-- <div class="p-3"></div> -->
+                                <!--  Nom -->
+                                <div class="form-group">
+                                    <input type="text" class="form-control rounded-left" placeholder="Nom" id="nom" name="nom" required>
+                                </div>
+                                <!-- champ erreur nom -->
+                                <div class="form-group d-flex" id = "ErreurMsg_nom" style="color:red; font-size: 11.5px;"></div>
+                                <!-- Prenom -->
+                                <div class="form-group">
+                                    <input type="text" class="form-control rounded-left" placeholder="Prénom" id="prenom" name="prenom" required>
+                                </div>
+                                <!-- champ erreur prenom -->
+                                <div class="form-group d-flex" id = "ErreurMsg_prenom" style="color:red; font-size: 11.5px;"></div>
+                                <!-- Numero du telephone -->
+                                <div class="form-group">
+                                    <input type="text" class="form-control rounded-left" placeholder="N° Téléphone" id="numTel" name="numTel" required>
+                                </div>
+                                <div class="form-group d-flex" id = "ErreurMsg_numTel" style="color:red; font-size: 11.5px;"></div>
+                                <!-- Email -->                         
+                                <div class="form-group">
+                                    <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="email" name="email">
+                                </div>
+                                <!-- champ erreur Email -->
+                                <div class="form-group d-flex" id = "ErreurMsg_email" style="color:red; font-size: 11.5px;"></div>
+                                <!-- Mot de Passe -->   
+                                <div class="form-group d-flex">
+                                    <input type="password" class="form-control rounded-left" placeholder="Mot de passe" id="MotPasse1" required name="MotPasse1">
+                                <!-- the eye that hide or show password -->
+                                <a  id="icon-click1">
+                                <i class="fa fa-eye-slash"  id="icon1" style="padding: 15px"></i></a> 
+                                </div>
+                                <!-- champ erreur Mot de Passe -->
+                                <div class="form-group d-flex" id = "ErreurMsg_password_1" style="color:red; font-size: 11.5px;"></div>
+                                <!-- champ confirmation Mot de Passe -->  
+                                <div class="form-group d-flex">
+                                    <input type="password" class="form-control rounded-left" placeholder="Confirmer Mot de passe" required id="MotPasse2">
+                                <!-- the eye that hide or show password -->
+                                <a  id="icon-click2">
+                                <i class="fa fa-eye-slash" id="icon2" style="padding: 15px"></i></a>
+                                </div>
+                                <!-- champ erreur Mot de Passe -->
+                                <div class="form-group d-flex" id = "ErreurMsg_password_2" style="color:red; font-size: 11.5px;"></div>
+                                <!-- le button -->  
+                                <div class="form-group"></div>
+                                <button type="submit" id="submitBtn" class="form-control btn btn-success rounded submit px-3">Inscrivez</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="py-3"></div>
             <div class="row">
                 <!-- style="margin: 0 auto;width: 80%;" -->
-                <!-- class table-responsive -->
-                <table class="table table-hover table-responsive" id="tableID">
+                <table class="table table-hover table-responsive" style="margin: 0 auto;width: 80%;" id="tableID">
                     <thead>
                         <tr>
-                            <th scope="col">ID - E-mail</th>
+                            <th scope="col">Type de Post</th>
                             <th scope="col">Nom</th>
                             <th scope="col">Prénom</th>
+                            <th scope="col">N° Téléphone</th>
+                            <th scope="col">E-mail</th>
+                            <th scope="col">Date de Création</th>
                             <th scope="col">Mot de Passe</th>
-                            <th scope="col">Type de Post</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <% data.forEach(entry => { %>
-                            <th scope="row"><%= entry.email %></th>
+                            <th scope="row"><%= entry.typePost %></th>
                             <td><%= entry.nom %></td>
                             <td><%= entry.prenom %></td>
+                            <td><%= entry.numeroTelephone %></td>
+                            <td><%= entry.email %></td>
+                            <td><%= entry.dateCreation %></td>
                             <td><%= entry.motPasse %></td>
-                            <td><%= entry.typePost %></td>
                         </tr>
                         <% }) %>
                     </tbody>
@@ -96,25 +173,237 @@
         </div>
     </div>
 </footer>
-<!-- <script>
-    function addRowHandlers() {
-    var table = document.getElementById("tableID");
-    var rows = table.getElementsByTagName("tr");
-    for (i = 0; i < rows.length; i++) {
-        var currentRow = table.rows[i];
-        var createClickHandler = function(row) {
-                return function() { 
-                    var collogne1 = row.getElementsByTagName("td")[0];
-                    var id = collogne1.innerHTML;
-                    // alert("id:" + id);
-                    // write your logic here
-                };
-            };
-        currentRow.onclick = createClickHandler(currentRow);
+<script>
+// function used to unicode some special caracters when fetch from database
+function decodeHTMLEntities(text) {
+    var entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
+    for (var i = 0, max = entities.length; i < max; ++i) {
+        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+    }
+    return text;
+};
+
+// function that display available directions or sous directions or departements or teams
+function fetchAUTO(){
+    let text = document.getElementById("postDeTravail").options[document.getElementById("postDeTravail").selectedIndex].text;
+    let dirsdata = JSON.parse(document.getElementById('dirsdata').innerHTML);
+    let depsdata = JSON.parse(document.getElementById('depsdata').innerHTML);
+    if(text == "Directeur"){
+        document.getElementById('labelPost').innerHTML = "Direction";
+        document.getElementById('selPost').innerHTML = "";
+        for(i=0;i<dirsdata.length;i++){
+                document.getElementById('selPost').innerHTML += "<option value=\""+decodeHTMLEntities(dirsdata[i].nomDirection)+"\">"+decodeHTMLEntities(dirsdata[i].nomDirection)+"</option>";
+        }
+    } else{
+        if(text == "Sous Directeur"){
+            document.getElementById('labelPost').innerHTML = "Sous Direction";
+            document.getElementById('selPost').innerHTML = "";
+            for(i=0;i<dirsdata.length;i++){
+                document.getElementById('selPost').innerHTML += "<option value=\""+decodeHTMLEntities(dirsdata[i].nomSousDirection)+"\">"+decodeHTMLEntities(dirsdata[i].nomSousDirection)+"</option>";
+            }
+        } else{
+            if(text == "Chef de Département"){
+                document.getElementById('labelPost').innerHTML = "Département";
+                document.getElementById('selPost').innerHTML = "";
+                for(i=0;i<depsdata.length;i++){
+                document.getElementById('selPost').innerHTML += "<option value=\""+decodeHTMLEntities(depsdata[i].nomDepartement)+"\">"+decodeHTMLEntities(depsdata[i].nomDepartement)+"</option>";
+                }
+            } else{
+                if(text == "Chef d'equipe"){
+                    document.getElementById('labelPost').innerHTML = "Equipe";
+                    document.getElementById('selPost').innerHTML = "";
+                    for(i=0;i<depsdata.length;i++){
+                        document.getElementById('selPost').innerHTML += "<option value=\""+decodeHTMLEntities(depsdata[i].IDequipe)+"\">"+decodeHTMLEntities(depsdata[i].IDequipe)+"</option>";
+                    }
+            } else{
+
+            }
+            }
         }
     }
-    window.onload = addRowHandlers();
-</script> -->
+};
+</script>
+<!-- data dir -->
+<script id="dirsdata" type="application/json">
+    [
+        <% data1.forEach(entry => { %>
+        {"nomDirection":"<%= entry.nomDirection%>",
+        "nomSousDirection":"<%= entry.nomSousDirection%>",
+        "IDdirection":"<%= entry.IDdirection %>"},
+    <% }) %>
+{}]
+</script>
+<!-- data dep -->
+<script id="depsdata" type="application/json">
+    [
+        <% data2.forEach(entry => { %>
+        {"nomDepartement":"<%= entry.nomDepartement%>",
+        "IDequipe":"<%= entry.IDequipe%>",
+        "IDdepartement":"<%= entry.IDdepartement %>"},
+    <% }) %>
+{}]
+</script>
+<script>
+    var d = new Date();
+    document.getElementById('dateCreationhidden').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+</script>
+<script>
+    // let validSubmit=false;
+    const validSubmit = new Array(5).fill(false);
+    $(document).ready(function() {
+    $("#icon-click1").click(function() {
+        var className = $("#icon1").attr('class');
+        className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
+        $("#icon1").attr('class', className);
+        var input = $("#MotPasse1");
+        if (input.attr("type") == "text") {
+        input.attr("type", "password");
+        } else {
+        input.attr("type", "text");
+        }
+    });
+    });
+    $(document).ready(function() {
+    $("#icon-click2").click(function() {
+        var className = $("#icon2").attr('class');
+        className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
+        $("#icon2").attr('class', className);
+        var input = $("#MotPasse2");
+        if (input.attr("type") == "text") {
+        input.attr("type", "password");
+        } else {
+        input.attr("type", "text");
+        }
+    });
+    });
+    $(document).ready(function() {
+        $('#nom').on('input', function() {
+            var input = $(this);
+            var re = /^[A-Za-z]+$/;
+            var is_name = input.val();
+            if (is_name == "") { 
+                document.getElementById("ErreurMsg_nom").innerHTML = "Vous devez remplis ce champ";
+                input.removeClass("valid").addClass("invalid");
+                validSubmit[0]=false;
+            } else {
+                if (!isNaN(is_name) || !re.test(is_name)) { 
+                    document.getElementById("ErreurMsg_nom").innerHTML = "Le nom doit ne contient que des caracteres";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmit[0]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmit[0]=true;
+                    document.getElementById("ErreurMsg_nom").innerHTML = "";
+                }
+            }
+            if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false){
+            document.getElementById("submitBtn").disabled = true;
+            } else {
+                document.getElementById("submitBtn").disabled = false;
+            }
+        });
+        $('#prenom').on('input', function() {
+            var input = $(this);
+            var re = /^[A-Za-z]+$/;
+            var is_prenom = input.val();
+            if (is_prenom == "") {
+                document.getElementById("ErreurMsg_prenom").innerHTML = "Le nom ne doit contient que des caracteres";
+                input.removeClass("valid").addClass("invalid");
+                validSubmit[1]=false;
+            } else {
+                if (!isNaN(is_prenom) || !re.test(is_prenom)) {
+                    document.getElementById("ErreurMsg_prenom").innerHTML = "Le prenom ne doit contient que des caracteres";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmit[1]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmit[1]=true;
+                    document.getElementById("ErreurMsg_prenom").innerHTML = "";
+                }
+            }
+            if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false){
+            document.getElementById("submitBtn").disabled = true;
+            } else {
+                document.getElementById("submitBtn").disabled = false;
+            }
+        });
+        $('#email').on('input', function() {
+            var input = $(this);
+            var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]*$/;
+            var is_email = input.val();
+            if (is_email == "") {
+                document.getElementById("ErreurMsg_email").innerHTML = "Vous devez remplis ce champ";
+                input.removeClass("valid").addClass("invalid");
+                validSubmit[2]=false;
+            } else {
+                if (re.test(is_email)) {
+                    document.getElementById("ErreurMsg_email").innerHTML = "Vous devez respecter le format d'un Email";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmit[2]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmit[2]=true;
+                    document.getElementById("ErreurMsg_email").innerHTML = "";
+                }
+            }
+            if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false){
+            document.getElementById("submitBtn").disabled = true;
+            } else {
+                document.getElementById("submitBtn").disabled = false;
+            }
+        });
+        $('#MotPasse1').on('input', function() {
+            var input = $(this);
+            var is_password = input.val();
+            if (is_password == "") {
+                document.getElementById("ErreurMsg_password_1").innerHTML = "Veuillez entrer un mot de passe";
+                input.removeClass("valid").addClass("invalid");
+                validSubmit[3]=false;
+            } else {
+                if (is_password.length < 8) {
+                    document.getElementById("ErreurMsg_password_1").innerHTML = "Le mot de passe est plus de 8 caractères";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmit[3]=false;
+                } else {
+                    if (is_password.length > 16) {
+                        document.getElementById("ErreurMsg_password_1").innerHTML = "Le mot de passe ne dépasse pas 16 caractères";
+                        input.removeClass("valid").addClass("invalid");
+                        validSubmit[3]=false;
+                    } else {
+                        input.removeClass("invalid").addClass("valid");
+                        validSubmit[3]=true;
+                        document.getElementById("ErreurMsg_password_1").innerHTML = "";
+                    }
+                }
+            }
+            if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false){
+            document.getElementById("submitBtn").disabled = true;
+            } else {
+                document.getElementById("submitBtn").disabled = false;
+            }
+        });
+        $('#MotPasse2').on('input', function() {
+            var input = $(this);
+            var input_2 = $(MotPasse1);
+            var pw2 = input.val();
+            var pw1 = input_2.val();
+            if (pw1 != pw2) {
+                document.getElementById("ErreurMsg_password_2").innerHTML = "Les deux Mots de passes ne sont pas identiques";
+                input.removeClass("valid").addClass("invalid");
+                validSubmit[4]=false;
+            } else {
+                input.removeClass("invalid").addClass("valid");
+                validSubmit[4]=true;
+                document.getElementById("ErreurMsg_password_2").innerHTML = "";
+            }
+            if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false){
+            document.getElementById("submitBtn").disabled = true;
+            } else {
+                document.getElementById("submitBtn").disabled = false;
+            }
+        });
+    });
+</script> 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>    
