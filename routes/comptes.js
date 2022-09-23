@@ -61,7 +61,7 @@ router.post('/compteReg',async (req, res)=>{
         await Promise.all(
         [
             conn.query(sql,[values],(err, rows)=>{compt=rows;}),
-            setTimeout(() => {sql2 = editQuery(postDeTravail,compt.insertId,selPost); console.log(sql2);},200),
+            setTimeout(() => {sql2 = editQuery(postDeTravail,compt.insertId,selPost);},200),
             setTimeout(() => {conn.query(sql2,(err, rows)=>{directions=rows;})},500),
         ]
         );
@@ -83,10 +83,10 @@ function editQuery(PT,MTR,SPT){
             query = 'UPDATE direction SET direction.MatriculeSousDirecteur = '+MTR+' where direction.nomSousDirection = \"'+SPT+'\"';
         } else{
             if(PT == "Chef de Département"){
-                query = 'UPDATE departement SET departement.MatriculeDirecteur = '+MTR+' where departement.nomDepartement = \"'+SPT+'\"';
+                query = 'UPDATE departement SET departement.MatriculeChefDep = '+MTR+' where departement.nomDepartement = \"'+SPT+'\"';
             } else{
                 if(PT == "Chef d'equipe"){
-                    query = 'UPDATE departement SET departement.MatriculeDirecteur = '+MTR+' where departement.IDequipe = \"'+SPT+'\"';
+                    query = 'UPDATE departement SET departement.MatriculeChefEquipe = '+MTR+' where departement.IDequipe = \"'+SPT+'\"';
                 };
             };
         };
@@ -137,21 +137,48 @@ router.post('/editCompte', (req, res)=>{
         }
     });
 });
-router.post('/supprimerCompte', (req, res)=>{
-    console.log('DELETE AN ACCOUNT');
-    const email = req.body.email;
-    const sql = 'DELETE FROM compte WHERE compte.email = \"'+email+'\"';
-    getConn().query(sql,(err)=>{
-        if(err){
-            console.log('Failed : ', err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            res.redirect('/gestionComptesOptions');
-            return;
+router.post('/supprimerCompte',async (req, res)=>{
+    const hiddenQR = req.body.hiddenQR;
+    let result = [];
+    let query1 = 'DELETE FROM compte WHERE ';
+    let query2 = 'UPDATE direction SET direction.MatriculeDirecteur = null where ';
+    let query3 = 'UPDATE direction SET direction.MatriculeSousDirecteur = null where ';
+    let query4 = 'UPDATE departement SET departement.MatriculeChefDep = null where ';
+    let query5 = 'UPDATE departement SET departement.MatriculeChefEquipe = null where ';
+    result = hiddenQR.match(/("[^"]+"|[^"\s]+)/g);
+    for(rr=0;rr<result.length;rr++) {
+        if (rr == (result.length - 1)){
+            query1 += "compte.Matricule = " + result[rr] + " ; ";
+            query2 += "direction.MatriculeDirecteur = " + result[rr] + " ; ";
+            query3 += "direction.MatriculeSousDirecteur = " + result[rr] + " ; ";
+            query4 += "departement.MatriculeChefDep = " + result[rr] + " ; ";
+            query5 += "departement.MatriculeChefEquipe = " + result[rr] + " ; ";
+        }else{
+            query1 += "compte.Matricule = " + result[rr] + " or ";
+            query2 += "direction.MatriculeDirecteur = " + result[rr] + " or ";
+            query3 += "direction.MatriculeSousDirecteur = " + result[rr] + " or ";
+            query4 += "departement.MatriculeChefDep = " + result[rr] + " or ";
+            query5 += "departement.MatriculeChefEquipe = " + result[rr] + " or ";
         }
-    })
+    }
+    try {
+        const conn = getConn();
+        await Promise.all(
+        [
+            setTimeout(() => {conn.query(query1)},200),
+            conn.query(query2),
+            conn.query(query3),
+            conn.query(query4),
+            conn.query(query5),
+        ]
+        );
+        setTimeout(() => {
+            res.redirect('/gestionComptesOptions');
+            return; },300);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
 router.post('/ajouterDir',async (req, res)=>{
     // const idDir = req.body.idDir;
