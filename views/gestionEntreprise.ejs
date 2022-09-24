@@ -36,9 +36,11 @@
                 </button>
             </div>
             <div class="col d-flex justify-content-center">
-                <button type="button" id="btnsup_1" class="btn btn-danger mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter2" onclick="getSelectesAccounts_1();" disabled>
-                    Supprimer les Directions séléctionnées
-                </button>
+                <a title="Remarquer" data-toggle="popover" data-trigger="hover" data-content="Vous ne peuvez pas supprimer des Directions si et seulement si tout les départements et les personnes inclus sont aussi supprimées">
+                    <button type="button" id="btnsup_1" class="btn btn-danger mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter2" onclick="getSelectesAccounts_1();" disabled>
+                        Supprimer les Directions séléctionnées
+                    </button>
+                </a>
             </div>
         </div>
         <div class="py-3"></div>
@@ -82,9 +84,11 @@
                 </button>
             </div>
             <div class="col d-flex justify-content-center">
-                <button type="button" id="btnsup_2" class="btn btn-danger mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter4" onclick="getSelectesAccounts_2();" disabled>
-                    Supprimer les Départements séléctionnées
-                </button>
+                <a title="Remarquer" data-toggle="popover" data-trigger="hover" data-content="Vous ne peuvez pas supprimer des Départements si et seulement si tout les personnes inclus sont tous supprimées">
+                    <button type="button" id="btnsup_2" class="btn btn-danger mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter4" onclick="getSelectesAccounts_2();" disabled>
+                        Supprimer les Départements séléctionnées
+                    </button>
+                </a>
             </div>
         </div>
         <div class="row" style="overflow-x:auto;">
@@ -103,7 +107,7 @@
                 <tbody>
                     <tr>
                         <% data2.forEach(entry => { %>
-                        <td><input type="checkbox" name="tab2" id="<%= entry.nomDirection %>" onclick="checkCHKBOX_2();"></td>
+                        <td><input type="checkbox" name="tab2" id="<%= entry.IDdepartement %>" onclick="checkCHKBOX_2();"></td>
                         <td><%= entry.nomDirection %></td>
                         <td><%= entry.nomDepartement %></td>
                         <td><%= entry.IDequipe %></td>
@@ -161,8 +165,9 @@
                 </div>
                 <div class="modal-body">
                     <!-- here i put the form code -->
-                    <form action="" method="POST">
+                    <form action="/supprimerDir" method="POST">
                         <h6 class="text-danger">Cette action n'est pas récéproque</h6>
+                        <h6 class="text-danger">Vous ne peuvez pas supprimer des Directions si et seulement si tout les départements et les personnes inclus sont aussi supprimées</h6>
                         <input type="hidden" id="hiddenQR_1" name="hiddenQR_1" value="">
                         <button type="submit" class="form-control btn btn-danger rounded submit px-3">Supprimer</button>
                     </form>
@@ -227,8 +232,9 @@
                 </div>
                 <div class="modal-body">
                     <!-- here i put the form code -->
-                    <form action="" method="POST">
+                    <form action="/supprimerDep" method="POST">
                         <h6 class="text-danger">Cette action n'est pas récéproque</h6>
+                        <h6 class="text-danger">Vous ne peuvez pas supprimer des Départements si et seulement si tout les personnes inclus sont tous supprimées</h6>
                         <input type="hidden" id="hiddenQR_2" name="hiddenQR_2" value="">
                         <button type="submit" class="form-control btn btn-danger rounded submit px-3">Supprimer</button>
                     </form>
@@ -256,6 +262,7 @@
         $('#tableID_2').DataTable({     
         "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
         "iDisplayLength": 5});
+        $('[data-toggle="popover"]').popover();
     });
 
     // function that check all checkboxes inputs

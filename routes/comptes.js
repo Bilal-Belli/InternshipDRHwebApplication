@@ -235,20 +235,25 @@ router.post('/ajouterDep',async (req, res)=>{
     }
 });
 router.post('/supprimerDir',async (req, res)=>{
-    const DIR = req.body.DIR;
-    const query1 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteDirecteur from direction where IDdirection=\"'+DIR+'\")';
-    const query2 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteSousDirecteur from direction where IDdirection=\"'+DIR+'\")';
-    const query3 = 'DELETE FROM direction WHERE direction.IDdirection = \"'+DIR+'\"';
+    const hiddenQR_1 = req.body.hiddenQR_1;
+    let result = [];
+    let query1 = 'DELETE FROM direction WHERE ';
+    result = hiddenQR_1.match(/("[^"]+"|[^"\s]+)/g);
+    for(rr=0;rr<result.length;rr++) {
+        if (rr == (result.length - 1)){
+            query1 += "( direction.MatriculeDirecteur is null and direction.MatriculeSousDirecteur is null and direction.IDdirection = " + result[rr] + ") ; ";
+        }else{
+            query1 += " ( direction.MatriculeDirecteur is null and direction.MatriculeSousDirecteur is null and direction.IDdirection = " + result[rr] + ") or ";
+        }
+    }
     try {
         const conn = getConn();
         await Promise.all(
         [
-            conn.query(query1,(err)=>{console.log('Failed1 : ', err);}),
-            conn.query(query2,(err)=>{console.log('Failed2 : ', err);}),
-            setTimeout(() => {conn.query(query3,(err)=>{console.log('Failed3 : ', err);})},1000)
+            conn.query(query1,(err)=>{if(err) console.log('Failed : ', err);}),
         ]
         );
-        setTimeout(() => {res.redirect('/gestionEntreprise');},1500);
+        setTimeout(() => {res.redirect('/gestionEntreprise');},400);
     } catch (error) {
         console.log('Failed : ', err);
         res.redirect(req.get('referer'));
@@ -257,22 +262,25 @@ router.post('/supprimerDir',async (req, res)=>{
     }
 });
 router.post('/supprimerDep',async (req, res)=>{
-    const DEP = req.body.DEP;
-    const query1 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteChefDep from departement where IDdepartement=\"'+DEP+'\")';
-    const query2 = 'UPDATE compte SET compte.compteActif = false where compte.email=(select emailCompteChefEquipe from departement where IDdepartement=\"'+DEP+'\")';
-    const query3 = 'UPDATE condidat SET condidat.IDequipe=\"\" where condidat.IDequipe = (select IDequipe from departement where IDdepartement=\"'+DEP+'\")';
-    const query4 = 'DELETE FROM departement WHERE departement.IDdepartement = \"'+DEP+'\"';
+    const hiddenQR_2 = req.body.hiddenQR_2;
+    let result = [];
+    let query1 = 'DELETE FROM departement WHERE ';
+    result = hiddenQR_2.match(/("[^"]+"|[^"\s]+)/g);
+    for(rr=0;rr<result.length;rr++) {
+        if (rr == (result.length - 1)){
+            query1 += "( departement.MatriculeChefDep is null and departement.MatriculeChefEquipe is null and departement.IDdepartement = " + result[rr] + ") ; ";
+        }else{
+            query1 += " ( departement.MatriculeChefDep is null and departement.MatriculeChefEquipe is null and departement.IDdepartement = " + result[rr] + ") or ";
+        }
+    }
     try {
         const conn = getConn();
         await Promise.all(
         [
-            conn.query(query1,(err)=>{console.log('Failed1 : ', err);}),
-            conn.query(query2,(err)=>{console.log('Failed2 : ', err);}),
-            conn.query(query3,(err)=>{console.log('Failed3 : ', err);}),
-            setTimeout(() => {conn.query(query4,(err)=>{console.log('Failed4 : ', err);})},1000)
+            conn.query(query1,(err)=>{if(err) console.log('Failed : ', err);}),
         ]
         );
-        setTimeout(() => {res.redirect('/gestionEntreprise');},1500);
+        setTimeout(() => {res.redirect('/gestionEntreprise');},400);
     } catch (error) {
         console.log('Failed : ', err);
         res.redirect(req.get('referer'));
