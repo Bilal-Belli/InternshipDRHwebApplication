@@ -16,11 +16,18 @@
     <div class="container">
         <div class="py-3"></div>
         <div class="row">
-            <table id="example" class="table table-striped table-bordered table-responsive table-hover" style="width:100%">
+            <div class="col d-flex justify-content-center">
+                <button type="button" id="btnaff" class="btn btn-primary mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#affcondid_popup" onclick="getSelectesAccounts();" disabled>
+                    Affecter les condidats séléctionnées
+                </button>
+            </div>
+        </div>
+        <div class="row"  style="overflow-x:auto;">
+            <table id="tableID" class="table table-striped table-bordered table-responsive table-hover" style="width:100%">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" onclick="checkAll(this)"></th>
-                        <th>ID</th>
+                        <th><input type="checkbox" onclick="checkAll(this)" name="firstcheckbox"></th>
+                        <th>#</th>
                         <th>Nom</th>
                         <th>Prénom</th>
                         <th>E-mail</th>
@@ -38,22 +45,24 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <% let index_1 = 0; %>
                         <% data.forEach(entry => { %>
-                            <td><input type="checkbox" name=""></td>
-                            <td>numero</td>
-                            <td><%= entry.nomCondidat %></td>
-                            <td><%= entry.prenomCondidat %></td>
-                            <td><%= entry.emailCondidat %></td>
-                            <td><%= entry.specialite %></td>
-                            <td><%= entry.degree %></td>
-                            <td><%= entry.etablissement %></td>
-                            <td><%= entry.adressComplet %></td>
-                            <td><%= entry.wilaya %></td>
-                            <td><%= entry.numeroTel %></td>
-                            <td><a href="<%= entry.pathCV %>">CV</a></td>
-                            <td><%= entry.remarques %></td>
-                            <td><%= entry.IDequipe %></td>
-                            <td id="<%= entry.IDcondidat %>"></td>
+                        <% index_1++; %>
+                        <td><input type="checkbox" name="<%= entry.IDcondidat %>" onclick="checkCHKBOX();"></td>
+                        <td><%= index_1 %></td>
+                        <td><%= entry.nomCondidat %></td>
+                        <td><%= entry.prenomCondidat %></td>
+                        <td><%= entry.emailCondidat %></td>
+                        <td><%= entry.specialite %></td>
+                        <td><%= entry.degree %></td>
+                        <td><%= entry.etablissement %></td>
+                        <td><%= entry.adressComplet %></td>
+                        <td><%= entry.wilaya %></td>
+                        <td><%= entry.numeroTel %></td>
+                        <td><a href="<%= entry.pathCV %>">CV</a></td>
+                        <td><%= entry.remarques %></td>
+                        <td><%= entry.IDequipe %></td>
+                        <td id="<%= entry.IDcondidat %>"></td>
                     </tr>
                     <% }) %>
                 </tbody>
@@ -62,6 +71,57 @@
     </div>
     <div class="py-3"></div>
     <div class="py-3"></div>
+    <!-- Form 1: affecter condidat -->
+    <div class="modal fade" id="affcondid_popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Affecter les condidats</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST">
+                        <h6>Veuillez choisir en quelle equipe vous voulez affecter les condidats séléctionnes</h6>
+                        <h6 class="text-danger">Note: si la capacité de l'équipe choisie ne suffit pas, vous devez soit sortir quelques condidats soit changer d'equipe!</h6>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-4 col-form-label">Direction</label>
+                            <select class="custom-select my-1 mr-sm-2" id="selDir" name="selDir" required>
+                                <option disabled selected value> Choisir quelle direction </option>
+                                <% data3.forEach(entry => { %>
+                                    <option value="<%= entry.nomDirection %>"><%= entry.nomDirection %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-4 col-form-label">Sous Direction</label>
+                            <input type="text" class="form-control rounded-left" id="idSD" value="" readonly>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-4 col-form-label">Département</label>
+                            <select class="custom-select my-1 mr-sm-2" id="selDep" name="selDep" required>
+                                <option disabled selected value> Choisir quelle département </option>
+                                <% data3.forEach(entry => { %>
+                                    <option value="<%= entry.nomDirection %>"><%= entry.nomDirection %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-4 col-form-label">Equipe</label>
+                            <input type="text" class="form-control rounded-left" id="selE" value="" readonly>
+                        </div>
+                        <input type="hidden" id="capaACTUELLE" name="capaACTUELLE" value="">
+                        <input type="hidden" id="hiddenQR" name="hiddenQR" value="">
+                        <button type="submit" class="form-control btn btn-primary rounded submit px-3">Affecter</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <footer class="fixed-bottom">
     <div class="bg-secondary">
@@ -76,6 +136,17 @@
     {"IDdiplome":"<%= entry.IDdiplome %>",
     "IDcondidat":"<%= entry.IDcondidat %>",
     "pathDiplome":"<%= entry.pathDiplome %>"},
+<% }) %>
+{}]
+</script>
+<script id="Propsdata" type="application/json">
+[
+    <% data3.forEach(entry => { %>
+    {"nomDirection":"<%= entry.nomDirection %>",
+    "nomSousDirection":"<%= entry.nomSousDirection %>",
+    "nomDepartement":"<%= entry.nomDepartement %>",
+    "IDequipe":"<%= entry.IDequipe %>",
+    "capaciteEquipe":"<%= entry.capaciteEquipe %>"},
 <% }) %>
 {}]
 </script>
@@ -96,20 +167,54 @@ for (m=0; m< Diplomesdata.length; m++){
 };
 </script>
 <script>
-$(document).ready(function() {
-    $('#example').DataTable({     
-    "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
-    "iDisplayLength": 5});
-});
-function checkAll(bx) {
-    var cbs = document.getElementsByTagName('input');
-    for(var i=0; i < cbs.length; i++) {
-        if(cbs[i].type == 'checkbox') {
-        cbs[i].checked = bx.checked;
+    // function to limit showing rows of table
+    $(document).ready(function() {
+        $('#tableID').DataTable({     
+        "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+        "iDisplayLength": 5});
+    });
+
+    // function to check all checkboxes on the table
+    function checkAll(bx) {
+        var cbs = document.getElementsByTagName('input');
+        for(var i=0; i < cbs.length; i++) {
+            if(cbs[i].type == 'checkbox') {
+            cbs[i].checked = bx.checked;
+            }
+        }
+        checkCHKBOX();
+    }
+
+    // function to fill hidden input to pass data to backend
+    function getSelectesAccounts(){
+        var cbs = document.getElementsByTagName('input');
+        document.getElementById('hiddenQR').value = "";
+        for(var i=0; i < cbs.length; i++) {
+            if(cbs[i].type === 'checkbox' && cbs[i].checked === true) {
+                document.getElementById('hiddenQR').value += cbs[i].name+" ";
+            }
         }
     }
-}
+
+    // function that enable click on affect button
+    function checkCHKBOX(){
+        var cbs = document.getElementsByTagName('input');
+        let affpossible = false;
+        for(var i=0; i < cbs.length; i++) {
+            if(cbs[i].type == 'checkbox' && cbs[i].checked === true && cbs[i].name != 'firstcheckbox') {
+                affpossible = true;
+                break;
+            }
+        }
+        if (affpossible == true){
+            document.getElementById('btnaff').disabled = false;
+        } else {
+            document.getElementById('btnaff').disabled = true;
+        }
+    }
 </script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>    
 </html>

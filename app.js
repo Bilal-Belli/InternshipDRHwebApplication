@@ -274,19 +274,22 @@ app.get('/VusialisationCondidats',async (req, res)=>{
 app.get('/VusialisationCondidatsUser',async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
+    const query3 = 'select nomDirection,nomSousDirection,nomDepartement,IDequipe,capaciteEquipe from departement natural join direction';
     try {
         const conn = getConn();
-        let condidats, diplomes_;
+        let condidats, diplomes_,props_;
         await Promise.all(
         [
             conn.query(query1,(err, rows)=>{condidats=rows;}),
-            conn.query(query2,(err, rows)=>{diplomes_=rows;})
+            conn.query(query2,(err, rows)=>{diplomes_=rows;}),
+            conn.query(query3,(err, rows)=>{props_=rows;}),
         ]
         );
         setTimeout(() => {
         res.render("VusialisationCondidatsUser", {
         data: condidats,
-        data2: diplomes_
+        data2: diplomes_,
+        data3: props_
         });},100);
     } catch (error) {
     console.log(error);

@@ -207,24 +207,17 @@ router.post('/ajouterDir',async (req, res)=>{
     }
 });
 router.post('/ajouterDep',async (req, res)=>{
-    // const idDep = req.body.idDep;
     const nomDep = req.body.nomDep;
-    // const confEMAILCD = req.body.confEMAILCD;
     const selectedD = req.body.selectedD;
     const idE = req.body.idE;
-    // const confCE = req.body.confCE;
     const capE = req.body.capE;
     const sql1 = 'INSERT INTO departement VALUES ?';
-    // const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confEMAILCD+'\"';
-    // const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+confCE+'\"';
     const values = [[null, nomDep, selectedD, idE, null, null, capE]];
     try {
         const conn = getConn();
         await Promise.all(
         [
             conn.query(sql1,[values],(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};} ),
-            // conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
-            // conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
         ]
         );
         res.redirect('/gestionEntreprise');
