@@ -68,13 +68,17 @@ app.post('/InsererCondidat',async (req, res)=>{
     // console.log(req.files.pathcv); //show the object
     let documentCV = req.files.pathcv;
     let documentsDiplomes = req.files.diplomes;
+    let documentsPID = req.files.PID;
+
     let nb_diplomes = req.files.diplomes.length;
+    let nb_PID = req.files.PID.length;
+
     let nomDiplomes = [];
+    let nomPID = [];
+
     let uploadPathDiplome = [];
     let uploadPathPID = [];
-    let documentsPID = req.files.PID;
-    let nb_PID = req.files.PID.length;
-    let nomPID = [];
+    
     // console.log(req.files.PID[0].name);
     for(i=0;i<nb_PID;i++){
         nomPID[i] = Nom+"_"+Prenom+"_PID_"+documentsPID[i].name;
@@ -145,7 +149,7 @@ function affectPIDstoSpecificCondidat(nb_PIDs_,queryvalues_,nomPIDs_,newInserted
         queryvalues_[i] = [null,nomPIDs_[i],newInsertedID_];
     };
 };
-app.post('/modifierInfosCondidat',(req, res)=>{
+app.post('/modifierInfosCondidat',async (req, res)=>{
     const Nom = req.body.Nom;
     const Prenom = req.body.Prenom;
     const email = req.body.email;
@@ -157,35 +161,139 @@ app.post('/modifierInfosCondidat',(req, res)=>{
     const numeroTel = req.body.numeroTel;
     const Remarques = req.body.Remarques;
     const condidatIDhidden = req.body.condidatIDhidden;
-    // console.log(req.files.pathcv); //show the object
     Diplome=Diplome.replace(/'/g, "\\'");
-    let documentCV = req.files.pathcv;
-    const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name;
-    // here is where to save the file after upload
-    let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
-    // Use mv() to place file on the server
-    documentCV.mv(uploadPath, function (err) {
-        if (err) {
-            console.log("error on moving file :",err);
-            res.status(500);
-            return res.send(err);
-        } 
-        return;
-    });
-    // const pathcv = documentCV.name;
-    const sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.degree = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.pathCV = \''+newNameForCV+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
-    getConn().query(sql,(err, results, fields)=>{
-        if(err){
-            console.log('Failed : ',err);
-            res.redirect(req.get('referer'));
-            res.end();
-            return;
-        } else{
-            console.log('Operation Successfully');
-            res.redirect('/InsererCondidat');
-            return;
+    var sql;
+    var sql2;
+    var sql3;
+    let queryvaluesPID=[];
+    let queryvalues=[];
+    let hpid = req.body.hpid;
+    let hdip = req.body.hdip;
+    let hcv = req.body.hcv;
+    if(req.files != null){
+        if (hcv == ''){
+            sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
+            } else{
+            let documentCV = req.files.pathcv;
+            const newNameForCV = Nom+"_"+Prenom+"_CV_"+documentCV.name;
+            let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
+            documentCV.mv(uploadPath, function (err) {
+                if (err) {
+                    console.log("error on moving file :",err);
+                    res.status(500);
+                    return res.send(err);
+                } 
+                return;
+            });
+            sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.pathCV = \''+newNameForCV+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
         }
-    });
+
+        if (hpid != ''){
+            let nb_PID;
+            let nomPID = [];
+            let uploadPathPID = [];
+            let documentsPID = req.files.PID;
+            if(documentsPID.length == null){
+                nb_PID = 1;
+                for(i=0;i<nb_PID;i++){
+                    nomPID[i] = Nom+"_"+Prenom+"_PID_"+documentsPID.name;
+                };
+                for(i=0;i<nb_PID;i++){
+                    uploadPathPID[i] = __dirname + '/FileslocalStorage/' + nomPID[i];
+                    documentsPID.mv(uploadPathPID[i], function (err) {
+                        if (err) {
+                            console.log("error on moving file :",err);
+                            res.status(500);
+                            return res.send(err);
+                        } ;
+                        return;
+                    });
+                };
+            } else {
+                nb_PID = req.files.PID.length;
+                for(i=0;i<nb_PID;i++){
+                    nomPID[i] = Nom+"_"+Prenom+"_PID_"+documentsPID[i].name;
+                };
+                for(i=0;i<nb_PID;i++){
+                    uploadPathPID[i] = __dirname + '/FileslocalStorage/' + nomPID[i];
+                    documentsPID[i].mv(uploadPathPID[i], function (err) {
+                        if (err) {
+                            console.log("error on moving file :",err);
+                            res.status(500);
+                            return res.send(err);
+                        } ;
+                        return;
+                    });
+                };
+            }
+            sql2 = 'INSERT INTO pieceIDentite VALUES ?';
+            affectPIDstoSpecificCondidat(nb_PID,queryvaluesPID,nomPID,condidatIDhidden);
+        } else{
+            sql2 = 'SELECT 1 WHERE false';
+        }
+    
+        if (hdip != ''){
+            let nb_diplomes;
+            let nomDiplomes = [];
+            let uploadPathDiplome = [];
+            let documentsDiplomes = req.files.diplomes;
+            if(documentsDiplomes.length == null){
+                nb_diplomes = 1;
+                for(i=0;i<nb_diplomes;i++){
+                    nomDiplomes[i] = Nom+"_"+Prenom+"_DIPLOME_"+documentsDiplomes.name;
+                };
+                for(i=0;i<nb_diplomes;i++){
+                    uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
+                    documentsDiplomes.mv(uploadPathDiplome[i], function (err) {
+                        if (err) {
+                            console.log("error on moving file :",err);
+                            res.status(500);
+                            return res.send(err);
+                        } ;
+                        return;
+                    });
+                };
+            } else {
+                nb_diplomes = req.files.diplomes.length;
+                for(i=0;i<nb_diplomes;i++){
+                    nomDiplomes[i] = Nom+"_"+Prenom+"_DIPLOME_"+documentsDiplomes[i].name;
+                };
+                for(i=0;i<nb_diplomes;i++){
+                    uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
+                    documentsDiplomes[i].mv(uploadPathDiplome[i], function (err) {
+                        if (err) {
+                            console.log("error on moving file :",err);
+                            res.status(500);
+                            return res.send(err);
+                        } ;
+                        return;
+                    });
+                };
+            }
+            sql3 = 'INSERT INTO diplome VALUES ?';
+            affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,condidatIDhidden);
+        } else{
+            sql3 = 'SELECT 1 WHERE false';
+        }
+        } else {
+        sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
+        sql2 = 'SELECT 1 WHERE false';
+        sql3 = 'SELECT 1 WHERE false';
+    }
+    try {
+        let conn = getConn();
+        await Promise.all(
+        [
+            conn.query(sql),
+            setTimeout(() => {conn.query(sql2,[queryvaluesPID])},500),
+            setTimeout(() => {conn.query(sql3,[queryvalues])},600),
+        ]
+        );
+        setTimeout(() => {res.redirect('/InsererCondidat');},1000);
+    } catch (error) {
+    console.log(error);
+    res.end();
+    }
 });
 app.get('/gestionComptesOptions',async (req, res)=>{
     const querycomptes = 'SELECT * FROM compte';
