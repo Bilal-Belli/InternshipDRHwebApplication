@@ -31,13 +31,15 @@ app.get('/modifierCompte',(req,res)=>{
 app.get('/InsererCondidat',async (req,res)=>{
     const sql = 'SELECT * FROM condidat';
     const sql2 = "SELECT * FROM diplome";
+    const sql3 = "SELECT * FROM pieceidentite";
     try {
         const conn = getConn();
-        let condidats, diplomes;
+        let condidats, diplomes, pieceidentites;
         await Promise.all(
         [
             conn.query(sql,(err, rows)=>{condidats=rows;}),
             conn.query(sql2,(err, rows)=>{diplomes=rows;}),
+            conn.query(sql3,(err, rows)=>{pieceidentites=rows;}),
         ]
         );
         setTimeout(() => {
@@ -45,6 +47,7 @@ app.get('/InsererCondidat',async (req,res)=>{
             res.render("InsererCondidat", {
             data: condidats,
             data2: diplomes,
+            data3: pieceidentites,
         });},100);
     } catch (error) {
     console.log(error);
@@ -68,11 +71,32 @@ app.post('/InsererCondidat',async (req, res)=>{
     let nb_diplomes = req.files.diplomes.length;
     let nomDiplomes = [];
     let uploadPathDiplome = [];
-    for(i=0;i<nb_diplomes;i++){
-        nomDiplomes[i] = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentsDiplomes[i].name;
+    let uploadPathPID = [];
+    let documentsPID = req.files.PID;
+    let nb_PID = req.files.PID.length;
+    let nomPID = [];
+    // console.log(req.files.PID[0].name);
+    for(i=0;i<nb_PID;i++){
+        nomPID[i] = Nom+"_"+Prenom+"_PID_"+documentsPID[i].name;
+        // console.log(nomPID[i]);
     };
-    const newNameForCV = Nom+"_"+Prenom+"_"+(Math.random() + 1).toString(36).substring(7)+"_"+documentCV.name;
-    // here is where to save the file after upload
+    for(i=0;i<nb_diplomes;i++){
+        nomDiplomes[i] = Nom+"_"+Prenom+"_DIPLOME_"+documentsDiplomes[i].name;
+    };
+    const newNameForCV = Nom+"_"+Prenom+"_CV_"+documentCV.name;
+    // here is where to save the PID files after upload
+    for(i=0;i<nb_PID;i++){
+        uploadPathPID[i] = __dirname + '/FileslocalStorage/' + nomPID[i];
+        documentsPID[i].mv(uploadPathPID[i], function (err) {
+            if (err) {
+                console.log("error on moving file :",err);
+                res.status(500);
+                return res.send(err);
+            } ;
+            return;
+        });
+    };
+    // here is where to save the diplomas files after upload
     for(i=0;i<nb_diplomes;i++){
         uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
         documentsDiplomes[i].mv(uploadPathDiplome[i], function (err) {
@@ -84,8 +108,8 @@ app.post('/InsererCondidat',async (req, res)=>{
             return;
         });
     };
-    let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
     // Use mv() to place file on the server
+    let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
     documentCV.mv(uploadPath, function (err) {
         if (err) {
             console.log("error on moving file :",err);
@@ -94,23 +118,31 @@ app.post('/InsererCondidat',async (req, res)=>{
         } 
         return;
     });
-    // const pathcv = documentCV.name;
     let newInsertedID;
     const sql = 'INSERT INTO condidat VALUES ?'
     const values = [[null, Nom, Prenom, email, Specialite, Diplome, Etablissement, Adress, Wilaya, numeroTel, newNameForCV, Remarques, null]];
     const queryDiplomes = 'INSERT INTO diplome VALUES ?';
+    const queryPIDs = 'INSERT INTO pieceIDentite VALUES ?';
     let queryvalues=[];
+    let queryvaluesPID=[];
+    let conn = getConn();
     await Promise.all(
         [   
-            conn.query(sql,[values],(err, results)=>{if(err){console.log('Failed : ',err);res.redirect(req.get('referer'));res.end();return;}else{newInsertedID = results.insertId;console.log(newInsertedID);return;}}),
-            setTimeout(() => {affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID)},500),
-            setTimeout(() => {conn.query(queryDiplomes,[queryvalues],(err)=>{if(err){console.log("Error query diplomes :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}})},1000),
+            conn.query(sql,[values],(err, results)=>{if(err){console.log('Failed : ',err);}else{newInsertedID = results.insertId;console.log(newInsertedID);return;}}),
+            setTimeout(() => {affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID);affectPIDstoSpecificCondidat(nb_PID,queryvaluesPID,nomPID,newInsertedID);return;},1000),
+            setTimeout(() => {conn.query(queryDiplomes,[queryvalues],(err)=>{ if (err) console.log("Error to query diplomes :",err);})},2000),
+            setTimeout(() => {conn.query(queryPIDs,[queryvaluesPID],(err)=>{if(err){console.log("Error to query PIDs :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}})},3000),
         ]
     );
 });
 function affectDiplomestoSpecificCondidat(nb_diplomes_,queryvalues_,nomDiplomes_,newInsertedID_){
     for(i=0;i<nb_diplomes_;i++){
         queryvalues_[i] = [null,nomDiplomes_[i],newInsertedID_];
+    };
+};
+function affectPIDstoSpecificCondidat(nb_PIDs_,queryvalues_,nomPIDs_,newInsertedID_){
+    for(i=0;i<nb_PIDs_;i++){
+        queryvalues_[i] = [null,nomPIDs_[i],newInsertedID_];
     };
 };
 app.post('/modifierInfosCondidat',(req, res)=>{
@@ -275,21 +307,24 @@ app.get('/VusialisationCondidatsUser',async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
     const query3 = 'select nomDirection,nomSousDirection,nomDepartement,IDequipe,capaciteEquipe from departement natural join direction';
+    const query4 = 'SELECT * FROM pieceidentite';
     try {
         const conn = getConn();
-        let condidats, diplomes_,props_;
+        let condidats, diplomes_,props_,pieceidentites;
         await Promise.all(
         [
             conn.query(query1,(err, rows)=>{condidats=rows;}),
             conn.query(query2,(err, rows)=>{diplomes_=rows;}),
             conn.query(query3,(err, rows)=>{props_=rows;}),
+            conn.query(query4,(err, rows)=>{pieceidentites=rows;}),
         ]
         );
         setTimeout(() => {
         res.render("VusialisationCondidatsUser", {
         data: condidats,
         data2: diplomes_,
-        data3: props_
+        data3: props_,
+        data4: pieceidentites
         });},100);
     } catch (error) {
     console.log(error);
