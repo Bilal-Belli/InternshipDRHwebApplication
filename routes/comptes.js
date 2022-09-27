@@ -25,7 +25,7 @@ router.post('/compteCon', (req, res)=>{
         }
         if(results[0] == null){
             console.log("Your Email or Password is wrong");
-            res.redirect('index');
+            res.redirect('/');
             res.end();
             return;
         }else{
@@ -282,17 +282,27 @@ router.post('/supprimerDep',async (req, res)=>{
     }
 });
 router.post('/affectationCondidat', (req, res)=>{
-    const idCondidat = req.body.idCondidat;
-    const idE = req.body.idE;
-    const sql = 'UPDATE condidat SET condidat.IDequipe = \"'+idE+'\" WHERE condidat.IDcondidat = \"'+idCondidat+'\"';
-    getConn().query(sql,(err)=>{
+    let selE = req.body.selE;
+    let hiddenQR = req.body.hiddenQR;
+    let NB_DEMANDEE = [];
+    let query = 'UPDATE condidat SET condidat.IDequipe = \"'+selE+'\" WHERE '; 
+    NB_DEMANDEE = hiddenQR.match(/("[^"]+"|[^"\s]+)/g);
+    for(rr=0;rr<NB_DEMANDEE.length;rr++) {
+        if (rr == (NB_DEMANDEE.length - 1)){
+            query += "condidat.IDcondidat = " + NB_DEMANDEE[rr] + " ; ";
+        }else{
+            query += "condidat.IDcondidat = " + NB_DEMANDEE[rr] + " or ";
+        }
+    }    
+    getConn().query(query,(err)=>{
         if(err){
             console.log('Failed : ', err);
             res.redirect(req.get('referer'));
             res.end();
             return;
         } else{
-            res.redirect('/accueil');
+            res.redirect(req.get('referer'));
+            res.end();
             return;
         }
     })

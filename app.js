@@ -414,7 +414,7 @@ app.get('/VusialisationCondidats',async (req, res)=>{
 app.get('/VusialisationCondidatsUser',async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
-    const query3 = 'select nomDirection,nomSousDirection,nomDepartement,IDequipe,capaciteEquipe from departement natural join direction';
+    const query3 = 'select nomDirection,nomSousDirection,nomDepartement,K.IDequipe,capaciteEquipe,capaciteActuelle from (select nomDirection,nomSousDirection,nomDepartement,IDequipe,capaciteEquipe from departement natural join direction)  K left join (select  COUNT(IDcondidat) capaciteActuelle,IDequipe from condidat) P on K.IDequipe = P.IDequipe group by K.IDequipe;';
     const query4 = 'SELECT * FROM pieceidentite';
     try {
         const conn = getConn();
@@ -433,127 +433,6 @@ app.get('/VusialisationCondidatsUser',async (req, res)=>{
         data2: diplomes_,
         data3: props_,
         data4: pieceidentites
-        });},100);
-    } catch (error) {
-    console.log(error);
-    res.end();
-    }
-});
-app.get('/supprimerCompte', (req, res)=>{
-    res.render('supprimerCompte');
-    res.end();
-});
-app.get('/ajouterDir',async (req, res)=>{
-    const query1 = 'SELECT email FROM compte where compte.typePost=\"Directeur\" and compte.compteActif=false';
-    const query2 = 'SELECT email FROM compte where compte.typePost=\"Sous Directeur\" and compte.compteActif=false';
-    try {
-        const conn = getConn();
-        let comptes1, comptes2;
-        await Promise.all(
-        [
-            conn.query(query1,(err, rows)=>{comptes1=rows;}),
-            conn.query(query2,(err, rows)=>{comptes2=rows;})
-        ]
-        );
-        setTimeout(() => {
-        res.render("ajouterDir", {
-        data1: comptes1,
-        data2: comptes2
-        });},100);
-    } catch (error) {
-    console.log(error);
-    res.end();
-    }
-});
-app.get('/ajouterDep',async (req, res)=>{
-    const query1 = 'SELECT email FROM compte where compte.typePost=\"Chef de Département\" and compte.compteActif=false';
-    const query2 = "SELECT IDdirection FROM direction";
-    const query3 = 'SELECT email FROM compte where compte.typePost=\"Chef d\'equipe\" and compte.compteActif=false';
-    try {
-        const conn = getConn();
-        let comptes1, directions, comptes2;
-        await Promise.all(
-        [
-            conn.query(query1,(err, rows)=>{comptes1=rows;} ),
-            conn.query(query2,(err, rows)=>{directions=rows;}),
-            conn.query(query3,(err, rows)=>{comptes2=rows;})
-        ]
-        );
-        setTimeout(() => {
-        res.render("ajouterDep", {
-        data1: comptes1,
-        data2: directions,
-        data3: comptes2
-        });},100);
-    } catch (error) {
-    console.log(error);
-    res.end();
-    }
-});
-app.get('/supprimerDir', (req, res)=>{
-    const sql = 'SELECT IDdirection FROM direction';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('fetch succesfully');
-        res.render('supprimerDir',{data: rows});
-        return;
-    });
-});
-app.get('/supprimerDep', (req, res)=>{
-    const sql = 'SELECT IDdepartement FROM departement';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('succesfully fetch opération');
-        res.render('supprimerDep',{data: rows});
-        return;
-    });
-});
-app.get('/supprimerEquipe', (req, res)=>{
-    const sql = 'SELECT IDequipe FROM equipe';
-    getConn().query(sql, (err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        }
-        console.log('succesfully fetch opération');
-        res.render('supprimerEquipe',{data: rows});
-        return;
-    });
-});
-app.get('/affectationCondidat',async (req, res) => {
-    const query1 = 'SELECT * FROM departement';
-    const query2 = 'SELECT * FROM condidat';
-    const query3 = 'SELECT * FROM direction';
-    const query4 = 'SELECT IDequipe,COUNT(IDcondidat) NB_Personnes FROM condidat';
-    try {
-        const conn = getConn();
-        let departements, condidats, directions, comptagePersonnes;
-        await Promise.all(
-        [
-            conn.query(query1,(err, rows)=>{departements=rows;} ),
-            conn.query(query2,(err, rows)=>{condidats=rows;}),
-            conn.query(query3,(err, rows)=>{directions=rows;}),
-            conn.query(query4,(err, rows)=>{comptagePersonnes=rows;})
-        ]
-        );
-        setTimeout(() => {
-        res.render("affectationCondidat", {
-        data1: departements,
-        data2: condidats,
-        data3: directions,
-        data4: comptagePersonnes
         });},100);
     } catch (error) {
     console.log(error);
@@ -626,43 +505,9 @@ const conn = getConn();
 //         console.log('Data inserted : ', res.affectedRows);
 //     })
 // })
-
-const router = require('./routes/comptes')
-app.use(router)
-
-//Fetch all students
-// app.get('/student', (req, res)=>{
-//     console.log('Fetching user with id: ', req.params.id)
-//     const sql = 'SELECT * FROM student'
-//     // const vl = req.params.id
-//     getConn().query(sql, (err, rows, fields)=>{
-//         if(err){
-//             console.log('Failed to query for users ', err);
-//             res.status(500)
-//             res.end();
-//             return;
-//         }
-//         console.log('I think we fetch student succesfully');
-//         res.json(rows);
-//     })
-// })
-//Fetch Student with ID
-// app.get('/student/:id', (req, res)=>{
-//     console.log('Fetching user with id: ', req.params.id)
-//     const sql = 'SELECT * FROM student WHERE id = ?'
-//     // const vl = req.params.id
-//     getConn().query(sql, [req.params.id], (err, rows, fields)=>{
-//         if(err){
-//             console.log('Failed to query for users ', err);
-//             res.status(500)
-//             res.end();
-//             return;
-//         }
-//         console.log('I think we fetch student succesfully');
-//         res.json(rows);
-//     })
-// })
 // test de connectivité
 app.listen(3000, ()=>{
     console.log('server running port is 3000');
 })
+const router = require('./routes/comptes')
+app.use(router)

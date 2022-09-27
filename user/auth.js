@@ -16,6 +16,7 @@ const requireAuth = (req, res, next) => {
         });
     } else {
         res.render('index');
+        console.log("token = "+token);
     }
 };
 

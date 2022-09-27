@@ -84,38 +84,43 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST">
+                    <form action="/affectationCondidat" method="POST">
                         <h6>Veuillez choisir en quelle equipe vous voulez affecter les condidats séléctionnes</h6>
                         <h6 class="text-danger">Note: si la capacité de l'équipe choisie ne suffit pas, vous devez soit sortir quelques condidats soit changer d'equipe!</h6>
                         <div class="form-group d-flex">
-                            <label class="col-sm-4 col-form-label">Direction</label>
-                            <select class="custom-select my-1 mr-sm-2" id="selDir" name="selDir" required>
-                                <option disabled selected value> Choisir quelle direction </option>
+                            <label class="col-sm-4 col-form-label">Département</label>
+                            <select class="custom-select my-1 mr-sm-2" id="selDep" name="selDep" onchange="fetchOtherInfos();" required>
+                                <option disabled selected value> Choisir quelle département </option>
                                 <% data3.forEach(entry => { %>
-                                    <option value="<%= entry.nomDirection %>"><%= entry.nomDirection %></option>
+                                    <option value="<%= entry.nomDepartement %>"><%= entry.nomDepartement %></option>
                                 <% }) %>
                             </select>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-4 col-form-label">Equipe</label>
+                            <input type="text" class="form-control rounded-left" id="selE" name="selE" value="" readonly>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-4 col-form-label">Direction</label>
+                            <input type="text" class="form-control rounded-left" id="selDir" value="" readonly>
                         </div>
                         <div class="form-group d-flex">
                             <label class="col-sm-4 col-form-label">Sous Direction</label>
                             <input type="text" class="form-control rounded-left" id="idSD" value="" readonly>
                         </div>
                         <div class="form-group d-flex">
-                            <label class="col-sm-4 col-form-label">Département</label>
-                            <select class="custom-select my-1 mr-sm-2" id="selDep" name="selDep" required>
-                                <option disabled selected value> Choisir quelle département </option>
-                                <% data3.forEach(entry => { %>
-                                    <option value="<%= entry.nomDirection %>"><%= entry.nomDirection %></option>
-                                <% }) %>
-                            </select>
+                            <label class="col-sm-4 col-form-label">Capacité Maximal</label>
+                            <input type="text" class="form-control rounded-left" id="capaMAX" name="capaMAX" value="" readonly>
                         </div>
                         <div class="form-group d-flex">
-                            <label class="col-sm-4 col-form-label">Equipe</label>
-                            <input type="text" class="form-control rounded-left" id="selE" value="" readonly>
+                            <label class="col-sm-4 col-form-label">Capacité Actuelle</label>
+                            <input type="text" class="form-control rounded-left" id="capaACTUELLE" name="capaACTUELLE" value="" readonly>
                         </div>
-                        <input type="hidden" id="capaACTUELLE" name="capaACTUELLE" value="">
                         <input type="hidden" id="hiddenQR" name="hiddenQR" value="">
-                        <button type="submit" class="form-control btn btn-primary rounded submit px-3">Affecter</button>
+                        <div class="form-group d-flex">
+                            <label class="col-form-label" id="labelvalideteaffectation"></label>
+                        </div>
+                        <button type="submit" class="form-control btn btn-primary rounded submit px-3" id="afffinalbtn">Affecter</button>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -148,6 +153,7 @@
     "nomSousDirection":"<%= entry.nomSousDirection %>",
     "nomDepartement":"<%= entry.nomDepartement %>",
     "IDequipe":"<%= entry.IDequipe %>",
+    "capaciteActuelle":"<%= entry.capaciteActuelle %>",
     "capaciteEquipe":"<%= entry.capaciteEquipe %>"},
 <% }) %>
 {}]
@@ -166,9 +172,59 @@
 function decodeHTMLEntities(text) {
     var entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
     for (var i = 0, max = entities.length; i < max; ++i) {
-        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+        // console.log(text);
+        if (text != null){
+            text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+        }
     }
     return text;
+};
+
+// this is used to fetch automaticly data from departement to linked directions and sous directions and team
+function fetchOtherInfos(){
+    let Propsdata = JSON.parse(document.getElementById('Propsdata').innerHTML);
+    let selDep = document.getElementById('selDep').value;
+    for (m=0; m< Propsdata.length; m++){
+        if (decodeHTMLEntities(Propsdata[m].nomDepartement) === selDep){
+            document.getElementById('selE').readonly = false;
+            document.getElementById('selE').value = decodeHTMLEntities(Propsdata[m].IDequipe);
+            document.getElementById('selE').readonly = true;
+            document.getElementById('selDir').readonly = false;
+            document.getElementById('selDir').value = decodeHTMLEntities(Propsdata[m].nomDirection);
+            document.getElementById('selDir').readonly = true;
+            document.getElementById('idSD').readonly = false;
+            document.getElementById('idSD').value = decodeHTMLEntities(Propsdata[m].nomSousDirection);
+            document.getElementById('idSD').readonly = true;
+            document.getElementById('capaMAX').readonly = false;
+            document.getElementById('capaMAX').value = decodeHTMLEntities(Propsdata[m].capaciteEquipe);
+            document.getElementById('capaMAX').readonly = true;
+            document.getElementById('capaACTUELLE').readonly = false;
+            document.getElementById('capaACTUELLE').value = decodeHTMLEntities(Propsdata[m].capaciteActuelle);
+            document.getElementById('capaACTUELLE').readonly = true;
+            let NB_DEMANDEE = [];
+            let placesDISPO=0;
+            if (decodeHTMLEntities(Propsdata[m].capaciteEquipe) > decodeHTMLEntities(Propsdata[m].capaciteActuelle)) {
+                NB_DEMANDEE = document.getElementById('hiddenQR').value.match(/("[^"]+"|[^"\s]+)/g);
+                placesDISPO = decodeHTMLEntities(Propsdata[m].capaciteEquipe) - decodeHTMLEntities(Propsdata[m].capaciteActuelle);
+                if ( placesDISPO >= NB_DEMANDEE.length){
+                    document.getElementById('afffinalbtn').disabled = false;
+                    document.getElementById('labelvalideteaffectation').classList.add('text-success');
+                    document.getElementById('labelvalideteaffectation').classList.remove('text-danger');
+                    document.getElementById('labelvalideteaffectation').innerHTML = "La capacité de l'équipe suffit pour affecter les candidats sélectionnés";
+                } else {
+                    document.getElementById('afffinalbtn').disabled = true;
+                    document.getElementById('labelvalideteaffectation').classList.add('text-danger');
+                    document.getElementById('labelvalideteaffectation').classList.remove('text-success');
+                    document.getElementById('labelvalideteaffectation').innerHTML = "La capacité de l'équipe que vous avez choisie ne suffit pas pour affecter tous les candidats sélectionnés";
+                }
+            } else {
+                document.getElementById('afffinalbtn').disabled = true;
+                document.getElementById('labelvalideteaffectation').classList.add('text-danger');
+                document.getElementById('labelvalideteaffectation').classList.remove('text-success');
+                document.getElementById('labelvalideteaffectation').innerHTML = "La capacité de l'équipe que vous avez choisie ne suffit pas pour affecter tous les candidats sélectionnés";
+            }
+        };
+    };
 };
 
 // this render the links to diplomas of a condidate
@@ -184,7 +240,6 @@ let y;
 let PIDsdata = JSON.parse(document.getElementById('PIDsdata').innerHTML);
 for (m=0; m< PIDsdata.length; m++){
     y = PIDsdata[m].IDcondidat * 2;
-    // console.log(PIDsdata[m].IDcondidat);
     if (document.getElementById(y) != null){
         document.getElementById(y).innerHTML += "<a href=\""+decodeHTMLEntities(PIDsdata[m].pathPID)+"\">PID </a>";
     }

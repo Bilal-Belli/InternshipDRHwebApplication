@@ -181,10 +181,6 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Diplomes</label>
-                        <!-- <div class="col-sm-10">
-                            <input type="file" class="custom-file-input" id="diplomes" name="diplomes" onchange="afficherDiplomes()" accept="application/pdf" multiple required>
-                            <label class="custom-file-label" for="customFile"></label>
-                        </div> -->
                         <div class="col-sm-9">
                             <h6>Seulement des fichiers en format PDF sont acceptées (au moins un diplome est requis).</h6>
                             <div class="row form-group">
@@ -257,8 +253,10 @@
                 </thead>
                 <tbody>
                     <tr>
+                    <% let index_1 = 0; %>
                     <% data.forEach(entry => { %>
-                        <td><%= entry.IDcondidat %></th>
+                        <% index_1++; %>
+                        <td id="<%= entry.IDcondidat %>"><%= index_1 %></th>
                         <td><%= entry.nomCondidat %></td>
                         <td><%= entry.prenomCondidat %></td>
                         <td><%= entry.numeroTel %></td>
@@ -277,46 +275,6 @@
         <div class="py-3"></div>
         <div class="py-3"></div>
     </div>
-    <!-- Form 1: Upload PID -->
-    <!-- <div class="modal fade" id="uploadPID_popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Upload Piece d'ID</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="InsererCondidat" method="POST" enctype="multipart/form-data" class="form-horizontal">
-                        <h6>Vous devez choisir deux photos, recto verso et de la meme piece d'identité (soit la carte national soit le passport)</h6>
-                        <div class="row form-group">
-                            <div class="col-12 col-md-12">
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <div class="entry input-group upload-input-group mb-3">
-                                            <div class="border col-sm-10">
-                                                <input class="custom-file-input form-control" name="PID" type="file" accept="application/pdf" required>  
-                                            </div>
-                                            <div class="col-sm-2 justify-content-center">
-                                                <button class="btn btn-upload btn-success btn-add" type="button">  
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="form-control btn btn-primary rounded submit px-3">Upload</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </body>
 <footer class="fixed-bottom">
     <div class="bg-secondary">
@@ -325,50 +283,6 @@
         </div>
     </div>
 </footer>
-<script>
-    function inhdip(){
-        document.getElementById('hdip').value = "KEEP";
-    }
-    function inhcv(){
-        document.getElementById('hcv').value = "IT";
-    }
-    function inhpid(){
-        document.getElementById('hpid').value = "GOING!";
-    }
-</script>
-<script>
-    // function that allow to display remve btn on upload files
-    $(function () {  
-        $(document).on('click', '.btn_add_1', function (e) {  
-            e.preventDefault();
-            var controlForm = $('#controls_1:first');
-            var currentEntry = $(this).parents('.entry:first');
-            var newEntry = $(currentEntry.clone()).appendTo(controlForm);  
-
-            newEntry.find('input').val('');  
-            controlForm.find('.entry:not(:last) .btn_add_1').removeClass('btn_add_1').addClass('btn_remove_1')  
-                .removeClass('btn-success').addClass('btn-danger').html('<span class="fa fa-trash"></span>');  
-        }).on('click', '.btn_remove_1', function (e) {  
-            $(this).parents('.entry:first').remove();  
-            e.preventDefault();
-            return false;
-        });
-        $(document).on('click', '.btn_add_2', function (e) {  
-            e.preventDefault();
-            var controlForm = $('#controls_2:first');
-            var currentEntry = $(this).parents('.entry:first');
-            var newEntry = $(currentEntry.clone()).appendTo(controlForm);  
-
-            newEntry.find('input').val('');  
-            controlForm.find('.entry:not(:last) .btn_add_2').removeClass('btn_add_2').addClass('btn_remove_2')  
-                .removeClass('btn-success').addClass('btn-danger').html('<span class="fa fa-trash"></span>');  
-        }).on('click', '.btn_remove_2', function (e) {  
-            $(this).parents('.entry:first').remove();  
-            e.preventDefault();
-            return false;
-        });
-    });
-</script>
 <!-- data -->
 <script id="Condidatsdata" type="application/json">
 [
@@ -459,8 +373,11 @@ function addRowHandlers() {
         var currentRow = table.rows[i];
         var createClickHandler = function(row) {
                 return function() { 
-                    const IDcondidat_ = row.getElementsByTagName("td")[0].innerHTML;
+                    // let IDcondidat_ = row.getElementsByTagName("td")[0].innerHTML;
+                    let IDcondidat_ = row.getElementsByTagName("td")[0].id;
                     let indexJSONx;
+                    let nb_diplomes=0;
+                    let namesDip = [];
                     let Condidatsdata = JSON.parse(document.getElementById('Condidatsdata').innerHTML);
                     for (k=0; k< Condidatsdata.length; k++){
                         if (parseInt(IDcondidat_) == Condidatsdata[k].IDcondidat){
@@ -468,6 +385,7 @@ function addRowHandlers() {
                             break;
                         }
                     }
+                    document.getElementById("condidatIDhidden").value = decodeHTMLEntities(Condidatsdata[indexJSONx].IDcondidat);
                     document.getElementById("Nom").value = decodeHTMLEntities(Condidatsdata[indexJSONx].nomCondidat);
                     document.getElementById("Prenom").value =decodeHTMLEntities(Condidatsdata[indexJSONx].prenomCondidat);
                     document.getElementById("numeroTel").value =decodeHTMLEntities(Condidatsdata[indexJSONx].numeroTel);
@@ -478,12 +396,12 @@ function addRowHandlers() {
                     document.getElementById("Adress").value =decodeHTMLEntities(Condidatsdata[indexJSONx].adressComplet);
                     document.getElementById("Remarques").value =decodeHTMLEntities(Condidatsdata[indexJSONx].remarques);
                     document.getElementById("Wilaya").value =decodeHTMLEntities(Condidatsdata[indexJSONx].wilaya);
-                    document.getElementById('cvFileName').innerHTML = '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + decodeHTMLEntities(Condidatsdata[indexJSONx].pathCV) + '</h6>'
+                    document.getElementById('cvFileName').innerHTML = '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + decodeHTMLEntities(Condidatsdata[indexJSONx].pathCV) + '</h6>';
                     document.getElementById('formulaire').action= "/modifierInfosCondidat";
-                    console
-                    document.getElementById("condidatIDhidden").value = decodeHTMLEntities(Condidatsdata[indexJSONx].IDcondidat);
-                    let nb_diplomes=0;
-                    let namesDip = [];
+                    document.getElementById('cv').removeAttribute('required');
+                    document.getElementById('diplomes').removeAttribute('required');
+                    document.getElementById('pid').removeAttribute('required');
+                    
                     let Diplomesdata = JSON.parse(document.getElementById('Diplomesdata').innerHTML);
                     for (m=0; m< Diplomesdata.length; m++){
                         if (parseInt(IDcondidat_) == parseInt(Diplomesdata[m].IDcondidat)){
@@ -491,15 +409,12 @@ function addRowHandlers() {
                             nb_diplomes++;
                         }
                     }
-                    document.getElementById('cv').removeAttribute('required');
-                    document.getElementById('diplomes').removeAttribute('required');
-                    document.getElementById('pid').removeAttribute('required');
                     document.getElementById('DiplomesFilesName').innerHTML = '';
                     document.getElementById('DiplomesFilesNameLabel').innerHTML='';
                     for(h=0;h<nb_diplomes;h++){
                         let oo=h+1;
                         document.getElementById('DiplomesFilesNameLabel').innerHTML+='<h6 class="text-primary" style="font-size: 0.8em;">Diplome N°'+oo+'</h6>';
-                        document.getElementById('DiplomesFilesName').innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + namesDip[h] + '</h6>'
+                        document.getElementById('DiplomesFilesName').innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + namesDip[h] + '</h6>';
                     }
                 };
             };
@@ -513,12 +428,9 @@ function afficherDiplomes(){
     var input = document.getElementById('diplomes');
     var output = document.getElementById('DiplomesFilesName');
     var output_0 = document.getElementById('DiplomesFilesNameLabel');
-    // const fileListArr = Array.from(input.files);
-    // console.log(fileListArr);
     output.innerHTML ='';
     output_0.innerHTML='';
     for (var i = 0; i < input.files.length; ++i) {
-        // console.log(i);
         let oo=i+1;
         output_0.innerHTML+='<h6 class="text-primary" style="font-size: 0.8em;">Diplome N°'+oo+'</h6>';
         output.innerHTML += '<h6 class="text-primary">' + input.files.item(i).name + '</h6>';
@@ -539,6 +451,17 @@ function renderPDF(input){
     // console.log(input); //name of the uploaded file
     document.getElementsByName('pdfframe')[0].src = input;
 }
+
+// functions to input a hidden information used to detect if there is a file input change when modify infos
+function inhdip(){
+    document.getElementById('hdip').value = "KEEP";
+}
+function inhcv(){
+    document.getElementById('hcv').value = "IT";
+}
+function inhpid(){
+    document.getElementById('hpid').value = "GOING!";
+}
 </script>
 <script>
     // function to limit showing rows of table
@@ -546,6 +469,38 @@ function renderPDF(input){
         $('#tableID').DataTable({     
         "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
         "iDisplayLength": 5});
+    });
+
+    // function that allow to display remve btn on upload files
+    $(function () {  
+        $(document).on('click', '.btn_add_1', function (e) {  
+            e.preventDefault();
+            var controlForm = $('#controls_1:first');
+            var currentEntry = $(this).parents('.entry:first');
+            var newEntry = $(currentEntry.clone()).appendTo(controlForm);  
+
+            newEntry.find('input').val('');  
+            controlForm.find('.entry:not(:last) .btn_add_1').removeClass('btn_add_1').addClass('btn_remove_1')  
+                .removeClass('btn-success').addClass('btn-danger').html('<span class="fa fa-trash"></span>');  
+        }).on('click', '.btn_remove_1', function (e) {  
+            $(this).parents('.entry:first').remove();  
+            e.preventDefault();
+            return false;
+        });
+        $(document).on('click', '.btn_add_2', function (e) {  
+            e.preventDefault();
+            var controlForm = $('#controls_2:first');
+            var currentEntry = $(this).parents('.entry:first');
+            var newEntry = $(currentEntry.clone()).appendTo(controlForm);  
+
+            newEntry.find('input').val('');  
+            controlForm.find('.entry:not(:last) .btn_add_2').removeClass('btn_add_2').addClass('btn_remove_2')  
+                .removeClass('btn-success').addClass('btn-danger').html('<span class="fa fa-trash"></span>');  
+        }).on('click', '.btn_remove_2', function (e) {  
+            $(this).parents('.entry:first').remove();  
+            e.preventDefault();
+            return false;
+        });
     });
 </script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
