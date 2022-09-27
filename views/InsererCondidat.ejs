@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body style="background-image: url('background.png'); background-repeat: no-repeat;background-attachment: fixed;  background-size: cover;">
     <nav class="navbar navbar-light bg-secondary">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Numéro du Téléphone</label>
+                        <label class="col-sm-4 col-form-label">Numéro de Téléphone</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="numeroTel" name="numeroTel" required>
                         </div>
@@ -59,7 +59,7 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">E-mail</label>
                         <div class="col-sm-8">
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <input type="email" class="form-control" id="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -69,20 +69,19 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <!-- en BDD c'est le degree exemple master1 -->
                         <label class="col-sm-4 col-form-label">Diplome</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="Diplome" name="Diplome" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Etablissement</label>
+                        <label class="col-sm-4 col-form-label">Établissement</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="Etablissement" name="Etablissement" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Adress Complet</label>
+                        <label class="col-sm-4 col-form-label">Address Complet</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="Adress" name="Adress" required>
                         </div>
@@ -149,7 +148,7 @@
                         </div>
                     </div>
                     <div class="row d-flex justify-content-between">
-                        <button type="submit" class="btn btn-danger" onclick="location.reload();" >Supprimer</button>
+                        <button type="button" class="btn btn-danger" onclick="location.reload();" >Supprimer</button>
                         <button type="submit" class="btn btn-success">Valider</button>
                     </div>
                 </div>
@@ -157,7 +156,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Piece d'ID</label>
                         <div class="col-sm-9">
-                            <h6>Seulement des fichiers en format PDF sont acceptées, Vous devez choisir un fichier recto verso et de la meme piece d'identité (soit la carte national soit le passport)</h6>
+                            <h6>Seulement des fichiers en format PDF sont acceptés, Vous devez choisir un fichier recto verso et de la même pièce d'identité (soit la carte national soit le passeport).</h6>
                             <div class="row form-group">
                                 <div class="col-12 col-md-12">
                                     <div class="control-group">
@@ -180,9 +179,9 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Diplomes</label>
+                        <label class="col-sm-3 col-form-label">Diplômes</label>
                         <div class="col-sm-9">
-                            <h6>Seulement des fichiers en format PDF sont acceptées (au moins un diplome est requis).</h6>
+                            <h6>Seulement des fichiers en format PDF sont acceptés (au moins un diplôme est requis).</h6>
                             <div class="row form-group">
                                 <div class="col-12 col-md-12">
                                     <div class="control-group">
@@ -244,10 +243,10 @@
                         <th>N° Tél</th>
                         <th>E-mail</th>
                         <th>Spécialité</th>
-                        <th>Etablissement</th>
+                        <th>Établissement</th>
                         <th>Wilaya</th>
-                        <th>Adress</th>
-                        <th>Diplomes</th>
+                        <th>Address</th>
+                        <th>Diplômes</th>
                         <th>Remarques</th>
                     </tr>
                 </thead>
@@ -286,29 +285,28 @@
 <!-- data -->
 <script id="Condidatsdata" type="application/json">
 [
-        <% data.forEach(entry => { %>
-        {"IDcondidat":"<%= entry.IDcondidat %>",
-        "nomCondidat":"<%= entry.nomCondidat %>",
-        "prenomCondidat":"<%= entry.prenomCondidat %>",
-        "numeroTel":"<%= entry.numeroTel %>",
-        "emailCondidat":"<%= entry.emailCondidat %>",
-        "specialite":"<%= entry.specialite %>",
-        "etablissement":"<%= entry.etablissement %>",
-        "wilaya":"<%= entry.wilaya %>",
-        "adressComplet":"<%= entry.adressComplet %>",
-        "diplome":"<%= entry.diplome %>",
-        "pathCV":"<%= entry.pathCV %>",
-        "remarques":"<%= entry.remarques %>"},
+<% data.forEach(entry => { %>
+    {"IDcondidat":"<%= entry.IDcondidat %>",
+    "nomCondidat":"<%= entry.nomCondidat %>",
+    "prenomCondidat":"<%= entry.prenomCondidat %>",
+    "numeroTel":"<%= entry.numeroTel %>",
+    "emailCondidat":"<%= entry.emailCondidat %>",
+    "specialite":"<%= entry.specialite %>",
+    "etablissement":"<%= entry.etablissement %>",
+    "wilaya":"<%= entry.wilaya %>",
+    "adressComplet":"<%= entry.adressComplet %>",
+    "diplome":"<%= entry.diplome %>",
+    "pathCV":"<%= entry.pathCV %>",
+    "remarques":"<%= entry.remarques %>"},
     <% }) %>
 {}]
 </script>
 <!-- data 2 -->
 <script id="Diplomesdata" type="application/json">
-    [
-        <% data2.forEach(entry => { %>
-        {"IDdiplome":"<%= entry.IDdiplome %>",
-        "IDcondidat":"<%= entry.IDcondidat %>",
-        "pathDiplome":"<%= entry.pathDiplome %>"},
+[
+<% data2.forEach(entry => { %>
+    {"IDcondidat":"<%= entry.IDcondidat %>",
+    "pathDiplome":"<%= entry.pathDiplome %>"},
     <% }) %>
 {}]
 </script>
@@ -321,7 +319,7 @@ document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "
 document.getElementById("Nom").addEventListener("input",()=>{
     var Nomver = document.getElementById("Nom").value;
     var pattern = /^[a-zA-Z -]+$/;
-    if(pattern.test(Nomver) && !(Nomver.length < 3)){
+    if(pattern.test(Nomver)){
         document.getElementById("Nom").classList.remove("border");
         document.getElementById("Nom").classList.remove("border-danger");
     } else {
@@ -334,7 +332,7 @@ document.getElementById("Nom").addEventListener("input",()=>{
 document.getElementById("Prenom").addEventListener("input",()=>{
     var Prenomver = document.getElementById("Prenom").value;
     var pattern = /^[a-zA-Z -]+$/;
-    if(pattern.test(Prenomver) && !(Prenomver.length < 3)){
+    if(pattern.test(Prenomver)){
         document.getElementById("Prenom").classList.remove("border");
         document.getElementById("Prenom").classList.remove("border-danger");
     } else {
@@ -347,7 +345,7 @@ document.getElementById("Prenom").addEventListener("input",()=>{
 document.getElementById("numeroTel").addEventListener("input",()=>{
     var numeroTelver = document.getElementById("numeroTel").value;
     var pattern = /^\d+\.?\d*$/;
-    if(pattern.test(numeroTelver) && !(numeroTelver.length > 15) && !(numeroTelver.length < 8)){
+    if(pattern.test(numeroTelver) && !(numeroTelver.length > 20) && !(numeroTelver.length < 8)){
         document.getElementById("numeroTel").classList.remove("border");
         document.getElementById("numeroTel").classList.remove("border-danger");
     } else {
@@ -358,9 +356,13 @@ document.getElementById("numeroTel").addEventListener("input",()=>{
 
 // function used to unicode some special caracters when fetch from database
 function decodeHTMLEntities(text) {
-    var entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
-    for (var i = 0, max = entities.length; i < max; ++i) {
-        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+    let entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
+    for (let i = 0, max = entities.length; i < max; ++i) {
+        if (text != null){
+            text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+        } else {
+            break;
+        }
     }
     return text;
 }
@@ -369,7 +371,7 @@ function decodeHTMLEntities(text) {
 function addRowHandlers() {
     var table = document.getElementById("tableID");
     var rows = table.getElementsByTagName("tr");
-    for (i = 0; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
         var currentRow = table.rows[i];
         var createClickHandler = function(row) {
                 return function() { 
@@ -414,13 +416,13 @@ function addRowHandlers() {
                     for(h=0;h<nb_diplomes;h++){
                         let oo=h+1;
                         document.getElementById('DiplomesFilesNameLabel').innerHTML+='<h6 class="text-primary" style="font-size: 0.8em;">Diplome N°'+oo+'</h6>';
-                        document.getElementById('DiplomesFilesName').innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);">' + namesDip[h] + '</h6>';
+                        document.getElementById('DiplomesFilesName').innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);"style="font-size: 0.8em;">' + namesDip[h] + '</h6>';
                     }
                 };
             };
         currentRow.onclick = createClickHandler(currentRow);
-    }
-}
+    };
+};
 window.onload = addRowHandlers();
 
 // function to display name of uploaded diploma files of condidat
@@ -478,7 +480,6 @@ function inhpid(){
             var controlForm = $('#controls_1:first');
             var currentEntry = $(this).parents('.entry:first');
             var newEntry = $(currentEntry.clone()).appendTo(controlForm);  
-
             newEntry.find('input').val('');  
             controlForm.find('.entry:not(:last) .btn_add_1').removeClass('btn_add_1').addClass('btn_remove_1')  
                 .removeClass('btn-success').addClass('btn-danger').html('<span class="fa fa-trash"></span>');  

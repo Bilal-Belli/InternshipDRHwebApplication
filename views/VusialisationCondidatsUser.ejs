@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col d-flex justify-content-center">
                 <button type="button" id="btnaff" class="btn btn-primary mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#affcondid_popup" onclick="getSelectesAccounts();" disabled>
-                    Affecter les condidats séléctionnées
+                    Affecter les candidats sélectionnées
                 </button>
             </div>
         </div>
@@ -32,16 +32,16 @@
                         <th>Prénom</th>
                         <th>E-mail</th>
                         <th>Spécialité</th>
-                        <th>Diplomes</th>
-                        <th>Etablissement</th>
-                        <th>Adress</th>
+                        <th>Diplôme</th>
+                        <th>Établissement</th>
+                        <th>Address</th>
                         <th>Wilaya</th>
                         <th>N° Tél</th>
                         <th>CV</th>
                         <th>Remarques</th>
                         <th>Equipe</th>
-                        <th>Diplomes</th>
-                        <th>Pieces d'ID</th>
+                        <th>Diplômes</th>
+                        <th>Pièces d'ID</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,19 +78,19 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Affecter les condidats</h5>
+                    <h5 class="modal-title">Affecter les candidats</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form action="/affectationCondidat" method="POST">
-                        <h6>Veuillez choisir en quelle equipe vous voulez affecter les condidats séléctionnes</h6>
-                        <h6 class="text-danger">Note: si la capacité de l'équipe choisie ne suffit pas, vous devez soit sortir quelques condidats soit changer d'equipe!</h6>
+                        <h6>Veuillez choisir en quelle équipe vous voulez affecter les candidats sélectionnés</h6>
+                        <h6 class="text-danger">Note: si la capacité de l'équipe choisie ne suffit pas, vous devez soit sortir quelques candidats soit changer d'équipe.</h6>
                         <div class="form-group d-flex">
                             <label class="col-sm-4 col-form-label">Département</label>
                             <select class="custom-select my-1 mr-sm-2" id="selDep" name="selDep" onchange="fetchOtherInfos();" required>
-                                <option disabled selected value> Choisir quelle département </option>
+                                <option disabled selected value> Choisir quel département </option>
                                 <% data3.forEach(entry => { %>
                                     <option value="<%= entry.nomDepartement %>"><%= entry.nomDepartement %></option>
                                 <% }) %>
@@ -139,9 +139,8 @@
 </footer>
 <script id="Diplomesdata" type="application/json">
 [
-    <% data2.forEach(entry => { %>
-    {"IDdiplome":"<%= entry.IDdiplome %>",
-    "IDcondidat":"<%= entry.IDcondidat %>",
+<% data2.forEach(entry => { %>
+    {"IDcondidat":"<%= entry.IDcondidat %>",
     "pathDiplome":"<%= entry.pathDiplome %>"},
 <% }) %>
 {}]
@@ -159,22 +158,22 @@
 {}]
 </script>
 <script id="PIDsdata" type="application/json">
-    [
-        <% data4.forEach(entry => { %>
-        {"IDPID":"<%= entry.IDPID %>",
-        "IDcondidat":"<%= entry.IDcondidat %>",
-        "pathPID":"<%= entry.pathPID %>"},
+[
+<% data4.forEach(entry => { %>
+    {"IDcondidat":"<%= entry.IDcondidat %>",
+    "pathPID":"<%= entry.pathPID %>"},
     <% }) %>
-    {}]
+{}]
 </script>
 <script>
 // function used to unicode some special caracters when fetch from database
 function decodeHTMLEntities(text) {
-    var entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
-    for (var i = 0, max = entities.length; i < max; ++i) {
-        // console.log(text);
+    let entities = [['amp', '&'],['apos', '\''],['#x27', '\''],['#x2F', '/'],['#39', '\''],['#47', '/'],['lt', '<'],['gt', '>'],['nbsp', ' '],['quot', '"']];
+    for (let i = 0, max = entities.length; i < max; ++i) {
         if (text != null){
             text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+        } else {
+            break;
         }
     }
     return text;
@@ -184,7 +183,7 @@ function decodeHTMLEntities(text) {
 function fetchOtherInfos(){
     let Propsdata = JSON.parse(document.getElementById('Propsdata').innerHTML);
     let selDep = document.getElementById('selDep').value;
-    for (m=0; m< Propsdata.length; m++){
+    for (let m=0; m< Propsdata.length; m++){
         if (decodeHTMLEntities(Propsdata[m].nomDepartement) === selDep){
             document.getElementById('selE').readonly = false;
             document.getElementById('selE').value = decodeHTMLEntities(Propsdata[m].IDequipe);
@@ -229,7 +228,7 @@ function fetchOtherInfos(){
 
 // this render the links to diplomas of a condidate
 let Diplomesdata = JSON.parse(document.getElementById('Diplomesdata').innerHTML);
-for (m=0; m< Diplomesdata.length; m++){
+for (let m=0; m< Diplomesdata.length; m++){
     if (document.getElementById(Diplomesdata[m].IDcondidat) != null){
         document.getElementById(Diplomesdata[m].IDcondidat).innerHTML += "<a href=\""+decodeHTMLEntities(Diplomesdata[m].pathDiplome)+"\">Dip </a>";
     }
@@ -238,7 +237,7 @@ for (m=0; m< Diplomesdata.length; m++){
 // this render PDIs of a condidate
 let y;
 let PIDsdata = JSON.parse(document.getElementById('PIDsdata').innerHTML);
-for (m=0; m< PIDsdata.length; m++){
+for (let m=0; m< PIDsdata.length; m++){
     y = PIDsdata[m].IDcondidat * 2;
     if (document.getElementById(y) != null){
         document.getElementById(y).innerHTML += "<a href=\""+decodeHTMLEntities(PIDsdata[m].pathPID)+"\">PID </a>";

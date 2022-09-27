@@ -354,8 +354,20 @@ app.post('/motPasseOubliee',async (req, res)=>{
         let password;
         await Promise.all(
         [
-            conn.query(query1,(err, row)=>{password=row[0].motPasse;}),
-            setTimeout(() => {sendMailMotPasseOubl(emailOubliee,password);},500)
+            conn.query(query1,(err, row)=>{
+                if (row[0] != null){
+                    password = row[0].motPasse;
+                } else {
+                    password = '';
+                }
+            }),
+            setTimeout(() => {
+                if (password == ''){
+                    return;
+                } else {
+                    sendMailMotPasseOubl(emailOubliee,password);
+                }
+            },500)
         ]
         );
         setTimeout(() => {res.redirect('/');},1000);
@@ -392,19 +404,22 @@ function sendMailMotPasseOubl(emailReciever,passwordDB){
 app.get('/VusialisationCondidats',async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
+    const query3 = 'SELECT * FROM pieceidentite';
     try {
         const conn = getConn();
-        let condidats, diplomes_;
+        let condidats, diplomes_,pieceidentites_;
         await Promise.all(
         [
             conn.query(query1,(err, rows)=>{condidats=rows;}),
-            conn.query(query2,(err, rows)=>{diplomes_=rows;})
+            conn.query(query2,(err, rows)=>{diplomes_=rows;}),
+            conn.query(query3,(err, rows)=>{pieceidentites_=rows;}),
         ]
         );
         setTimeout(() => {
         res.render("VusialisationCondidats", {
         data: condidats,
-        data2: diplomes_
+        data2: diplomes_,
+        data3: pieceidentites_,
         });},100);
     } catch (error) {
     console.log(error);

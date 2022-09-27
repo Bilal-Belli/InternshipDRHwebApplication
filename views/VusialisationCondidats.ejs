@@ -15,35 +15,38 @@
     </nav>
     <div class="py-3"></div>
     <div class="container">
-        <div class="row">
-            <table class="table table-hover table-responsive" id="tableID">
+        <div class="row" style="overflow-x:auto;">
+            <table id="tableID" class="table table-striped table-bordered table-hover" style="width:100%">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Prénom</th>
-                        <th scope="col">E-mail</th>
-                        <th scope="col">Spécialité</th>
-                        <th scope="col">Diplomes</th>
-                        <th scope="col">Etablissement</th>
-                        <th scope="col">Adress</th>
-                        <th scope="col">Wilaya</th>
-                        <th scope="col">N° Tél</th>
-                        <th scope="col">CV</th>
-                        <th scope="col">Remarques</th>
-                        <th scope="col">Equipe</th>
-                        <th scope="col">Diplomes</th>
+                        <th>#</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>E-mail</th>
+                        <th>Spécialité</th>
+                        <th>Diplomes</th>
+                        <th>Etablissement</th>
+                        <th>Adress</th>
+                        <th>Wilaya</th>
+                        <th>N° Tél</th>
+                        <th>CV</th>
+                        <th>Remarques</th>
+                        <th>Equipe</th>
+                        <th>Diplomes</th>
+                        <th>Pieces d'ID</th>
                     </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
                     <tr>
+                        <% let index_1 = 0; %>
                         <% data.forEach(entry => { %>
-                        <th scope="row"><%= entry.IDcondidat %></th>
+                        <% index_1++; %>
+                        <td><%= index_1 %></td>
                         <td><%= entry.nomCondidat %></td>
                         <td><%= entry.prenomCondidat %></td>
                         <td><%= entry.emailCondidat %></td>
                         <td><%= entry.specialite %></td>
-                        <td><%= entry.degree %></td>
+                        <td><%= entry.diplome %></td>
                         <td><%= entry.etablissement %></td>
                         <td><%= entry.adressComplet %></td>
                         <td><%= entry.wilaya %></td>
@@ -52,6 +55,7 @@
                         <td><%= entry.remarques %></td>
                         <td><%= entry.IDequipe %></td>
                         <td id="<%= entry.IDcondidat %>"></td>
+                        <td id="<%= entry.IDcondidat * 2 %>"></td>
                     </tr>
                     <% }) %>
                 </tbody>
@@ -77,6 +81,15 @@
 <% }) %>
 {}]
 </script>
+<script id="PIDsdata" type="application/json">
+    [
+        <% data3.forEach(entry => { %>
+        {"IDPID":"<%= entry.IDPID %>",
+        "IDcondidat":"<%= entry.IDcondidat %>",
+        "pathPID":"<%= entry.pathPID %>"},
+    <% }) %>
+    {}]
+</script>
 <script>
 // function used to unicode some special caracters when fetch from database
 function decodeHTMLEntities(text) {
@@ -90,10 +103,43 @@ function decodeHTMLEntities(text) {
 // this render the links to diplomas of a condidate
 let Diplomesdata = JSON.parse(document.getElementById('Diplomesdata').innerHTML);
 for (m=0; m< Diplomesdata.length; m++){
-    document.getElementById(Diplomesdata[m].IDcondidat).innerHTML += "<a href=\""+decodeHTMLEntities(Diplomesdata[m].pathDiplome)+"\">Dip </a>";
+    if (document.getElementById(Diplomesdata[m].IDcondidat) != null){
+        document.getElementById(Diplomesdata[m].IDcondidat).innerHTML += "<a href=\""+decodeHTMLEntities(Diplomesdata[m].pathDiplome)+"\">Dip </a>";
+    }
+};
+
+// this render PDIs of a condidate
+let y;
+let PIDsdata = JSON.parse(document.getElementById('PIDsdata').innerHTML);
+for (m=0; m< PIDsdata.length; m++){
+    y = PIDsdata[m].IDcondidat * 2;
+    if (document.getElementById(y) != null){
+        document.getElementById(y).innerHTML += "<a href=\""+decodeHTMLEntities(PIDsdata[m].pathPID)+"\">PID </a>";
+    }
 };
 </script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script>
+    // function to limit showing rows of table
+    $(document).ready(function() {
+        $('#tableID').DataTable({     
+        "aLengthMenu": [[5, 10, 25, -1], [5, 10, 25, "All"]],
+        "iDisplayLength": 5});
+    });
+
+    // function to fill hidden input to pass data to backend
+    function getSelectesAccounts(){
+        var cbs = document.getElementsByTagName('input');
+        document.getElementById('hiddenQR').value = "";
+        for(var i=0; i < cbs.length; i++) {
+            if(cbs[i].type === 'checkbox' && cbs[i].checked === true) {
+                document.getElementById('hiddenQR').value += cbs[i].name+" ";
+            }
+        }
+    }
+</script>
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>    
 </html>

@@ -4,7 +4,7 @@
     <title>DRH - Connexion</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">:
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet">
     <!-- <link  rel="shortcut icon"  type="image/png"  href="" > -->
@@ -14,88 +14,87 @@
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">
-            <div class="col-md-6 text-center mb-5" style="font-family: 'Space Grotesk', sans-serif;">
-                <h5 class="heading-section0">Direction des resources Humaine - DRH</h2>
-                <h5 class="heading-section0">GRH AWMT</h2>
-            </div>
+                <div class="col-md-6 text-center mb-5" style="font-family: 'Space Grotesk', sans-serif;">
+                    <h5 class="heading-section0">Direction des resources Humaine - DRH</h2>
+                    <h5 class="heading-section0">GRH AWMT</h2>
+                </div>
             </div>
             <div class="row justify-content-center">
-            <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
-                <div class="p-4 p-md-5">
-                    <div class="icon d-flex align-items-center justify-content-center">
-                        <div class="rounded-circle bg-success" style="height: 100px; width: 100px;">
-                            <div class="text-center py-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="#fefdff" class="bi bi-person-fill" viewBox="0 0 16 16">
-                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                                </svg>
+                <div class="shadow-lg col-md-7 col-lg-5 bg-light rounded">
+                    <div class="p-4 p-md-5">
+                        <div class="icon d-flex align-items-center justify-content-center">
+                            <div class="rounded-circle bg-success" style="height: 100px; width: 100px;">
+                                <div class="text-center py-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="#fefdff" class="bi bi-person-fill" viewBox="0 0 16 16">
+                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <h3 class="text-center mb-4">Connexion</h3>
-                    <form class="login-form" id="myLoginForm" action="/compteCon" method="POST">
-                        <!-- champ Email --> 
-                        <div class="form-group">
-                            <input id="email" name="email" type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" size="30" required>
-                        </div>
-                        <!-- champ Mot de Passe -->
-                        <div class="form-group d-flex">
-                            <input id="MotPasse" name="MotPasse" type="password" class="form-control rounded-left" placeholder="Mot de passe" value="" required>
-                            <!-- the eye that hide or show password -->
-                            <a  id="icon-click">
-                            <i class="fa fa-eye-slash" id="icon" style="padding: 15px"></i></a>
-                        </div>
-                        <div class="form-group text-center">
-                            <canvas id="captcha"></canvas>
-                        </div>
-                        <div class="form-group">
-                            <input id="textBox" type="text" name="text" class="form-control rounded-left" value="" required>
-                        </div>
-                        <div class="form-group">
-                            <button id="refreshButton" class="form-control rounded submit px-3">Refresh</button>
-                        </div>
-                        <!-- champ erreur nom -->
-                        <div class="form-group d-flex" id ="output" type="text" style="color:red; font-size: 11.5px;"></div>
-                        <div class="form-group"></div>
-                            <button type="submit" class="form-control btn btn-success rounded submit px-3" id="submitBtn">Login</button>
-                        </div>
-                        <div class="form-group">
-                            <a href="" class="text-md-left text-success" data-toggle="modal" data-target="#exampleModalCenter">Mot de passe Oubliée?</a> 
-                        </div>
-                    </form>
-                    <!-- Form 2: Mot pass oubliée -->
-                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Mail de Récupération</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- here i put the form code -->
-                                    <form action="/motPasseOubliee" method="POST">
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-5 col-form-label">Email</label>
-                                            <input type="text" class="form-control rounded-left" name="emailOubliee" id="emailOubliee" required>
-                                        </div>
-                                        <div class="form-group"></div>
-                                        <button type="submit" class="form-control btn btn-primary rounded submit px-3">Envoyer</button>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <h3 class="text-center mb-4">Connexion</h3>
+                        <form id="myLoginForm" action="/compteCon" method="POST">
+                            <div class="form-group">
+                                <input id="email" name="email" type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" size="30" required>
+                            </div>
+                            <div class="form-group d-flex">
+                                <input id="MotPasse" name="MotPasse" type="password" class="form-control rounded-left" placeholder="Mot de passe" value="" required>
+                                <!-- the eye that hide or show password -->
+                                <a  id="icon-click">
+                                    <i class="fa fa-eye-slash" id="icon" style="padding: 15px"></i>
+                                </a>
+                            </div>
+                            <div class="form-group text-center">
+                                <canvas id="captcha"></canvas>
+                            </div>
+                            <div class="form-group">
+                                <input id="textBox" type="text" name="text" class="form-control rounded-left" value="" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" id="refreshButton" class="form-control rounded submit px-3">Rafraîchir</button>
+                            </div>
+                            <!-- champ erreur nom -->
+                            <div class="form-group d-flex" id ="output" type="text" style="color:red; font-size: 11.5px;"></div>
+                            <div class="form-group"></div>
+                                <button type="submit" class="form-control btn btn-success rounded submit px-3" id="submitBtn">Connexion</button>
+                            </div>
+                            <div class="form-group">
+                                <a href="" class="text-md-left text-success" data-toggle="modal" data-target="#motpassOublieeModal">Mot de passe Oubliée?</a> 
+                            </div>
+                        </form>
+                        <!-- Form 2: Mot pass oubliée -->
+                        <div class="modal fade" id="motpassOublieeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Mail de Récupération</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- here i put the form code -->
+                                        <form action="/motPasseOubliee" method="POST">
+                                            <div class="form-group d-flex">
+                                                <label class="col-sm-5 col-form-label">Email</label>
+                                                <input type="text" class="form-control rounded-left" name="emailOubliee" id="emailOubliee" required>
+                                            </div>
+                                            <div class="form-group"></div>
+                                            <button type="submit" class="form-control btn btn-primary rounded submit px-3">Envoyer</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
         </div>
     </section>
     <div class="p-4"></div>
-<div class="p-4"></div>
+    <div class="p-4"></div>
 </body>
 <footer class="fixed-bottom">
     <div style="background-color:#00930080;">
@@ -105,14 +104,15 @@
     </div>
 </footer>
 <script>
+    // this script is to generate and controle the recaptcha verefication
     let validSubmit = false;
     let captchaText = document.querySelector('#captcha');
     captchaText.width =190;
     captchaText.height=50;
-    var ctx = captchaText.getContext("2d");
+    let ctx = captchaText.getContext("2d");
     ctx.font = "20px Roboto";
     ctx.fillStyle = "#000000";
-    for (var i= 0; i<100; i++) {
+    for (let i= 0; i<100; i++) {
         ctx.beginPath();
         ctx.moveTo(captchaText.width*Math.random(),captchaText.height*Math.random());
         ctx.lineTo(captchaText.width*Math.random(),captchaText.height*Math.random());
@@ -129,7 +129,7 @@
     for (let i = 1; i <= 7; i++) {
         emptyArr.push(alphaNums[Math.floor(Math.random() * alphaNums.length)]);
     }
-    var c = emptyArr.join('');
+    let c = emptyArr.join('');
     ctx.fillText(emptyArr.join(''),captchaText.width/4, captchaText.height/2);
 
     let userText = document.querySelector('#textBox');
@@ -173,19 +173,21 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
-        $("#icon-click").click(function() {
-        var className = $("#icon").attr('class');
+// script to controle the eye for hide and show password
+$(document).ready(function() {
+    $("#icon-click").click(function() {
+        let className = $("#icon").attr('class');
         className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
         $("#icon").attr('class', className);
-        var input = $("#MotPasse");
+
+        let input = $("#MotPasse");
         if (input.attr("type") == "text") {
             input.attr("type", "password");
         } else {
             input.attr("type", "text");
         }
-        });
-        });
+    });
+});
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
