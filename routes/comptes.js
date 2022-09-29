@@ -30,10 +30,16 @@ router.post('/compteCon', (req, res)=>{
             return;
         }else{
             if (results[0].typePost === "Admin"){
+                // 
+                res.cookie('jwt', email, { signed: true }, {maxAge: 360000});
+                // 
                 res.redirect('adminaccueil');
                 res.end();
                 return;
             }else{
+                // 
+                res.cookie('jwt', email, { signed: true }, {maxAge: 360000});
+                // 
                 res.redirect('accueil');
                 res.end();
                 return;
@@ -93,6 +99,7 @@ function editQuery(PT,MTR,SPT){
     };
     return query;
 };
+// to use and delete
 router.post('/fetchCompte', (req, res)=>{
     console.log('EDIT AN ACCOUNT');
     const emailenter = req.body.emailenter;
@@ -116,6 +123,7 @@ router.post('/fetchCompte', (req, res)=>{
         }
     })
 });
+// to use and delete
 router.post('/editCompte', (req, res)=>{
     console.log('EDIT AN ACCOUNT');
     const nom = req.body.nom;

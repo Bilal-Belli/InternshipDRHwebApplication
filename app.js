@@ -1,31 +1,24 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-var nodemailer = require('nodemailer');
 const mysql = require('mysql');
+var nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const fileUpload = require('express-fileupload');
 const { requireAuth } = require('./user/auth');
 
-app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(morgan('combined'));
-app.use(fileUpload());
 // app.use(express.static('./public')); //used for static html files
 app.use(express.static('./views'));//used for background image and icon files
 app.use(express.static('./FileslocalStorage'));//used for background image and icon files
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(morgan('combined'));
+app.use(cookieParser('net'));
+app.use(fileUpload());
+
 app.set('view engine','ejs');
 app.get('/', (req,res)=>{
     res.render('index');
-    res.end();
-});
-app.get('/CreerCompte',(req,res)=>{
-    res.render('CreerCompte');
-    res.end();
-});
-app.get('/modifierCompte',(req,res)=>{
-    res.render('modifierCompte',{data: []});
     res.end();
 });
 app.get('/InsererCondidat',async (req,res)=>{
@@ -400,7 +393,7 @@ function sendMailMotPasseOubl(emailReciever,passwordDB){
             console.log('Successfully operation: ' + info.response);
         }
     });
-}
+};
 app.get('/VusialisationCondidats',async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
@@ -455,7 +448,7 @@ app.get('/VusialisationCondidatsUser',async (req, res)=>{
     }
 });
 // app.get('/accueil', requireAuth, (req, res) => { //for middleware
-app.get('/accueil', (req, res) => {
+app.get('/accueil', requireAuth,(req, res) => {
     console.log('you are now on home page');
     res.render('accueil');
     res.end();
@@ -474,8 +467,8 @@ function getConn(){
         database: 'stagebddtest3'
         // database: 'StageBDD'
     });
-}
-const conn = getConn();
+};
+// const conn = getConn();
 // CREATING DB on MYSQL:
 // conn.connect((err)=>{
 //     if(err) throw err;
@@ -523,6 +516,6 @@ const conn = getConn();
 // test de connectivité
 app.listen(3000, ()=>{
     console.log('server running port is 3000');
-})
-const router = require('./routes/comptes')
-app.use(router)
+});
+const router = require('./routes/comptes');
+app.use(router);
