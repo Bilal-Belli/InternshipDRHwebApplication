@@ -30,15 +30,15 @@ router.post('/compteCon', (req, res)=>{
             return;
         }else{
             if (results[0].typePost === "Admin"){
-                // 
-                res.cookie('jwt', email, { signed: true }, {maxAge: 360000});
-                // 
+                //
+                res.cookie('ADMIN', email, { signed: true }, {maxAge: 60000});
+                //
                 res.redirect('adminaccueil');
                 res.end();
                 return;
             }else{
                 // 
-                res.cookie('jwt', email, { signed: true }, {maxAge: 360000});
+                res.cookie('USER', email, { signed: true }, {maxAge: 60000});
                 // 
                 res.redirect('accueil');
                 res.end();

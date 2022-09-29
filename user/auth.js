@@ -1,28 +1,27 @@
 const jwt = require('jsonwebtoken');
 // require("cookie-parser");
 
-const requireAuth = (req, res, next) => {
+const requireAuthUSER = (req, res, next) => {
     // let token = req.cookies.jwt;
-    let token = req.signedCookies.jwt;
+    let token = req.signedCookies.USER;
     // console.log(req.cookies);
     // console.log(req.signedCookies);
-    console.log("token = "+token);
+    console.log("USER Token = "+token);
     // check json web token exists & is verified
-    next();
     if (token != null) {
         next();
-        // jwt.verify(token, 'net', (err, decodedToken) => {
-        // if (err) {
-        //     console.log(err);
-        //     // console.log(err.message);
-        //     res.redirect('/');
-        // } else {
-        //     console.log('decodedToken : '+decodedToken);
-        //     next();
-        // }
-        // });
     } else {
         res.redirect('/');
     }
 };
-module.exports = { requireAuth };
+
+const requireAuthADMIN = (req, res, next) => {
+    let token = req.signedCookies.ADMIN;
+    console.log("ADMIN Token = "+token);
+    if (token != null) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+};
+module.exports = { requireAuthUSER, requireAuthADMIN };

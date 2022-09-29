@@ -6,14 +6,15 @@ var nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const fileUpload = require('express-fileupload');
-const { requireAuth } = require('./user/auth');
+const { requireAuthADMIN, requireAuthUSER } = require('./user/auth');
+require('dotenv').config();
 
 // app.use(express.static('./public')); //used for static html files
 app.use(express.static('./views'));//used for background image and icon files
 app.use(express.static('./FileslocalStorage'));//used for background image and icon files
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('combined'));
-app.use(cookieParser('net'));
+app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
 app.use(fileUpload());
 
 app.set('view engine','ejs');
@@ -21,7 +22,7 @@ app.get('/', (req,res)=>{
     res.render('index');
     res.end();
 });
-app.get('/InsererCondidat',async (req,res)=>{
+app.get('/InsererCondidat', requireAuthUSER, async (req,res)=>{
     const sql = 'SELECT * FROM condidat';
     const sql2 = "SELECT * FROM diplome";
     const sql3 = "SELECT * FROM pieceidentite";
@@ -47,7 +48,7 @@ app.get('/InsererCondidat',async (req,res)=>{
     res.end();
     }
 });
-app.post('/InsererCondidat',async (req, res)=>{
+app.post('/InsererCondidat', async (req, res)=>{
     const Nom = req.body.Nom;
     const Prenom = req.body.Prenom;
     const email = req.body.email;
@@ -142,7 +143,7 @@ function affectPIDstoSpecificCondidat(nb_PIDs_,queryvalues_,nomPIDs_,newInserted
         queryvalues_[i] = [null,nomPIDs_[i],newInsertedID_];
     };
 };
-app.post('/modifierInfosCondidat',async (req, res)=>{
+app.post('/modifierInfosCondidat', async (req, res)=>{
     const Nom = req.body.Nom;
     const Prenom = req.body.Prenom;
     const email = req.body.email;
@@ -288,7 +289,7 @@ app.post('/modifierInfosCondidat',async (req, res)=>{
     res.end();
     }
 });
-app.get('/gestionComptesOptions',async (req, res)=>{
+app.get('/gestionComptesOptions', requireAuthADMIN,async (req, res)=>{
     const querycomptes = 'SELECT * FROM compte';
     const queryDirections = "SELECT * FROM direction";
     const queryDepartments = "SELECT * FROM departement";
@@ -315,7 +316,7 @@ app.get('/gestionComptesOptions',async (req, res)=>{
     res.end();
     }
 });
-app.get('/gestionEntreprise',async (req,res)=>{
+app.get('/gestionEntreprise', requireAuthADMIN, async (req,res)=>{
     const queryDirections = "SELECT IDdirection,nomDirection,nomSousDirection,nomDirecteur,prenomDirecteur,nom nomSousDirecteur,prenom prenomSousDirecteur FROM (SELECT IDdirection,nomDirection,nomSousDirection,MatriculeSousDirecteur,nom nomDirecteur,prenom prenomDirecteur FROM direction AS T LEFT JOIN compte ON T.MatriculeDirecteur = compte.Matricule) AS T LEFT JOIN compte ON T.MatriculeSousDirecteur = compte.Matricule;";
     const queryDepartments = "SELECT IDdepartement,nomDirection,nomDepartement,IDequipe,capaciteEquipe,nomChefDep,prenomChefDep,nom nomChefEqu,prenom prenomChefEqu from (select IDdepartement,nomDirection,nomDepartement,IDequipe,MatriculeChefEquipe,capaciteEquipe,nom nomChefDep,prenom prenomChefDep from (select IDdepartement,nomDepartement,IDequipe,MatriculeChefEquipe,capaciteEquipe,MatriculeChefDep,nomDirection from departement AS T left join direction on T.IDdirection = direction.IDdirection) AS T left join compte ON T.MatriculeChefDep = compte.Matricule) AS T left join compte ON T.MatriculeChefEquipe = compte.Matricule;";
     try {
@@ -394,7 +395,7 @@ function sendMailMotPasseOubl(emailReciever,passwordDB){
         }
     });
 };
-app.get('/VusialisationCondidats',async (req, res)=>{
+app.get('/VusialisationCondidats', requireAuthADMIN, async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
     const query3 = 'SELECT * FROM pieceidentite';
@@ -419,7 +420,7 @@ app.get('/VusialisationCondidats',async (req, res)=>{
     res.end();
     }
 });
-app.get('/VusialisationCondidatsUser',async (req, res)=>{
+app.get('/VusialisationCondidatsUser', requireAuthUSER, async (req, res)=>{
     const query1 = 'SELECT * FROM condidat';
     const query2 = 'SELECT * FROM diplome';
     const query3 = 'select nomDirection,nomSousDirection,nomDepartement,K.IDequipe,capaciteEquipe,capaciteActuelle from (select nomDirection,nomSousDirection,nomDepartement,IDequipe,capaciteEquipe from departement natural join direction)  K left join (select  COUNT(IDcondidat) capaciteActuelle,IDequipe from condidat) P on K.IDequipe = P.IDequipe group by K.IDequipe;';
@@ -448,12 +449,12 @@ app.get('/VusialisationCondidatsUser',async (req, res)=>{
     }
 });
 // app.get('/accueil', requireAuth, (req, res) => { //for middleware
-app.get('/accueil', requireAuth,(req, res) => {
+app.get('/accueil', requireAuthUSER,(req, res) => {
     console.log('you are now on home page');
     res.render('accueil');
     res.end();
 });
-app.get('/adminaccueil', (req, res) => {
+app.get('/adminaccueil', requireAuthADMIN,(req, res) => {
     console.log('you are now on admin home page');
     res.render('adminaccueil');
     res.end();
