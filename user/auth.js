@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 // require("cookie-parser");
 
 const requireAuthUSER = (req, res, next) => {
-    // let token = req.cookies.jwt;
-    let token = req.signedCookies.USER;
+    // let token = req.cookies.USER;
     // console.log(req.cookies);
+    let token = req.signedCookies.USER;
     // console.log(req.signedCookies);
     console.log("USER Token = "+token);
     // check json web token exists & is verified
@@ -24,4 +24,10 @@ const requireAuthADMIN = (req, res, next) => {
         res.redirect('/');
     }
 };
-module.exports = { requireAuthUSER, requireAuthADMIN };
+
+const deleteAuth = (req, res, next) => {
+    res.clearCookie("ADMIN");
+    res.clearCookie("USER");
+    next();
+};
+module.exports = { requireAuthUSER, requireAuthADMIN, deleteAuth };

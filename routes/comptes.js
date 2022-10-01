@@ -30,15 +30,17 @@ router.post('/compteCon', (req, res)=>{
             return;
         }else{
             if (results[0].typePost === "Admin"){
-                //
-                res.cookie('ADMIN', email, { signed: true }, {maxAge: 60000});
+                // second = 1000 , 1min = 60000 , 1h = 60 * 60000 = 3600000
+                let maxAgeINhours = 1000*60*60*4; // 4hours
+                res.cookie('ADMIN', email, {maxAge: maxAgeINhours, secure: true, httpOnly: true, sameSite: 'lax', signed: true});
                 //
                 res.redirect('adminaccueil');
                 res.end();
                 return;
             }else{
-                // 
-                res.cookie('USER', email, { signed: true }, {maxAge: 60000});
+                // second = 1000 , 1min = 60000 , 1h = 60 * 60000 = 3600000
+                let maxAgeINhours = 1000*60*60*4; // 4hours
+                res.cookie('USER', email, {maxAge: maxAgeINhours, secure: true, httpOnly: true, sameSite: 'lax', signed: true});
                 // 
                 res.redirect('accueil');
                 res.end();
@@ -189,22 +191,15 @@ router.post('/supprimerCompte',async (req, res)=>{
     }
 });
 router.post('/ajouterDir',async (req, res)=>{
-    // const idDir = req.body.idDir;
     const nomDir = req.body.nomDir;
-    // const emailDIR = req.body.emailDIR;
     const nomSDir = req.body.nomSDir;
-    // const emailSDIR = req.body.emailSDIR;
     const sql1 = 'INSERT INTO direction VALUES ?';
-    // const sql2 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailDIR+'\"';
-    // const sql3 = 'UPDATE compte SET compte.compteActif = True WHERE compte.email = \"'+emailSDIR+'\"';
     const values = [[null, nomDir, nomSDir, null, null]];
     try {
         const conn = getConn();
         await Promise.all(
         [
             conn.query(sql1,[values],(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};} ),
-            // conn.query(sql2,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
-            // conn.query(sql3,(err)=>{if(err){console.log('Failed : ',err); res.redirect(req.get('referer')); res.end(); return;};}),
         ]
         );
         res.redirect('/gestionEntreprise');

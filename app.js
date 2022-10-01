@@ -6,7 +6,7 @@ var nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const fileUpload = require('express-fileupload');
-const { requireAuthADMIN, requireAuthUSER } = require('./user/auth');
+const { requireAuthADMIN, requireAuthUSER, deleteAuth } = require('./user/auth');
 require('dotenv').config();
 
 // app.use(express.static('./public')); //used for static html files
@@ -18,7 +18,7 @@ app.use(cookieParser(process.env.ACCESS_TOKEN_SECRET));
 app.use(fileUpload());
 
 app.set('view engine','ejs');
-app.get('/', (req,res)=>{
+app.get('/', deleteAuth, (req,res)=>{
     res.render('index');
     res.end();
 });
@@ -448,7 +448,6 @@ app.get('/VusialisationCondidatsUser', requireAuthUSER, async (req, res)=>{
     res.end();
     }
 });
-// app.get('/accueil', requireAuth, (req, res) => { //for middleware
 app.get('/accueil', requireAuthUSER,(req, res) => {
     console.log('you are now on home page');
     res.render('accueil');
