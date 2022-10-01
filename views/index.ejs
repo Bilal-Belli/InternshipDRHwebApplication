@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap" rel="stylesheet">
     <!-- <link  rel="shortcut icon"  type="image/png"  href="" > -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="bg-image" style="background-image: url('background.png'); background-repeat: no-repeat;background-attachment: fixed;  background-size: cover;">
     <section class="ftco-section">
@@ -52,8 +53,9 @@
                             <div class="form-group">
                                 <button type="button" id="refreshButton" class="form-control rounded submit px-3">Rafraîchir</button>
                             </div>
-                            <!-- champ erreur nom -->
+                            <!-- champ erreur capatcha -->
                             <div class="form-group d-flex" id ="output" type="text" style="color:red; font-size: 11.5px;"></div>
+                            <div class="g-recaptcha" data-sitekey="6LcugUgiAAAAAJzxHAnp-XzJ3phwttlAo7afXUit"></div>
                             <div class="form-group"></div>
                                 <button type="submit" class="form-control btn btn-success rounded submit px-3" id="submitBtn">Connexion</button>
                             </div>
@@ -103,6 +105,8 @@
         </div>
     </div>
 </footer>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
+</script>
 <script>
     // this script is to generate and controle the recaptcha verefication
     let validSubmit = false;
