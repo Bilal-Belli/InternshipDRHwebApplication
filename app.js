@@ -59,6 +59,8 @@ app.post('/InsererCondidat', async (req, res)=>{
     const Wilaya = req.body.Wilaya;
     const numeroTel = req.body.numeroTel;
     const Remarques = req.body.Remarques;
+    const JHC = req.body.JHC;
+    const DateObtentionDiplome = req.body.DateObtentionDiplome;
     // console.log(req.files.pathcv); //show the object
     let documentCV = req.files.pathcv;
     let documentsDiplomes = req.files.diplomes;
@@ -118,7 +120,7 @@ app.post('/InsererCondidat', async (req, res)=>{
     });
     let newInsertedID;
     const sql = 'INSERT INTO condidat VALUES ?'
-    const values = [[null, Nom, Prenom, email, Specialite, Diplome, Etablissement, Adress, Wilaya, numeroTel, newNameForCV, Remarques, null]];
+    const values = [[null, Nom, Prenom, email, Specialite, Diplome, DateObtentionDiplome, Etablissement, Adress, Wilaya, numeroTel, newNameForCV, Remarques, null, JHC]];
     const queryDiplomes = 'INSERT INTO diplome VALUES ?';
     const queryPIDs = 'INSERT INTO pieceIDentite VALUES ?';
     let queryvalues=[];

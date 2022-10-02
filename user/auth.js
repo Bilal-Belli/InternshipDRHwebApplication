@@ -6,7 +6,7 @@ const requireAuthUSER = (req, res, next) => {
     // console.log(req.cookies);
     let token = req.signedCookies.USER;
     // console.log(req.signedCookies);
-    console.log("USER Token = "+token);
+    // console.log("USER Token = "+token);
     // check json web token exists & is verified
     if (token != null) {
         next();
@@ -17,7 +17,7 @@ const requireAuthUSER = (req, res, next) => {
 
 const requireAuthADMIN = (req, res, next) => {
     let token = req.signedCookies.ADMIN;
-    console.log("ADMIN Token = "+token);
+    // console.log("ADMIN Token = "+token);
     if (token != null) {
         next();
     } else {
