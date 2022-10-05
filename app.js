@@ -22,8 +22,10 @@ app.get('/', deleteAuth, (req,res)=>{
     res.render('index');
     res.end();
 });
-app.get('/InsererCondidat', requireAuthUSER, async (req,res)=>{
-    const sql = 'SELECT * FROM condidat';
+// requireAuthUSER
+app.get('/InsererCondidat',  async (req,res)=>{
+    // const sql = 'SELECT * FROM condidat';
+    const sql = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T join departement on departement.IDdepartement = T.IDdepartement;';
     const sql2 = "SELECT * FROM diplome";
     const sql3 = "SELECT * FROM pieceidentite";
     try {
@@ -291,7 +293,8 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
     res.end();
     }
 });
-app.get('/gestionComptesOptions', requireAuthADMIN,async (req, res)=>{
+// requireAuthADMIN,
+app.get('/gestionComptesOptions', async (req, res)=>{
     const querycomptes = 'SELECT * FROM compte';
     const queryDirections = "SELECT * FROM direction";
     const queryDepartments = "SELECT * FROM departement";
@@ -318,9 +321,10 @@ app.get('/gestionComptesOptions', requireAuthADMIN,async (req, res)=>{
     res.end();
     }
 });
-app.get('/gestionEntreprise', requireAuthADMIN, async (req,res)=>{
+// requireAuthADMIN
+app.get('/gestionEntreprise',  async (req,res)=>{
     const queryDirections = "SELECT IDdirection,nomDirection,nomSousDirection,nomDirecteur,prenomDirecteur,nom nomSousDirecteur,prenom prenomSousDirecteur FROM (SELECT IDdirection,nomDirection,nomSousDirection,MatriculeSousDirecteur,nom nomDirecteur,prenom prenomDirecteur FROM direction AS T LEFT JOIN compte ON T.MatriculeDirecteur = compte.Matricule) AS T LEFT JOIN compte ON T.MatriculeSousDirecteur = compte.Matricule;";
-    const queryDepartments = "SELECT IDdepartement,nomDirection,nomDepartement,IDequipe,capaciteEquipe,nomChefDep,prenomChefDep,nom nomChefEqu,prenom prenomChefEqu from (select IDdepartement,nomDirection,nomDepartement,IDequipe,MatriculeChefEquipe,capaciteEquipe,nom nomChefDep,prenom prenomChefDep from (select IDdepartement,nomDepartement,IDequipe,MatriculeChefEquipe,capaciteEquipe,MatriculeChefDep,nomDirection from departement AS T left join direction on T.IDdirection = direction.IDdirection) AS T left join compte ON T.MatriculeChefDep = compte.Matricule) AS T left join compte ON T.MatriculeChefEquipe = compte.Matricule;";
+    const queryDepartments = "SELECT IDdepartement,nomDirection,nomDepartement,nomEquipe,capaciteEquipe,nomChefDep,prenomChefDep,nom nomChefEqu,prenom prenomChefEqu from (select IDdepartement,nomDirection,nomDepartement,nomEquipe,MatriculeChefEquipe,capaciteEquipe,nom nomChefDep,prenom prenomChefDep from (select IDdepartement,nomDepartement,nomEquipe,MatriculeChefEquipe,capaciteEquipe,MatriculeChefDep,nomDirection from departement AS T left join direction on T.IDdirection = direction.IDdirection) AS T left join compte ON T.MatriculeChefDep = compte.Matricule) AS T left join compte ON T.MatriculeChefEquipe = compte.Matricule;";
     try {
         // Get connection once
         const conn = getConn();
@@ -397,8 +401,10 @@ function sendMailMotPasseOubl(emailReciever,passwordDB){
         }
     });
 };
-app.get('/VusialisationCondidats', requireAuthADMIN, async (req, res)=>{
-    const query1 = 'SELECT * FROM condidat';
+// requireAuthADMIN
+app.get('/VusialisationCondidats', async (req, res)=>{
+    // const query1 = 'SELECT * FROM condidat';
+    const query1 = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T join departement on departement.IDdepartement = T.IDdepartement;';
     const query2 = 'SELECT * FROM diplome';
     const query3 = 'SELECT * FROM pieceidentite';
     try {
@@ -422,10 +428,12 @@ app.get('/VusialisationCondidats', requireAuthADMIN, async (req, res)=>{
     res.end();
     }
 });
-app.get('/VusialisationCondidatsUser', requireAuthUSER, async (req, res)=>{
-    const query1 = 'SELECT * FROM condidat';
+// requireAuthUSER
+app.get('/VusialisationCondidatsUser',  async (req, res)=>{
+    // const query1 = 'SELECT * FROM condidat';
+    const query1 = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T join departement on departement.IDdepartement = T.IDdepartement;';
     const query2 = 'SELECT * FROM diplome';
-    const query3 = 'select nomDirection,nomSousDirection,nomDepartement,K.IDequipe,capaciteEquipe,capaciteActuelle from (select nomDirection,nomSousDirection,nomDepartement,IDequipe,capaciteEquipe from departement natural join direction)  K left join (select  COUNT(IDcondidat) capaciteActuelle,IDequipe from condidat) P on K.IDequipe = P.IDequipe group by K.IDequipe;';
+    const query3 = 'select nomDirection,nomSousDirection,nomDepartement,K.IDdepartement,nomEquipe IDequipe,capaciteEquipe,capaciteActuelle from (select nomDirection,nomSousDirection,nomDepartement,IDdepartement,nomEquipe,capaciteEquipe from departement natural join direction)  K left join (select  COUNT(IDcondidat) capaciteActuelle,IDdepartement from condidat) P on K.IDdepartement = P.IDdepartement group by K.IDdepartement;';
     const query4 = 'SELECT * FROM pieceidentite';
     try {
         const conn = getConn();
@@ -450,12 +458,14 @@ app.get('/VusialisationCondidatsUser', requireAuthUSER, async (req, res)=>{
     res.end();
     }
 });
-app.get('/accueil', requireAuthUSER,(req, res) => {
+// requireAuthUSER
+app.get('/accueil', (req, res) => {
     console.log('you are now on home page');
     res.render('accueil');
     res.end();
 });
-app.get('/adminaccueil', requireAuthADMIN,(req, res) => {
+// requireAuthADMIN
+app.get('/adminaccueil', (req, res) => {
     console.log('you are now on admin home page');
     res.render('adminaccueil');
     res.end();
@@ -466,7 +476,7 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'stagebddtest3'
+        database: 'stagebddtest'
         // database: 'StageBDD'
     });
 };

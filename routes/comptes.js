@@ -7,7 +7,7 @@ function getConn(){
         host: 'localhost',
         user : 'root',
         password: '1234',
-        database: 'stagebddtest3'
+        database: 'stagebddtest'
         // database: 'StageBDD'
     });
 }
@@ -61,7 +61,7 @@ router.post('/compteReg',async (req, res)=>{
     const dateCreationhidden = req.body.dateCreationhidden;
     const compteActif = false; //default value when create a new account
     const sql = 'INSERT INTO compte VALUES ?';
-    const values = [[null, postDeTravail, email, nom, prenom, numTel, MotPasse, compteActif, dateCreationhidden]];
+    const values = [[null, postDeTravail, email, nom, prenom, numTel, MotPasse, dateCreationhidden]];
     let sql2;
     try {
         const conn = getConn();
@@ -70,7 +70,7 @@ router.post('/compteReg',async (req, res)=>{
         [
             conn.query(sql,[values],(err, rows)=>{compt=rows;}),
             setTimeout(() => {sql2 = editQuery(postDeTravail,compt.insertId,selPost);},200),
-            setTimeout(() => {conn.query(sql2,(err, rows)=>{directions=rows;})},500),
+            setTimeout(() => {conn.query(sql2,(err)=>{if(err) console.log('error: '+err);})},500),
         ]
         );
         setTimeout(() => {
@@ -95,7 +95,11 @@ function editQuery(PT,MTR,SPT){
             } else{
                 if(PT == "Chef d'equipe"){
                     query = 'UPDATE departement SET departement.MatriculeChefEquipe = '+MTR+' where departement.IDequipe = \"'+SPT+'\"';
-                };
+                } else {
+                    if(PT == "Admin"){
+                        query = 'SELECT 1 WHERE false';
+                    }
+                }
             };
         };
     };
@@ -288,7 +292,7 @@ router.post('/affectationCondidat', (req, res)=>{
     let selE = req.body.selE;
     let hiddenQR = req.body.hiddenQR;
     let NB_DEMANDEE = [];
-    let query = 'UPDATE condidat SET condidat.IDequipe = \"'+selE+'\" WHERE '; 
+    let query = 'UPDATE condidat SET condidat.IDdepartement = \"'+selE+'\" WHERE '; 
     NB_DEMANDEE = hiddenQR.match(/("[^"]+"|[^"\s]+)/g);
     for(rr=0;rr<NB_DEMANDEE.length;rr++) {
         if (rr == (NB_DEMANDEE.length - 1)){

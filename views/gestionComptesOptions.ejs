@@ -192,6 +192,7 @@ function decodeHTMLEntities(text) {
 
 // function that display available directions or sous directions or departements or teams
 function fetchAUTO(){
+    document.getElementById('selPost').required = true;
     let text = document.getElementById("postDeTravail").options[document.getElementById("postDeTravail").selectedIndex].text;
     let dirsdata = JSON.parse(document.getElementById('dirsdata').innerHTML);
     let depsdata = JSON.parse(document.getElementById('depsdata').innerHTML);
@@ -220,10 +221,14 @@ function fetchAUTO(){
                     document.getElementById('labelPost').innerHTML = "Equipe";
                     document.getElementById('selPost').innerHTML = "";
                     for(i=0;i<depsdata.length;i++){
-                        document.getElementById('selPost').innerHTML += "<option value=\""+decodeHTMLEntities(depsdata[i].IDequipe)+"\">"+decodeHTMLEntities(depsdata[i].IDequipe)+"</option>";
+                        document.getElementById('selPost').innerHTML += "<option value=\""+decodeHTMLEntities(depsdata[i].nomEquipe)+"\">"+decodeHTMLEntities(depsdata[i].nomEquipe)+"</option>";
                     }
             } else{
-                // just need to complete
+                if(text == "Admin"){
+                    document.getElementById('selPost').required = false;
+                    document.getElementById('labelPost').innerHTML = "Administrateur";
+                    document.getElementById('selPost').innerHTML = "";
+                }
             }
             }
         }
@@ -477,7 +482,7 @@ function fetchAUTO(){
     [
         <% data2.forEach(entry => { %>
         {"nomDepartement":"<%= entry.nomDepartement%>",
-        "IDequipe":"<%= entry.IDequipe%>",
+        "nomEquipe":"<%= entry.nomEquipe%>",
         "IDdepartement":"<%= entry.IDdepartement %>"},
     <% }) %>
 {}]
