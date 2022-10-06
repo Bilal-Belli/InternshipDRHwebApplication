@@ -33,6 +33,7 @@
                         <th>E-mail</th>
                         <th>Spécialité</th>
                         <th>Diplôme</th>
+                        <th>Date d'Obtention</th>
                         <th>Établissement</th>
                         <th>Address</th>
                         <th>Wilaya</th>
@@ -56,6 +57,7 @@
                         <td><%= entry.emailCondidat %></td>
                         <td><%= entry.specialite %></td>
                         <td><%= entry.diplome %></td>
+                        <td><%= entry.dateObtention %></td>
                         <td><%= entry.etablissement %></td>
                         <td><%= entry.adressComplet %></td>
                         <td><%= entry.wilaya %></td>
@@ -99,6 +101,7 @@
                         <div class="form-group d-flex">
                             <label class="col-sm-4 col-form-label">Equipe</label>
                             <input type="text" class="form-control rounded-left" id="selE" name="selE" value="" readonly>
+                            <input type="hidden" id="selDHidden" name="selDHidden" value="">
                         </div>
                         <div class="form-group d-flex">
                             <label class="col-sm-4 col-form-label">Direction</label>
@@ -153,6 +156,7 @@
     "nomDepartement":"<%= entry.nomDepartement %>",
     "IDequipe":"<%= entry.IDequipe %>",
     "capaciteActuelle":"<%= entry.capaciteActuelle %>",
+    "IDdepartement":"<%= entry.IDdepartement %>",
     "capaciteEquipe":"<%= entry.capaciteEquipe %>"},
 <% }) %>
 {}]
@@ -188,6 +192,9 @@ function fetchOtherInfos(){
             document.getElementById('selE').readonly = false;
             document.getElementById('selE').value = decodeHTMLEntities(Propsdata[m].IDequipe);
             document.getElementById('selE').readonly = true;
+            // 
+            document.getElementById('selDHidden').value = decodeHTMLEntities(Propsdata[m].IDdepartement);
+            // 
             document.getElementById('selDir').readonly = false;
             document.getElementById('selDir').value = decodeHTMLEntities(Propsdata[m].nomDirection);
             document.getElementById('selDir').readonly = true;

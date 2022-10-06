@@ -22,10 +22,8 @@ app.get('/', deleteAuth, (req,res)=>{
     res.render('index');
     res.end();
 });
-// requireAuthUSER
-app.get('/InsererCondidat',  async (req,res)=>{
-    // const sql = 'SELECT * FROM condidat';
-    const sql = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T join departement on departement.IDdepartement = T.IDdepartement;';
+app.get('/InsererCondidat', requireAuthUSER, async (req,res)=>{
+    const sql = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T left join departement on departement.IDdepartement = T.IDdepartement;';
     const sql2 = "SELECT * FROM diplome";
     const sql3 = "SELECT * FROM pieceidentite";
     try {
@@ -293,8 +291,7 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
     res.end();
     }
 });
-// requireAuthADMIN,
-app.get('/gestionComptesOptions', async (req, res)=>{
+app.get('/gestionComptesOptions', requireAuthADMIN, async (req, res)=>{
     const querycomptes = 'SELECT * FROM compte';
     const queryDirections = "SELECT * FROM direction";
     const queryDepartments = "SELECT * FROM departement";
@@ -321,8 +318,7 @@ app.get('/gestionComptesOptions', async (req, res)=>{
     res.end();
     }
 });
-// requireAuthADMIN
-app.get('/gestionEntreprise',  async (req,res)=>{
+app.get('/gestionEntreprise', requireAuthADMIN, async (req,res)=>{
     const queryDirections = "SELECT IDdirection,nomDirection,nomSousDirection,nomDirecteur,prenomDirecteur,nom nomSousDirecteur,prenom prenomSousDirecteur FROM (SELECT IDdirection,nomDirection,nomSousDirection,MatriculeSousDirecteur,nom nomDirecteur,prenom prenomDirecteur FROM direction AS T LEFT JOIN compte ON T.MatriculeDirecteur = compte.Matricule) AS T LEFT JOIN compte ON T.MatriculeSousDirecteur = compte.Matricule;";
     const queryDepartments = "SELECT IDdepartement,nomDirection,nomDepartement,nomEquipe,capaciteEquipe,nomChefDep,prenomChefDep,nom nomChefEqu,prenom prenomChefEqu from (select IDdepartement,nomDirection,nomDepartement,nomEquipe,MatriculeChefEquipe,capaciteEquipe,nom nomChefDep,prenom prenomChefDep from (select IDdepartement,nomDepartement,nomEquipe,MatriculeChefEquipe,capaciteEquipe,MatriculeChefDep,nomDirection from departement AS T left join direction on T.IDdirection = direction.IDdirection) AS T left join compte ON T.MatriculeChefDep = compte.Matricule) AS T left join compte ON T.MatriculeChefEquipe = compte.Matricule;";
     try {
@@ -401,10 +397,8 @@ function sendMailMotPasseOubl(emailReciever,passwordDB){
         }
     });
 };
-// requireAuthADMIN
-app.get('/VusialisationCondidats', async (req, res)=>{
-    // const query1 = 'SELECT * FROM condidat';
-    const query1 = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T join departement on departement.IDdepartement = T.IDdepartement;';
+app.get('/VusialisationCondidats', requireAuthADMIN, async (req, res)=>{
+    const query1 = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T left join departement on departement.IDdepartement = T.IDdepartement;';
     const query2 = 'SELECT * FROM diplome';
     const query3 = 'SELECT * FROM pieceidentite';
     try {
@@ -428,10 +422,8 @@ app.get('/VusialisationCondidats', async (req, res)=>{
     res.end();
     }
 });
-// requireAuthUSER
-app.get('/VusialisationCondidatsUser',  async (req, res)=>{
-    // const query1 = 'SELECT * FROM condidat';
-    const query1 = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T join departement on departement.IDdepartement = T.IDdepartement;';
+app.get('/VusialisationCondidatsUser', requireAuthUSER, async (req, res)=>{
+    const query1 = 'select IDcondidat,nomCondidat,prenomCondidat,emailCondidat,specialite,diplome,dateObtention,etablissement,adressComplet,wilaya,numeroTel,pathCV,remarques,nomEquipe IDequipe,dateCreation from condidat as T left join departement on departement.IDdepartement = T.IDdepartement;';
     const query2 = 'SELECT * FROM diplome';
     const query3 = 'select nomDirection,nomSousDirection,nomDepartement,K.IDdepartement,nomEquipe IDequipe,capaciteEquipe,capaciteActuelle from (select nomDirection,nomSousDirection,nomDepartement,IDdepartement,nomEquipe,capaciteEquipe from departement natural join direction)  K left join (select  COUNT(IDcondidat) capaciteActuelle,IDdepartement from condidat) P on K.IDdepartement = P.IDdepartement group by K.IDdepartement;';
     const query4 = 'SELECT * FROM pieceidentite';
@@ -458,14 +450,12 @@ app.get('/VusialisationCondidatsUser',  async (req, res)=>{
     res.end();
     }
 });
-// requireAuthUSER
-app.get('/accueil', (req, res) => {
+app.get('/accueil', requireAuthUSER, (req, res) => {
     console.log('you are now on home page');
     res.render('accueil');
     res.end();
 });
-// requireAuthADMIN
-app.get('/adminaccueil', (req, res) => {
+app.get('/adminaccueil', requireAuthADMIN, (req, res) => {
     console.log('you are now on admin home page');
     res.render('adminaccueil');
     res.end();
@@ -477,54 +467,8 @@ function getConn(){
         user : 'root',
         password: '1234',
         database: 'stagebddtest'
-        // database: 'StageBDD'
     });
 };
-// const conn = getConn();
-// CREATING DB on MYSQL:
-// conn.connect((err)=>{
-//     if(err) throw err;
-//     console.log('Connnected');
-//     // create database
-//     const db = 'CREATE DATABASE IF NOT EXISTS StageBDD';
-//     conn.query(db, (err, res)=>{
-//         if(err) throw err;
-//         console.log('Database created');
-//     });
-// });
-// CREATING TABLE:
-// conn.connect((err)=>{
-//     if(err) throw err;
-//     console.log('Connected to database');
-//     const sql = 'CREATE TABLE IF NOT EXISTS  compte (id INT AUTO_INCREMENT PRIMARY KEY,nom VARCHAR(50),prenom VARCHAR(50), email VARCHAR(100), MotPasse1 VARCHAR(50))';
-//     conn.query(sql, (err)=>{
-//         if(err) throw err;
-//         console.log('Table created');
-//     })
-// })
-// DROP TABLE:
-// conn.connect((err)=>{
-//     if(err) throw err;
-//     console.log('Connected');
-//     const sql = 'DROP TABLE compte';
-//     conn.query(sql, (err)=>{
-//         if(err) throw err;
-//         console.log('Table deleted');
-//     })
-// })
-// INSERTING DATA:
-// conn.connect((err)=>{
-//     if(err) throw err;
-//     console.log('Connected');
-//     const sql = 'INSERT INTO compte VALUES ?';
-//     const values = [
-//         [null, 'belli', 'bilal', 'jb_belli@esi.dz', 'BBBBBBBB']
-//     ];
-//     conn.query(sql, [values], (err, res)=>{
-//         if(err) throw err;
-//         console.log('Data inserted : ', res.affectedRows);
-//     })
-// })
 // test de connectivité
 app.listen(3000, ()=>{
     console.log('server running port is 3000');

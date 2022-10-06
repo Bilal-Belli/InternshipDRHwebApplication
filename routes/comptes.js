@@ -8,7 +8,6 @@ function getConn(){
         user : 'root',
         password: '1234',
         database: 'stagebddtest'
-        // database: 'StageBDD'
     });
 }
 router.post('/compteCon', (req, res)=>{
@@ -289,10 +288,10 @@ router.post('/supprimerDep',async (req, res)=>{
     }
 });
 router.post('/affectationCondidat', (req, res)=>{
-    let selE = req.body.selE;
+    let selDHidden = req.body.selDHidden;
     let hiddenQR = req.body.hiddenQR;
     let NB_DEMANDEE = [];
-    let query = 'UPDATE condidat SET condidat.IDdepartement = \"'+selE+'\" WHERE '; 
+    let query = 'UPDATE condidat SET condidat.IDdepartement = \"'+selDHidden+'\" WHERE '; 
     NB_DEMANDEE = hiddenQR.match(/("[^"]+"|[^"\s]+)/g);
     for(rr=0;rr<NB_DEMANDEE.length;rr++) {
         if (rr == (NB_DEMANDEE.length - 1)){
