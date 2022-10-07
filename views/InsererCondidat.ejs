@@ -34,7 +34,7 @@
                     <div class="form-group row">
                         <label class="col-sm-5 col-form-label">Jour et Heur de Connection</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" id="JHC" name="JHC">
+                            <input type="text" class="form-control" id="JHC" name="JHC" readonly>
                         </div>
                     </div>
                     <input type="hidden" id="condidatIDhidden" name="condidatIDhidden" value="">
@@ -304,6 +304,8 @@
     "wilaya":"<%= entry.wilaya %>",
     "adressComplet":"<%= entry.adressComplet %>",
     "diplome":"<%= entry.diplome %>",
+    "dateObtention":"<%= entry.dateObtention%>",
+    "dateCreation":"<%= entry.dateCreation%>",
     "pathCV":"<%= entry.pathCV %>",
     "remarques":"<%= entry.remarques %>"},
     <% }) %>
@@ -321,7 +323,11 @@
 <script>
 // display time of edit condidat
 var d = new Date();
-document.getElementById('JHC').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+window.addEventListener('load', (event) => {
+    document.getElementById('JHC').readonly = false;
+    document.getElementById('JHC').value =  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+    document.getElementById('JHC').readonly = true;
+});
 
 // function to controle name string
 document.getElementById("Nom").addEventListener("input",()=>{
@@ -402,6 +408,7 @@ function addRowHandlers() {
                     document.getElementById("email").value =decodeHTMLEntities(Condidatsdata[indexJSONx].emailCondidat);
                     document.getElementById("Specialite").value =decodeHTMLEntities(Condidatsdata[indexJSONx].specialite);
                     document.getElementById("Diplome").value =decodeHTMLEntities(Condidatsdata[indexJSONx].diplome);
+                    document.getElementById("DateObtentionDiplome").value =decodeHTMLEntities(Condidatsdata[indexJSONx].dateObtention);
                     document.getElementById("Etablissement").value =decodeHTMLEntities(Condidatsdata[indexJSONx].etablissement);
                     document.getElementById("Adress").value =decodeHTMLEntities(Condidatsdata[indexJSONx].adressComplet);
                     document.getElementById("Remarques").value =decodeHTMLEntities(Condidatsdata[indexJSONx].remarques);
@@ -426,6 +433,9 @@ function addRowHandlers() {
                         document.getElementById('DiplomesFilesNameLabel').innerHTML+='<h6 class="text-primary" style="font-size: 0.8em;">Diplome N°'+oo+'</h6>';
                         document.getElementById('DiplomesFilesName').innerHTML += '<h6 class="text-primary" onclick="renderPDF(this.innerHTML);"style="font-size: 0.8em;">' + namesDip[h] + '</h6>';
                     }
+                    document.getElementById('JHC').readonly = false;
+                    document.getElementById('JHC').value =  decodeHTMLEntities(Condidatsdata[indexJSONx].dateCreation);
+                    document.getElementById('JHC').readonly = true;
                 };
             };
         currentRow.onclick = createClickHandler(currentRow);
