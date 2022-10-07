@@ -72,42 +72,85 @@ app.post('/InsererCondidat', async (req, res)=>{
     let nomDiplomes = [];
     let nomPID = [];
 
+    if (nb_diplomes == null){
+        nb_diplomes = 1;
+        nomDiplomes[0] = Nom+"_"+Prenom+"_DIPLOME_"+documentsDiplomes.name;
+    }else{
+        for(i=0;i<nb_diplomes;i++){
+            nomDiplomes[i] = Nom+"_"+Prenom+"_DIPLOME_"+documentsDiplomes[i].name;
+        };
+    }
+    if (nb_PID == null){
+        nb_PID = 1;
+        nomPID[0] = Nom+"_"+Prenom+"_PID_"+documentsPID.name;
+    }else{
+        // console.log(req.files.PID[0].name);
+        for(i=0;i<nb_PID;i++){
+            nomPID[i] = Nom+"_"+Prenom+"_PID_"+documentsPID[i].name;
+        };
+    }
+
     let uploadPathDiplome = [];
     let uploadPathPID = [];
     
-    // console.log(req.files.PID[0].name);
-    for(i=0;i<nb_PID;i++){
-        nomPID[i] = Nom+"_"+Prenom+"_PID_"+documentsPID[i].name;
-        // console.log(nomPID[i]);
-    };
-    for(i=0;i<nb_diplomes;i++){
-        nomDiplomes[i] = Nom+"_"+Prenom+"_DIPLOME_"+documentsDiplomes[i].name;
-    };
     const newNameForCV = Nom+"_"+Prenom+"_CV_"+documentCV.name;
     // here is where to save the PID files after upload
-    for(i=0;i<nb_PID;i++){
-        uploadPathPID[i] = __dirname + '/FileslocalStorage/' + nomPID[i];
-        documentsPID[i].mv(uploadPathPID[i], function (err) {
-            if (err) {
-                console.log("error on moving file :",err);
-                res.status(500);
-                return res.send(err);
-            } ;
-            return;
-        });
-    };
+    if (nb_PID == 1){
+        // if there is one simple pdf then do this
+        for(i=0;i<nb_PID;i++){
+            uploadPathPID[i] = __dirname + '/FileslocalStorage/' + nomPID[i];
+            documentsPID.mv(uploadPathPID[i], function (err) {
+                if (err) {
+                    console.log("error on moving file :",err);
+                    res.status(500);
+                    return res.send(err);
+                } ;
+                return;
+            });
+        };
+    }else{
+        // if there is a lot of PID pdf then do this
+        for(i=0;i<nb_PID;i++){
+            uploadPathPID[i] = __dirname + '/FileslocalStorage/' + nomPID[i];
+            documentsPID[i].mv(uploadPathPID[i], function (err) {
+                if (err) {
+                    console.log("error on moving file :",err);
+                    res.status(500);
+                    return res.send(err);
+                } ;
+                return;
+            });
+        };
+    }
     // here is where to save the diplomas files after upload
-    for(i=0;i<nb_diplomes;i++){
-        uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
-        documentsDiplomes[i].mv(uploadPathDiplome[i], function (err) {
-            if (err) {
-                console.log("error on moving file :",err);
-                res.status(500);
-                return res.send(err);
-            } ;
-            return;
-        });
-    };
+    if (nb_diplomes == 1){
+        // if there is one simple pdf then do this
+        for(i=0;i<nb_diplomes;i++){
+            uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
+            documentsDiplomes.mv(uploadPathDiplome[i], function (err) {
+                if (err) {
+                    console.log("error on moving file :",err);
+                    res.status(500);
+                    return res.send(err);
+                } ;
+                return;
+            });
+        };
+    }else{
+        // if there is a lot of diplomas pdf then do this
+        for(i=0;i<nb_diplomes;i++){
+            uploadPathDiplome[i] = __dirname + '/FileslocalStorage/' + nomDiplomes[i];
+            documentsDiplomes[i].mv(uploadPathDiplome[i], function (err) {
+                if (err) {
+                    console.log("error on moving file :",err);
+                    res.status(500);
+                    return res.send(err);
+                } ;
+                return;
+            });
+        };
+    }
+    
     // Use mv() to place file on the server
     let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
     documentCV.mv(uploadPath, function (err) {
@@ -129,9 +172,9 @@ app.post('/InsererCondidat', async (req, res)=>{
     await Promise.all(
         [   
             conn.query(sql,[values],(err, results)=>{if(err){console.log('Failed : ',err);}else{newInsertedID = results.insertId;console.log(newInsertedID);return;}}),
-            setTimeout(() => {affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID);affectPIDstoSpecificCondidat(nb_PID,queryvaluesPID,nomPID,newInsertedID);return;},1000),
+            setTimeout(() => {affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,newInsertedID);affectPIDstoSpecificCondidat(nb_PID,queryvaluesPID,nomPID,newInsertedID); return;},1000),
             setTimeout(() => {conn.query(queryDiplomes,[queryvalues],(err)=>{ if (err) console.log("Error to query diplomes :",err);})},2000),
-            setTimeout(() => {conn.query(queryPIDs,[queryvaluesPID],(err)=>{if(err){console.log("Error to query PIDs :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}})},3000),
+            setTimeout(() => {conn.query(queryPIDs,[queryvaluesPID],(err)=>{if(err){console.log("Error to query PIDs :",err);}else{console.log('Operation Successfully');res.redirect('/InsererCondidat');}})},2000),
         ]
     );
 });
@@ -151,6 +194,7 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
     const email = req.body.email;
     const Specialite = req.body.Specialite;
     let Diplome = req.body.Diplome;
+    const DateObtentionDiplome = req.body.DateObtentionDiplome;
     const Etablissement = req.body.Etablissement;
     const Adress = req.body.Adress;
     const Wilaya = req.body.Wilaya;
@@ -168,8 +212,8 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
     let hcv = req.body.hcv;
     if(req.files != null){
         if (hcv == ''){
-            sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
-            } else{
+            sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.dateObtention = \''+DateObtentionDiplome+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
+        } else{
             let documentCV = req.files.pathcv;
             const newNameForCV = Nom+"_"+Prenom+"_CV_"+documentCV.name;
             let uploadPath = __dirname + '/FileslocalStorage/' + newNameForCV;
@@ -181,7 +225,7 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
                 } 
                 return;
             });
-            sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.pathCV = \''+newNameForCV+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
+            sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.pathCV = \''+newNameForCV+'\',condidat.dateObtention = \''+DateObtentionDiplome+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
         }
 
         if (hpid != ''){
@@ -225,7 +269,7 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
             sql2 = 'INSERT INTO pieceIDentite VALUES ?';
             affectPIDstoSpecificCondidat(nb_PID,queryvaluesPID,nomPID,condidatIDhidden);
         } else{
-            sql2 = 'SELECT 1 WHERE false';
+            sql2 = 'SELECT 1';
         }
     
         if (hdip != ''){
@@ -269,12 +313,12 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
             sql3 = 'INSERT INTO diplome VALUES ?';
             affectDiplomestoSpecificCondidat(nb_diplomes,queryvalues,nomDiplomes,condidatIDhidden);
         } else{
-            sql3 = 'SELECT 1 WHERE false';
+            sql3 = 'SELECT 1';
         }
         } else {
-        sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
-        sql2 = 'SELECT 1 WHERE false';
-        sql3 = 'SELECT 1 WHERE false';
+        sql = 'UPDATE condidat SET condidat.nomCondidat = \''+Nom+'\',condidat.prenomCondidat = \''+Prenom+'\',condidat.emailCondidat = \''+email+'\',condidat.specialite = \''+Specialite+'\',condidat.diplome = \''+Diplome+'\',condidat.etablissement = \''+Etablissement+'\',condidat.adressComplet = \''+Adress+'\',condidat.wilaya = \''+Wilaya+'\',condidat.numeroTel = \''+numeroTel+'\',condidat.remarques = \''+Remarques+'\',condidat.dateObtention = \''+DateObtentionDiplome+'\' WHERE condidat.IDcondidat = \"'+condidatIDhidden+'\"';
+        sql2 = 'SELECT 1';
+        sql3 = 'SELECT 1';
     }
     try {
         let conn = getConn();
@@ -285,7 +329,7 @@ app.post('/modifierInfosCondidat', async (req, res)=>{
             setTimeout(() => {conn.query(sql3,[queryvalues])},600),
         ]
         );
-        setTimeout(() => {res.redirect('/InsererCondidat');},1000);
+        setTimeout(() => {res.redirect('/InsererCondidat');},800);
     } catch (error) {
     console.log(error);
     res.end();

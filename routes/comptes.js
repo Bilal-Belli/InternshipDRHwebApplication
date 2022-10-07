@@ -96,7 +96,7 @@ function editQuery(PT,MTR,SPT){
                     query = 'UPDATE departement SET departement.MatriculeChefEquipe = '+MTR+' where departement.IDequipe = \"'+SPT+'\"';
                 } else {
                     if(PT == "Admin"){
-                        query = 'SELECT 1 WHERE false';
+                        query = 'SELECT 1';
                     }
                 }
             };
