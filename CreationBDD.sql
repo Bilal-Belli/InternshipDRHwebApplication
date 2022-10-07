@@ -1,5 +1,4 @@
 CREATE DATABASE IF NOT EXISTS StageBDDtest
--- CREATE TABLE IF NOT EXISTS  compte (id INT AUTO_INCREMENT PRIMARY KEY,nom VARCHAR(50),prenom VARCHAR(50), email VARCHAR(100), MotPasse1 VARCHAR(50))
 
 -- Creation des tables de la base de donnes
 CREATE TABLE IF NOT EXISTS  compte (Matricule INT AUTO_INCREMENT PRIMARY KEY, typePost VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, nom  VARCHAR(50) NOT NULL, prenom VARCHAR(50) NOT NULL, numeroTelephone VARCHAR(50) NOT NULL, motPasse VARCHAR(200) NOT NULL, dateCreation VARCHAR(50) NOT NULL);
@@ -16,15 +15,11 @@ CREATE TABLE IF NOT EXISTS  diplome (IDdiplome INT AUTO_INCREMENT PRIMARY KEY, p
 CREATE TABLE IF NOT EXISTS  pieceIDentite (IDPID INT AUTO_INCREMENT PRIMARY KEY, pathPID VARCHAR(200) NOT NULL, IDcondidat INT, FOREIGN KEY (IDcondidat) REFERENCES condidat(IDcondidat));
 
 -- Delete the data base
--- DROP DATABASE StageBDD;
+-- DROP DATABASE StageBDDtest;
 
 -- Delete all tables from database
 -- DROP TABLE direction;
--- DROP TABLE sousDirection;
--- DROP TABLE sousDirecteur;
 -- DROP TABLE departement;
--- DROP TABLE equipe;
 -- DROP TABLE condidat;
 -- DROP TABLE diplome;
 -- DROP TABLE compte;
--- DROP TABLE droits;
