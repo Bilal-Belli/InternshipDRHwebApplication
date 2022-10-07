@@ -23,9 +23,11 @@
                 </button>
             </div>
             <div class="col d-flex justify-content-center">
-                <button type="button" class="btn btn-success mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenter">
-                    Modifier un compte
-                </button>
+                <a title="Remarquer" data-toggle="popover" data-trigger="hover" data-content="Vous ne pouvez modifier qu'un seul compte à la fois.">
+                    <button type="button" id="btnedit" class="btn btn-success mb-3" style="max-width: 25rem; width: 25rem;" data-toggle="modal" data-target="#exampleModalCenterM" onclick="getSelectesAccountsForEdit();fetchRowToEditForm();" disabled>
+                        Modifier le compte séléctionnée
+                    </button>
+                </a>
             </div>
         </div>
         <div class="py-3"></div>
@@ -46,7 +48,7 @@
                 <tbody>
                     <tr>
                         <% data.forEach(entry => { %>
-                        <td><input type="checkbox" name="<%= entry.Matricule %>" onclick="checkCHKBOX();"></td>
+                        <td><input type="checkbox" name="<%= entry.Matricule %>" onclick="checkCHKBOX();checkCHKBOXedit();"></td>
                         <td><%= entry.typePost %></td>
                         <td><%= entry.nom %></td>
                         <td><%= entry.prenom %></td>
@@ -172,6 +174,65 @@
             </div>
         </div>
     </div>
+    <!-- Form 3: modifier comp -->
+    <div class="modal fade" id="exampleModalCenterM" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitleM">Modifier Informations Compte</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="myFormulaireM" action="/editCompte" method="POST">
+                        <!-- Modifier Nom -->
+                        <div class="form-group">
+                            <input type="text" class="form-control rounded-left" placeholder="Nom" id="nomM" name="nomM" required>
+                        </div>
+                        <div class="form-group d-flex" id = "ErreurMsg_nomM" style="color:red; font-size: 11.5px;"></div>
+                        <!-- Modifier Prenom -->
+                        <div class="form-group">
+                            <input type="text" class="form-control rounded-left" placeholder="Prénom" id="prenomM" name="prenomM" required>
+                        </div>
+                        <div class="form-group d-flex" id = "ErreurMsg_prenomM" style="color:red; font-size: 11.5px;"></div>
+                        <!-- Modifier Numero du telephone -->
+                        <div class="form-group">
+                            <input type="text" class="form-control rounded-left" placeholder="N° Téléphone" id="numTelM" name="numTelM" required>
+                        </div>
+                        <div class="form-group d-flex" id = "ErreurMsg_numTelM" style="color:red; font-size: 11.5px;"></div>
+                        <!-- Modifier Email -->
+                        <div class="form-group">
+                            <input type="email" class="form-control rounded-left" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="E-mail" required id="emailM" name="emailM">
+                        </div>
+                        <div class="form-group d-flex" id = "ErreurMsg_email" style="color:red; font-size: 11.5px;"></div>
+                        <!-- Modifier Mot de Passe -->
+                        <div class="form-group d-flex">
+                            <input type="password" class="form-control rounded-left" placeholder="Mot de passe" id="MotPasse1M" required name="MotPasse1M">
+                            <a  id="icon-click1M">
+                                <i class="fa fa-eye-slash"  id="icon1M" style="padding: 15px"></i>
+                            </a> 
+                        </div>
+                        <div class="form-group d-flex" id = "ErreurMsg_password_1M" style="color:red; font-size: 11.5px;"></div>
+                        <!-- Confirmation Nouveau Mot de Passe -->  
+                        <div class="form-group d-flex">
+                            <input type="password" class="form-control rounded-left" placeholder="Confirmer Mot de passe" required id="MotPasse2M">
+                            <a  id="icon-click2M">
+                                <i class="fa fa-eye-slash" id="icon2M" style="padding: 15px"></i>
+                            </a>
+                        </div>
+                        <input type="hidden" id="hiddenQRM" name="hiddenQRM" value="">
+                        <div class="form-group d-flex" id = "ErreurMsg_password_2M" style="color:red; font-size: 11.5px;"></div>
+                        <div class="form-group"></div>
+                        <button type="submit" id="submitBtnM" class="form-control btn btn-success rounded submit px-3">Enregistrer</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <footer class="fixed-bottom">
     <div class="bg-success">
@@ -236,9 +297,15 @@ function fetchAUTO(){
 };
 </script>
 <script>
+    // these two boolean tables are to validate that all conditions are verefied:
+    // when entring data on create
     let validSubmit = new Array(6).fill(false);
+    // when entring data on edit
+    let validSubmitM = new Array(6).fill(true);
+
+    // jquery function that hide and show password (controle the eye)
     $(document).ready(function() {
-    $("#icon-click1").click(function() {
+        $("#icon-click1").click(function() {
         var className = $("#icon1").attr('class');
         className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
         $("#icon1").attr('class', className);
@@ -249,8 +316,6 @@ function fetchAUTO(){
         input.attr("type", "text");
         }
     });
-    });
-    $(document).ready(function() {
     $("#icon-click2").click(function() {
         var className = $("#icon2").attr('class');
         className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
@@ -262,8 +327,31 @@ function fetchAUTO(){
         input.attr("type", "text");
         }
     });
+    $("#icon-click1M").click(function() {
+        var className = $("#icon1M").attr('class');
+        className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
+        $("#icon1M").attr('class', className);
+        var input = $("#MotPasse1M");
+        if (input.attr("type") == "text") {
+        input.attr("type", "password");
+        } else {
+        input.attr("type", "text");
+        }
+    });
+    $("#icon-click2M").click(function() {
+        var className = $("#icon2M").attr('class');
+        className = className.indexOf('slash') !== -1 ? 'fa fa-eye' : 'fa fa-eye-slash'
+        $("#icon2M").attr('class', className);
+        var input = $("#MotPasse2M");
+        if (input.attr("type") == "text") {
+        input.attr("type", "password");
+        } else {
+        input.attr("type", "text");
+        }
+    });
     });
     $(document).ready(function() {
+        // jquery functions to controle entering data when create a new account
         $('#nom').on('input', function() {
             var input = $(this);
             var re = /^[A-Za-z]+$/;
@@ -284,7 +372,7 @@ function fetchAUTO(){
                 }
             }
             if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false || validSubmit[5] == false){
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").disabled = true;
             } else {
                 document.getElementById("submitBtn").disabled = false;
             }
@@ -309,7 +397,7 @@ function fetchAUTO(){
                 }
             }
             if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false || validSubmit[5] == false){
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").disabled = true;
             } else {
                 document.getElementById("submitBtn").disabled = false;
             }
@@ -334,7 +422,7 @@ function fetchAUTO(){
                 }
             }
             if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false || validSubmit[5] == false){
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").disabled = true;
             } else {
                 document.getElementById("submitBtn").disabled = false;
             }
@@ -359,7 +447,7 @@ function fetchAUTO(){
                 }
             }
             if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false || validSubmit[5] == false){
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").disabled = true;
             } else {
                 document.getElementById("submitBtn").disabled = false;
             }
@@ -389,7 +477,7 @@ function fetchAUTO(){
                 }
             }
             if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false || validSubmit[5] == false){
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").disabled = true;
             } else {
                 document.getElementById("submitBtn").disabled = false;
             }
@@ -409,9 +497,167 @@ function fetchAUTO(){
                 document.getElementById("ErreurMsg_password_2").innerHTML = "";
             }
             if (validSubmit[0] == false || validSubmit[1] == false || validSubmit[2] == false || validSubmit[3] == false || validSubmit[4] == false || validSubmit[5] == false){
-            document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").disabled = true;
             } else {
                 document.getElementById("submitBtn").disabled = false;
+            }
+        });
+        
+        // jquery functions to controle entring data when edit a new account
+        $('#nomM').on('input', function() {
+            var input = $(this);
+            var re = /^[A-Za-z]+$/;
+            var is_name = input.val();
+            if (is_name == "") { 
+                document.getElementById("ErreurMsg_nomM").innerHTML = "Vous devez remplis ce champ";
+                input.removeClass("valid").addClass("invalid");
+                validSubmitM[0]=false;
+            } else {
+                if (!isNaN(is_name) || !re.test(is_name)) { 
+                    document.getElementById("ErreurMsg_nomM").innerHTML = "Le nom doit ne contient que des caracteres";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmitM[0]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmitM[0]=true;
+                    document.getElementById("ErreurMsg_nomM").innerHTML = "";
+                }
+            }
+            if (validSubmitM[0] == false || validSubmitM[1] == false || validSubmitM[2] == false || validSubmitM[3] == false || validSubmitM[4] == false || validSubmitM[5] == false){
+                document.getElementById("submitBtnM").disabled = true;
+            } else {
+                document.getElementById("submitBtnM").disabled = false;
+            }
+        });
+        $('#prenomM').on('input', function() {
+            var input = $(this);
+            var re = /^[A-Za-z]+$/;
+            var is_prenom = input.val();
+            if (is_prenom == "") {
+                document.getElementById("ErreurMsg_prenomM").innerHTML = "Le nom ne doit contient que des caracteres";
+                input.removeClass("valid").addClass("invalid");
+                validSubmitM[1]=false;
+            } else {
+                if (!isNaN(is_prenom) || !re.test(is_prenom)) {
+                    document.getElementById("ErreurMsg_prenomM").innerHTML = "Le prenom ne doit contient que des caracteres";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmitM[1]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmitM[1]=true;
+                    document.getElementById("ErreurMsg_prenomM").innerHTML = "";
+                }
+            }
+            if (validSubmitM[0] == false || validSubmitM[1] == false || validSubmitM[2] == false || validSubmitM[3] == false || validSubmitM[4] == false || validSubmitM[5] == false){
+                document.getElementById("submitBtnM").disabled = true;
+            } else {
+                document.getElementById("submitBtnM").disabled = false;
+            }
+        });
+        $('#numTelM').on('input', function() {
+            var input = $(this);
+            var is_numTel = input.val();
+            var pattern = /^\d+\.?\d*$/;
+            if (is_numTel == "") { 
+                document.getElementById("ErreurMsg_numTelM").innerHTML = "Vous devez remplis ce champ";
+                input.removeClass("valid").addClass("invalid");
+                validSubmitM[5]=false;
+            } else {
+                if (!(pattern.test(is_numTel))) { 
+                    document.getElementById("ErreurMsg_numTelM").innerHTML = "Le nom doit ne contient que des caracteres";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmitM[5]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmitM[5]=true;
+                    document.getElementById("ErreurMsg_numTelM").innerHTML = "";
+                }
+            }
+            if (validSubmitM[0] == false || validSubmitM[1] == false || validSubmitM[2] == false || validSubmitM[3] == false || validSubmitM[4] == false || validSubmitM[5] == false){
+                document.getElementById("submitBtnM").disabled = true;
+            } else {
+                document.getElementById("submitBtnM").disabled = false;
+            }
+        });
+        $('#emailM').on('input', function() {
+            var input = $(this);
+            var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]*$/;
+            var is_email = input.val();
+            if (is_email == "") {
+                document.getElementById("ErreurMsg_emailM").innerHTML = "Vous devez remplis ce champ";
+                input.removeClass("valid").addClass("invalid");
+                validSubmitM[2]=false;
+            } else {
+                if (re.test(is_email)) {
+                    document.getElementById("ErreurMsg_emailM").innerHTML = "Vous devez respecter le format d'un Email";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmitM[2]=false;
+                } else {
+                    input.removeClass("invalid").addClass("valid");
+                    validSubmitM[2]=true;
+                    document.getElementById("ErreurMsg_emailM").innerHTML = "";
+                }
+            }
+            if (validSubmitM[0] == false || validSubmitM[1] == false || validSubmitM[2] == false || validSubmitM[3] == false || validSubmitM[4] == false || validSubmitM[5] == false){
+                document.getElementById("submitBtnM").disabled = true;
+            } else {
+                document.getElementById("submitBtnM").disabled = false;
+            }
+        });
+        $('#MotPasse1M').on('input', function() {
+            var input = $(this);
+            var is_password = input.val();
+            if (is_password == "") {
+                document.getElementById("ErreurMsg_password_1M").innerHTML = "Veuillez entrer un mot de passe";
+                input.removeClass("valid").addClass("invalid");
+                validSubmitM[3]=false;
+            } else {
+                if (is_password.length < 8) {
+                    document.getElementById("ErreurMsg_password_1M").innerHTML = "Le mot de passe doit etre plus de 8 caractères";
+                    input.removeClass("valid").addClass("invalid");
+                    validSubmitM[3]=false;
+                } else {
+                    if (is_password.length > 24) {
+                        document.getElementById("ErreurMsg_password_1M").innerHTML = "Le mot de passe ne dépasse pas 24 caractères";
+                        input.removeClass("valid").addClass("invalid");
+                        validSubmitM[3]=false;
+                    } else {
+                        input.removeClass("invalid").addClass("valid");
+                        validSubmitM[3]=true;
+                        document.getElementById("ErreurMsg_password_1M").innerHTML = "";
+                    }
+                }
+            }
+            var input_2 = $(MotPasse2M);
+            if (input_2.val() != is_password) {
+                validSubmitM[5] = false;
+            } else {
+                validSubmitM[5] = true;
+            }
+            if (validSubmitM[0] == false || validSubmitM[1] == false || validSubmitM[2] == false || validSubmitM[3] == false || validSubmitM[4] == false || validSubmitM[5] == false){
+                document.getElementById("submitBtnM").disabled = true;
+            } else {
+                document.getElementById("submitBtnM").disabled = false;
+            }
+        });
+        $('#MotPasse2M').on('input', function() {
+            var input = $(this);
+            var input_2 = $(MotPasse1M);
+            var pw2 = input.val();
+            var pw1 = input_2.val();
+            if (pw1 != pw2) {
+                document.getElementById("ErreurMsg_password_2M").innerHTML = "Les deux Mots de passes ne sont pas identiques";
+                input.removeClass("valid").addClass("invalid");
+                validSubmitM[4]=false;
+            } else {
+                input.removeClass("invalid").addClass("valid");
+                validSubmitM[4]=true;
+                document.getElementById("ErreurMsg_password_2M").innerHTML = "";
+            }
+            if (validSubmitM[0] == false || validSubmitM[1] == false || validSubmitM[2] == false || validSubmitM[3] == false || validSubmitM[4] == false || validSubmitM[5] == false){
+            document.getElementById("submitBtnM").disabled = true;
+            } else {
+                document.getElementById("submitBtnM").disabled = false;
             }
         });
     });
@@ -433,15 +679,27 @@ function fetchAUTO(){
             };
         };
         checkCHKBOX();
+        checkCHKBOXedit();
     };
 
-    // function that fill value of hidden input in orther to pass arguments to backend
+    // function that fill value of hidden input in orther to pass arguments to backend (for delete module)
     function getSelectesAccounts(){
         var cbs = document.getElementsByTagName('input');
         document.getElementById('hiddenQR').value = "";
         for(var i=0; i < cbs.length; i++) {
             if(cbs[i].type === 'checkbox' && cbs[i].checked === true ) {
                 document.getElementById('hiddenQR').value += cbs[i].name+" ";
+            }
+        }
+    }
+
+    // function that fill value of hidden input in orther to pass arguments to backend (for edit module)
+    function getSelectesAccountsForEdit(){
+        var cbs = document.getElementsByTagName('input');
+        for(var i=0; i < cbs.length; i++) {
+            if(cbs[i].type === 'checkbox' && cbs[i].checked === true ) {
+                document.getElementById('hiddenQRM').value = cbs[i].name;
+                break;
             }
         }
     }
@@ -466,6 +724,41 @@ function fetchAUTO(){
     // this allow to attribute the time and the date of creation of the account
     var d = new Date();
     document.getElementById('dateCreationhidden').value=  d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " +d.getHours() + ":" + d.getMinutes();
+
+    // function that enable click on edit button
+    function checkCHKBOXedit(){
+        var cbs = document.getElementsByTagName('input');
+        let compteur = 0;
+        for(var i=0; i < cbs.length; i++) {
+            if(cbs[i].type == 'checkbox' && cbs[i].checked === true && cbs[i].name != 'firstcheckbox') {
+                compteur=compteur+1;
+            }
+        }
+        if (compteur == 1){
+            document.getElementById('btnedit').disabled = false;
+        } else {
+            document.getElementById('btnedit').disabled = true;
+        }
+    }
+
+    // display the selected row table in FORM number 3 (edit form)
+    function fetchRowToEditForm() {
+        var table = document.getElementById("tableID");
+        var rows = table.getElementsByTagName("tr");
+        for (let i = 1; i < rows.length; i++) {
+            // console.log(document.getElementById('hiddenQRM').value);
+            // console.log(table.rows[1].getElementsByTagName("td")[0].getElementsByTagName("input")[0].name);
+            if (table.rows[i].getElementsByTagName("td")[0].getElementsByTagName("input")[0].name == document.getElementById('hiddenQRM').value){
+                document.getElementById('nomM').value = table.rows[i].getElementsByTagName("td")[2].innerHTML;
+                document.getElementById('prenomM').value = table.rows[i].getElementsByTagName("td")[3].innerHTML;
+                document.getElementById('numTelM').value = table.rows[i].getElementsByTagName("td")[4].innerHTML;
+                document.getElementById('emailM').value = table.rows[i].getElementsByTagName("td")[5].innerHTML;
+                document.getElementById('MotPasse1M').value = table.rows[i].getElementsByTagName("td")[7].innerHTML;
+                document.getElementById('MotPasse2M').value = table.rows[i].getElementsByTagName("td")[7].innerHTML;
+                break;
+            }
+        }
+    }
 </script>
 <!-- data dir -->
 <script id="dirsdata" type="application/json">

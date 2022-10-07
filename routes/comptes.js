@@ -104,39 +104,15 @@ function editQuery(PT,MTR,SPT){
     };
     return query;
 };
-// to use and delete
-router.post('/fetchCompte', (req, res)=>{
-    console.log('EDIT AN ACCOUNT');
-    const emailenter = req.body.emailenter;
-    const sql = 'SELECT * FROM compte WHERE compte.email = \"'+emailenter+'\"';
-    getConn().query(sql,(err, rows)=>{
-        if(err){
-            console.log('Failed to query ', err);
-            res.status(500);
-            res.end();
-            return;
-        } else{
-            if(rows[0] == null){
-                console.log('no results on DB about your query');
-                res.render('modifierCompte',{data: []});
-                return;
-            } else {
-                console.log('succesfully fetch opération');
-                res.render('modifierCompte',{data: rows[0]});
-                return;
-            }
-        }
-    })
-});
-// to use and delete
 router.post('/editCompte', (req, res)=>{
     console.log('EDIT AN ACCOUNT');
-    const nom = req.body.nom;
-    const prenom = req.body.prenom;
-    const email = req.body.email;
-    const MotPasse = req.body.MotPasse1;
-    const postDeTravail = req.body.postDeTravail;
-    const sql = 'UPDATE compte SET compte.email = \''+email+'\',compte.nom = \''+nom+'\', compte.prenom = \''+prenom+'\',compte.typePost = \''+postDeTravail+'\',compte.motPasse = \''+MotPasse+'\' WHERE compte.email = \"'+email+'\"';
+    const nomM = req.body.nomM;
+    const prenomM = req.body.prenomM;
+    const numTelM = req.body.numTelM;
+    const emailM = req.body.emailM;
+    const MotPasseM = req.body.MotPasse1M;
+    const hiddenQRM = req.body.hiddenQRM;
+    const sql = 'UPDATE compte SET compte.email = \''+emailM+'\',compte.nom = \''+nomM+'\', compte.prenom = \''+prenomM+'\',compte.motPasse = \''+MotPasseM+'\',compte.numeroTelephone = \''+numTelM+'\' WHERE compte.Matricule = \"'+hiddenQRM+'\"';
     getConn().query(sql,(err, rows)=>{
         if(err){
             console.log('Failed : ', err);
