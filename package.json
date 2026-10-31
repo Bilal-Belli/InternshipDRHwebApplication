@@ -18,7 +18,7 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.12.1",
     "mysql": "^2.18.1",
-    "nodemailer": "^10.0.9",
+    "nodemailer": "^10.1.4",
     "nodemon": "^3.1.14"
   }
 }
